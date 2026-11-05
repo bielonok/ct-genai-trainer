@@ -2030,7 +2030,7 @@ const SB = {
     this.store(j);
   },
   async signUp(email, password) {
-    const j = await this.api('/auth/v1/signup', { method: 'POST', headers: { apikey: this.cfg.anonKey, 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
+    const j = await this.api('/auth/v1/signup?redirect_to=' + encodeURIComponent(location.origin + location.pathname), { method: 'POST', headers: { apikey: this.cfg.anonKey, 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
     if (j && j.access_token) { this.store(j); return 'in'; }
     return 'confirm'; // email confirmation is on in Supabase
   },
