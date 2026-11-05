@@ -61,5 +61,5 @@ Settings → Pages → Build and deployment → Source: **Deploy from a branch**
 ## Для разработки
 
 Исходники лежат в `src/`: `engine.js` (схемы), `app.js` (логика), `shell.html` (разметка и стили), `ch1_*.js` (контент главы 1).
-Новая глава добавляется файлами `src/ch2_*.js` с блоком `chapters[2] = {…}`. После правок запустите `python3 build.py`: скрипт пересоберёт `index.html` (PWA) и `dist/ct-genai-trainer.html` (единый офлайн-файл).
+Глава N добавляется файлами `src/chN_*.js` с блоком `chapters[N] = {…}` (сейчас есть главы 1 и 2). После правок запустите `python3 build.py`: скрипт пересоберёт `index.html` (PWA) и `dist/ct-genai-trainer.html` (единый офлайн-файл).
 При каждом изменении поменяйте `CACHE` в `sw.js` (например, `ctgenai-v2`), чтобы установленное приложение точно обновилось.

@@ -157,6 +157,8 @@ table.t th{color:var(--muted);font-weight:600;font-size:.8rem;text-transform:upp
 .q{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--card)}
 .q .stem{font-weight:600;margin:8px 0 12px}
 .q .stem pre,.q .stem .pre{white-space:pre-wrap;font-family:var(--font);font-weight:500;background:var(--soft);border-radius:8px;padding:8px 10px;margin:8px 0}
+.opt .pre{display:block;white-space:pre-wrap;font-family:var(--mono);font-size:.8rem;line-height:1.45;background:var(--soft);border-radius:8px;padding:8px 10px;margin:6px 0 0}
+.opt.correct .pre,.opt.wrong .pre,.opt.sel .pre{background:color-mix(in srgb,var(--card) 70%,transparent)}
 .opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;border:1px solid var(--line);background:var(--card);border-radius:11px;padding:10px 12px;margin:6px 0;cursor:pointer;transition:border-color .15s,background .15s}
 .opt:hover:not(:disabled){border-color:var(--accent)}
 .opt .L{flex:none;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:var(--soft);font-weight:800;font-size:.82rem}
@@ -221,7 +223,7 @@ footer.foot{max-width:1120px;margin:0 auto;padding:0 16px 30px;color:var(--muted
 <body>
 <header class="top">
   <div class="top-in">
-    <div class="logo"><span class="dot"></span><span>GenAI Training</span><span class="chip" id="chLabel">Глава 1</span></div>
+    <div class="logo"><span class="dot"></span><span>GenAI Training</span><button class="chip" id="chLabel" style="border:0;cursor:pointer" title="Змінити главу">Глава 1 ▾</button></div>
     <div class="stats">
       <button class="pill" id="goalPill" title="Денна норма (кроки)"><svg width="18" height="18" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="9" fill="none" stroke="var(--soft)" stroke-width="3.5"/><circle id="goalRing" cx="11" cy="11" r="9" fill="none" stroke="var(--accent)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="0 56.55" transform="rotate(-90 11 11)"/></svg><span id="goalTxt">0/20</span></button>
       <button class="pill" id="streakPill" title="Днів поспіль з виконаною нормою">🔥 <span id="streak">0</span></button>
@@ -1417,6 +1419,1444 @@ C1.flashcards = C1.glossary.map(g => ({ id: 'fc-' + g.id, term: g.term, sec: g.s
   { id: 'fc-k5', kind: 'concept', sec: '1.2.2', term: 'Chatbot vs LLM-powered app', en: 'AI chatbots offer conversational interfaces for ad hoc test tasks; LLM-powered testing applications provide customized solutions for specific test tasks.', ua: 'Chat ↔ ad hoc; App ↔ API, specific, customization, scalability.' }
 ]);
 
+// ===================== CHAPTER 2 =====================
+chapters[2] = {
+  examNote: '6 × K2 (1 бал) + 5 × K3 (2 бали) = 16 балів',
+  sections: [
+    { id: '2.1.1', short: 'Структура промпту', title: 'Structure of Prompts for GenAI in Software Testing', lo: 'GenAI-2.1.1', k: 'K2', examQ: 2, loText: 'Give examples of the structure of prompts used in generative AI for software testing' },
+    { id: '2.1.2', short: 'Техніки промптингу', title: 'Core Prompting Techniques for Software Testing', lo: 'GenAI-2.1.2', k: 'K2', examQ: 1, loText: 'Differentiate core prompting techniques for software testing' },
+    { id: '2.1.3', short: 'System vs User prompt', title: 'System Prompt and User Prompt', lo: 'GenAI-2.1.3', k: 'K2', examQ: 1, loText: 'Distinguish between system prompts and user prompts' },
+    { id: '2.2.1', short: 'Test analysis', title: 'Test Analysis with Generative AI', lo: 'GenAI-2.2.1', k: 'K3', examQ: 1, loText: 'Apply generative AI to test analysis tasks' },
+    { id: '2.2.2', short: 'Test design & implementation', title: 'Test Design and Test Implementation with Generative AI', lo: 'GenAI-2.2.2', k: 'K3', examQ: 1, loText: 'Apply generative AI to test design and test implementation tasks' },
+    { id: '2.2.3', short: 'Automated regression', title: 'Automated Regression Testing with Generative AI', lo: 'GenAI-2.2.3', k: 'K3', examQ: 1, loText: 'Apply generative AI to automated regression testing' },
+    { id: '2.2.4', short: 'Monitoring & control', title: 'Test Monitoring and Test Control with Generative AI', lo: 'GenAI-2.2.4', k: 'K3', examQ: 1, loText: 'Apply generative AI to test monitoring and control task' },
+    { id: '2.2.5', short: 'Вибір техніки', title: 'Choosing Prompting Techniques for Software Testing', lo: 'GenAI-2.2.5', k: 'K3', examQ: 1, loText: 'Select and apply appropriate prompting techniques for a given context and test task' },
+    { id: '2.3.1', short: 'Метрики', title: 'Metrics for Evaluating the Results of GenAI on Test Tasks', lo: 'GenAI-2.3.1', k: 'K2', examQ: 1, loText: 'Understand the metrics for evaluating the results of generative AI on test tasks' },
+    { id: '2.3.2', short: 'Покращення промптів', title: 'Techniques for Evaluating and Iteratively Refining Prompts', lo: 'GenAI-2.3.2', k: 'K2', examQ: 1, loText: 'Give examples of techniques for evaluating and iteratively refining prompts' }
+  ],
+  slides: {}, quizzes: {}, final: [], sample: [], glossary: [], flashcards: []
+};
+const C2 = chapters[2];
+function Q2(id, sec, slide, q, opts, x) {
+  const s = C2.sections.find(z => z.id === sec);
+  return Object.assign({ id, sec, lo: s.lo, k: s.k, slide, q, opts: opts.map(o => ({ t: o[0], ok: !!o[1], why: o[2] })) }, x || {});
+}
+const SIX = [
+  { ic: '🎭', t: 'Role', s: 'хто відповідає', tip: 'Перспектива/персона моделі: tester, test manager, test automation engineer. Допомагає визначити відповідальність і тон.' },
+  { ic: '🗺️', t: 'Context', s: 'фонова інформація', tip: 'Background: об’єкт тестування, функціональність, що тестуємо, релевантний контекст — щоб модель визначила test conditions.' },
+  { ic: '🎯', t: 'Instruction', s: 'що зробити', tip: 'Директива: опис задачі та вимоги до неї. Clear, imperative, concise.' },
+  { ic: '📦', t: 'Input data', s: 'з чим працювати', tip: 'User stories, acceptance criteria, screenshots, code, existing test cases або output examples. Детальні й структуровані дані → точніший результат.' },
+  { ic: '🚧', t: 'Constraints', s: 'обмеження', tip: 'Обмеження або особливі умови: ЯК інструкцію застосувати до вхідних даних.' },
+  { ic: '🧾', t: 'Output format', s: 'у якому вигляді', tip: 'Очікуваний формат, структура або характеристики відповіді.' }
+];
+
+// ---------- 2.1.1 ----------
+C2.slides['2.1.1'] = [
+  { id: 'six', type: 'c', ref: '2.1 / 2.1.1', title: 'Шість компонентів структурованого промпту',
+    syl: 'A structured prompt for software testing typically includes <b>six components</b>: <b>role, context, instruction, input data, constraints</b> and <b>output format</b>… Each of these components contributes to the <b>clarity and precision</b> of a prompt that effectively communicates requirements and expectations to LLMs.',
+    ua: 'Промпт для тестової задачі — це не «одне речення», а маленьке ТЗ із шести блоків. Кожен блок відповідає на своє питання: хто, де, що, з чим, у яких межах, у якому вигляді.',
+    ex: 'Порівняйте «напиши тест-кейси для бронювання» і промпт, де вказано: роль тест-аналітика, систему (бекофіс перевізника), задачу (кейси для скасування), user story + AC, обмеження (лише негативні, без UI), формат (таблиця ID/кроки/expected). Друге дає придатний результат з першої спроби.',
+    vis: V.cards(SIX),
+    memo: '<b>Хто? Де? Що? З чим? У яких межах? Як віддати?</b> → Role · Context · Instruction · Input data · Constraints · Output format.',
+    trap: 'Компонентів рівно <b>шість</b>. «Examples», «persona», «tone» — не окремі компоненти: приклади входять в <b>input data</b> (output examples), персона — у <b>role</b>.' },
+  { id: 'role-ctx', type: 'c', ref: '2.1.1', title: 'Role і Context',
+    syl: '<b>Role</b>: defines the perspective or persona that the GenAI model should take… such as acting as a tester, test manager, or test automation engineer. <b>Context</b>: provides the <b>background information</b> that the GenAI model needs to determine the test conditions. This includes details about the test object, the specific functionality to be tested, and any relevant contextual information.',
+    ua: 'Role каже моделі, «ким бути» — від цього залежать тон і глибина відповіді. Context — це фон: яка система, яка фіча, що важливо знати. Context ≠ дані для обробки.',
+    ex: '<i>Role:</i> «You are a senior test analyst for a transport booking back office». <i>Context:</i> «The system lets dispatchers register trips; drivers confirm them in a mobile app; payment is handled by a third-party gateway».',
+    vis: V.ba(
+      { t: '🎭 Role', items: ['tester / test manager / automation engineer', 'визначає відповідальність', 'задає тон і підхід'], tip: 'Перспектива або персона.' },
+      { t: '🗺️ Context', items: ['test object', 'функціональність, що тестується', 'релевантний фон'], tip: 'Background information для визначення test conditions.' }, '+'),
+    memo: '<b>Role — «костюм»</b>, <b>Context — «декорації»</b>. Актор у костюмі на правильній сцені грає краще.',
+    trap: 'Sample Q8: перелік <b>конкретних джерел даних</b> (звіти, логи, бенчмарки) — це <b>input data</b>, а не context. Context — фонова інформація про систему.' },
+  { id: 'instr-input', type: 'c', ref: '2.1.1', title: 'Instruction і Input data',
+    syl: '<b>Instruction</b>: directives… that outline the specific task to be performed. <b>Clear, imperative and concise</b> instructions include a task description and any relevant requirements for the task. <b>Input data</b>: any information needed to perform the task, such as <b>user stories, acceptance criteria, screenshots, code, existing test cases or output examples</b>. Providing detailed and structured input data helps the LLM to generate more accurate and context-aware results.',
+    ua: 'Instruction — одне чітке дієслово-наказ: «Generate…», «Identify…», «Prioritize…». Input data — все, що модель має опрацювати, включно з прикладами бажаного результату.',
+    ex: '<i>Instruction:</i> «Identify ambiguities and missing information in the user story below». <i>Input data:</i> текст user story, три AC і скриншот форми.',
+    vis: V.flow([
+      { t: '🎯 Instruction', s: 'Generate / Identify / Prioritize…', tip: 'Imperative, clear, concise: опис задачі + вимоги.' },
+      { t: '📦 Input data', s: 'stories, AC, screenshots, code, test cases, examples', tip: 'Детальні та структуровані дані → точніший результат.' },
+      { t: 'LLM', tip: 'Обробляє input data згідно з instruction.' }
+    ]),
+    memo: '<b>Instruction — дієслово, Input data — іменник</b>: «що зробити» vs «з чим».',
+    trap: '<b>Output examples</b> (приклади результату) у силабусі віднесені до <b>input data</b>. Не плутайте з output format.' },
+  { id: 'chk-211a', type: 'q', q: Q2('c211-1', '2.1.1', 'role-ctx', 'In a structured prompt, a line reads: "The application is a B2B trip management back office used by dispatchers; payments are processed by an external gateway." Which component is this MOST LIKELY?', [
+    ['Context', 1, 'Фонова інформація про об’єкт тестування — context.'],
+    ['Input data', 0, 'Input data — те, що модель обробляє (stories, AC, логи…), а не опис системи.'],
+    ['Role', 0, 'Role — персона моделі (tester, test manager…).'],
+    ['Constraints', 0, 'Constraints обмежують, ЯК застосувати інструкцію; тут немає обмежень.']
+  ]) },
+  { id: 'constr-out', type: 'c', ref: '2.1.1', title: 'Constraints і Output format',
+    syl: '<b>Constraints</b>: outline any restrictions or special considerations that the LLM should adhere to. Constraints help to specify <b>how instructions should be applied to input data</b>. <b>Output format</b>: output specifications denote the <b>expected format, structure or characteristics</b> of the response.',
+    ua: 'Constraints — «правила гри»: що виключити, на чому сфокусуватися, яких меж триматися. Output format — «упаковка»: таблиця, JSON, Gherkin, кількість пунктів.',
+    ex: '<i>Constraints:</i> «Only negative scenarios; exclude cosmetic UI issues; use the business terms from the glossary». <i>Output format:</i> «Markdown table: ID | Precondition | Steps | Expected result».',
+    vis: V.compare(['Фраза в промпті', 'Компонент', 'Чому'], [
+      { c: ['«Exclude cosmetic issues»', '🚧 Constraints', 'обмежує, як обробляти дані'], tip: 'Приклад constraints з rationale Sample Q9.' },
+      { c: ['«Focus only on API, not UI»', '🚧 Constraints', 'особлива умова виконання'], tip: 'Restriction / special consideration.' },
+      { c: ['«Provide a markdown table with columns ID, severity…»', '🧾 Output format', 'як подати результат'], tip: 'Sample Q9 — правильна відповідь: output format.' },
+      { c: ['«Answer in Gherkin Given-When-Then»', '🧾 Output format', 'структура відповіді'], tip: 'Формат/структура відповіді.' }
+    ]),
+    memo: '<b>Constraints = «як НЕ можна / на що зважати»</b>, <b>Output format = «як віддати»</b>.',
+    trap: 'Sample Q9: «must be provided in a markdown table…» звучить як обов’язкова умова, але це <b>output format</b>. Слово «must» ще не робить фразу constraint.' },
+  { id: 'full', type: 'c', ref: '2.1.1', title: 'Повний промпт: шість компонентів разом',
+    syl: 'These components form the basic structure of the prompt. This structure should be <b>combined with the implementation of prompting techniques</b> (see Section 2.1.2), depending on the task to be performed and the LLM to be used.',
+    ua: 'Шість компонентів — це скелет. Поверх нього накладаються техніки (prompt chaining, few-shot, meta prompting) — залежно від задачі й моделі.',
+    ex: 'Промпт для аналізу user story бронювання (натискайте на рядки таблиці):',
+    vis: V.compare(['Компонент', 'Текст у промпті'], [
+      { c: ['🎭 Role', 'Act as a senior test analyst.'], tip: 'Персона.' },
+      { c: ['🗺️ Context', 'We test the booking module of a trip management back office.'], tip: 'Фон про test object.' },
+      { c: ['🎯 Instruction', 'Generate test conditions for the user story and its acceptance criteria.'], tip: 'Що зробити.' },
+      { c: ['📦 Input data', '&lt;user story&gt; + &lt;AC1–AC4&gt; + one example test condition'], tip: 'Дані + приклад результату (output example).' },
+      { c: ['🚧 Constraints', 'Cover each AC at least once; use business terms; no UI layout checks.'], tip: 'Як застосувати інструкцію.' },
+      { c: ['🧾 Output format', 'Table: ID | AC ref | Test condition | Priority'], tip: 'Структура відповіді.' }
+    ]),
+    memo: 'Скелет (6 компонентів) + м’язи (техніки 2.1.2) = робочий промпт.',
+    trap: 'Структура не замінює техніку і навпаки: силабус каже <b>combine</b>. Вибір залежить від <b>задачі і моделі</b>.' },
+  { id: 'chk-211b', type: 'q', q: Q2('c211-2', '2.1.1', 'constr-out', 'A prompt for defect analysis contains: "Ignore spelling mistakes and focus only on functional inconsistencies." Which component is this MOST LIKELY?', [
+    ['Output format', 0, 'Нічого не сказано про формат чи структуру відповіді.'],
+    ['Constraints', 1, 'Обмеження / особлива умова застосування інструкції до даних.'],
+    ['Instruction', 0, 'Задача (знайти дефекти) задана окремо; тут — межі її виконання.'],
+    ['Context', 0, 'Це не фонова інформація про систему.']
+  ]) },
+  { id: 'sum-211', type: 's', title: 'Шпаргалка 2.1.1 · Структура промпту (K2)',
+    points: ['Шість компонентів: <b>Role · Context · Instruction · Input data · Constraints · Output format</b>.',
+      '<b>Context</b> = фон про test object; <b>Input data</b> = що обробляти (stories, AC, screenshots, code, test cases, <b>output examples</b>).',
+      '<b>Instruction</b> — clear, imperative, concise.',
+      '<b>Constraints</b> — як застосувати інструкцію до даних; <b>Output format</b> — формат/структура відповіді (таблиця, колонки…).',
+      'Структуру поєднують із техніками промптингу залежно від задачі й LLM.'],
+    vis: V.cards(SIX) }
+];
+
+// ---------- 2.1.2 ----------
+C2.slides['2.1.2'] = [
+  { id: 'three', type: 'c', ref: '2.1 / 2.1.2', title: 'Три основні техніки промптингу',
+    syl: 'Among these, <b>three core prompting techniques</b> are commonly used for test tasks with GenAI in conjunction with the 6-component prompt structure: <b>prompt chaining, few-shot prompting, and meta prompting</b>.',
+    ua: 'Технік у світі багато, але для іспиту — три основні. Кожна вирішує свою проблему: складність (chaining), шаблонність (few-shot), невизначеність «як написати промпт» (meta).',
+    ex: 'Аналіз великої user story — chaining. Сто однотипних Gherkin-сценаріїв — few-shot. Нова задача, а ви не знаєте, з чого почати промпт, — meta prompting.',
+    vis: V.cards([
+      { ic: '⛓️', t: 'Prompt chaining', s: 'задача → кроки з перевіркою', tip: 'Розбиває задачу на проміжні кроки (кілька промптів); кожен результат перевіряють і уточнюють.' },
+      { ic: '🧩', t: 'Few-shot prompting', s: 'кілька прикладів у промпті', tip: 'Приклади в промпті задають бажану поведінку та формат.' },
+      { ic: '🪞', t: 'Meta prompting', s: 'LLM пише/покращує промпт', tip: 'LLM генерує або вдосконалює власні промпти; тестувальник оцінює.' }
+    ]),
+    memo: '<b>Ланцюг · Приклади · Дзеркало</b> — chaining, few-shot, meta.',
+    trap: 'Ці техніки використовують <b>разом зі структурою з 6 компонентів</b>, а не замість неї.' },
+  { id: 'chaining', type: 'c', ref: '2.1.2', title: 'Prompt chaining',
+    syl: 'Prompt chaining involves <b>breaking a task into a series of intermediate steps (multiple prompts)</b>. The result of each step is <b>manually or automatically checked and refined</b> before proceeding to the next step. This approach leads to <b>greater accuracy</b> as each response informs the next prompt… particularly useful… where tasks are complicated and require decomposition into subtasks and systematic checking of intermediate LLM outputs. It also allows for <b>dynamic interactions</b>.',
+    ua: 'Складну задачу ріжемо на кроки. Після кожного кроку — перевірка (людиною або автоматично) і виправлення. Наступний крок отримує вже «чистий» результат попереднього.',
+    ex: 'Крок 1: «Знайди неоднозначності в story» → ви виправляєте. Крок 2: «Оціни тестованість AC» → виправляєте. Крок 3: «Перевір повноту AC» (так побудовано HO-2.2.1b).',
+    vis: V.flow([
+      { t: 'Prompt 1', s: 'ambiguities', tip: 'Перший підзадача.' },
+      { t: '✔ check', tip: 'Результат перевіряють і уточнюють вручну або автоматично.' },
+      { t: 'Prompt 2', s: 'testability', tip: 'Отримує перевірений результат кроку 1.' },
+      { t: '✔ check', tip: 'Знову перевірка.' },
+      { t: 'Prompt 3', s: 'completeness', tip: 'Фінальний крок.' }
+    ]),
+    memo: '<b>Chaining = конвеєр із ВТК</b> після кожного верстата.',
+    trap: 'Ключ — <b>кілька промптів + перевірка кожного проміжного результату</b>. Не плутайте з «довгим промптом з кількома пунктами» — це один промпт, не chaining.' },
+  { id: 'fewshot', type: 'c', ref: '2.1.2', title: 'Zero-shot, one-shot, few-shot',
+    syl: 'Few-shot prompting involves providing the LLM with <b>examples</b> in the prompt. While <b>zero-shot</b> prompting (no example) relies on the model\'s pre-existing knowledge…, <b>one-shot</b> prompting provides one example… Few-shot prompts contain <b>more than one example</b> (a few)… helps guide the model by providing a clear reference and ensuring that results are <b>consistent</b> and in line with expectations.',
+    ua: 'Різниця — лише в кількості прикладів у промпті: 0, 1 або кілька. Приклади показують «ось так треба», і модель повторює патерн стабільно.',
+    ex: 'Дали 3 пари «user story → Gherkin-сценарій» і четверту story без сценарію → модель пише сценарій у тому самому стилі, з тими ж назвами кроків.',
+    vis: V.compare(['Техніка', 'Прикладів', 'На що спирається'], [
+      { c: ['Zero-shot', '0', 'pre-existing knowledge моделі'], tip: 'Немає прикладів.' },
+      { c: ['One-shot', '1', 'один приклад очікуваного результату'], tip: 'Рівно один приклад.' },
+      { c: ['Few-shot', '> 1 (кілька)', 'кілька прикладів → стабільний патерн'], tip: 'Найкраще, коли приклади можуть проілюструвати потрібну поведінку.' }
+    ]),
+    memo: '<b>Shot = приклад</b>. Zero / One / Few — просто рахуємо приклади.',
+    trap: 'One-shot ≠ few-shot: <b>few = більше одного</b>. «Приклади» — ознака few-shot, а не prompt chaining (дистрактор Sample Q10 a).' },
+  { id: 'chk-212a', type: 'q', q: Q2('c212-1', '2.1.2', 'fewshot', 'A prompt contains exactly one sample user story with its expected Gherkin scenario, followed by a new user story to convert. Which technique is this?', [
+    ['Zero-shot prompting', 0, 'Zero-shot — без прикладів.'],
+    ['One-shot prompting', 1, 'Рівно один приклад очікуваного результату.'],
+    ['Few-shot prompting', 0, 'Few-shot — більше одного прикладу.'],
+    ['Meta prompting', 0, 'Meta prompting — LLM генерує/покращує промпт.']
+  ]) },
+  { id: 'meta', type: 'c', ref: '2.1.2', title: 'Meta prompting і «pairing» з AI',
+    syl: 'Meta prompting leverages the AI\'s ability to <b>generate or refine its own prompts</b>. In an iterative cycle, the LLM can generate prompts that can be <b>evaluated and refined by the tester</b>… especially beneficial when <b>efficiency and prompt optimization</b> are critical, as it reduces the manual effort… if the tester is <b>unsure how to craft an effective prompt</b>, they can collaborate with the LLM to co-create it. This reflects a form of <b>pairing</b> with the GenAI tool…',
+    ua: 'Замість писати промпт самому, ви просите LLM написати (або покращити) промпт під вашу задачу, оцінюєте його, уточнюєте — і так кілька кіл. Це як парне програмування, тільки пара — AI.',
+    ex: '«Мені треба промпт, щоб LLM генерувала негативні API-тести за OpenAPI-специфікацією. Задай мені уточнювальні питання і запропонуй структурований промпт із 6 компонентів». Потім — «посиль constraints щодо авторизації».',
+    vis: V.flow([
+      { t: 'Тестувальник', s: 'ціль + задача', tip: 'Загальний опис цілі.' },
+      { t: 'LLM', s: 'генерує промпт', tip: 'Використовує свої «знання» про оптимальні промпти.' },
+      { t: 'Тестувальник', s: 'оцінює, уточнює', tip: 'Evaluated and refined by the tester.' },
+      { t: '↺ ітерація', tip: 'Iterative cycle до якісного промпту.' }
+    ]),
+    memo: '<b>Meta = промпт про промпт</b>. «Допоможи мені написати промпт для…»',
+    trap: 'Sample Q10: meta prompting — LLM <b>сама</b> генерує/покращує промпти; варіанти «refines prompts manually» або «relies on tester-defined prompts» — хибні.' },
+  { id: 'combo', type: 'c', ref: '2.1.2 / 2.2.5', title: 'Техніки можна поєднувати',
+    syl: 'These prompting techniques <b>can be used effectively in combination</b> to improve LLM outcomes (see section 2.2.5)… For example, meta prompting can be used to create an initial prompt. This generated prompt may contain examples that must be adapted and can be enhanced (few-shot prompting). Finally, it can be useful to divide the task into smaller subtasks to enable validation of the intermediate steps (prompt chaining).',
+    ua: 'Немає правила «одна задача — одна техніка». Типова комбінація: meta створює чернетку промпту → додаємо приклади (few-shot) → ріжемо на кроки з перевіркою (chaining).',
+    ex: 'Генерація E2E-сценаріїв для оформлення поїздки: LLM пише промпт (meta) → ви вставляєте 2 еталонні сценарії (few-shot) → запускаєте окремо «генерація», «перевірка покриття AC», «доопрацювання» (chaining).',
+    vis: V.flow([
+      { t: '🪞 Meta', s: 'початковий промпт', tip: 'LLM допомагає створити промпт.' },
+      { t: '🧩 Few-shot', s: 'адаптовані приклади', tip: 'Приклади в промпті покращують стабільність.' },
+      { t: '⛓️ Chaining', s: 'підзадачі з валідацією', tip: 'Перевірка проміжних кроків.' }
+    ]),
+    memo: '<b>Мета → Приклади → Ланцюг</b> (М-П-Л) — порядок із прикладу силабусу.',
+    trap: 'Дистрактори «техніки взаємовиключні» або «завжди використовуйте лише одну» — хибні.' },
+  { id: 'chk-212b', type: 'q', q: Q2('c212-2', '2.1.2', 'meta', 'A tester is unsure how to phrase a prompt for test report analysis and asks the LLM to draft a prompt, then reviews and improves it with the LLM over several iterations. Which technique is this?', [
+    ['Prompt chaining', 0, 'Chaining — розбиття самої тестової задачі на кроки з перевіркою.'],
+    ['Few-shot prompting', 0, 'Приклади результату не надаються.'],
+    ['Meta prompting', 1, 'LLM генерує/покращує промпт; тестувальник оцінює — «pairing».'],
+    ['Zero-shot prompting', 0, 'Zero-shot — пряма задача без прикладів, не створення промпту.']
+  ]) },
+  { id: 'sum-212', type: 's', title: 'Шпаргалка 2.1.2 · Техніки промптингу (K2)',
+    points: ['<b>Prompt chaining</b>: задача → проміжні кроки (кілька промптів); кожен результат перевіряють/уточнюють → вища точність; для складних задач.',
+      '<b>Zero / one / few-shot</b>: 0 / 1 / кілька прикладів; few-shot дає стабільний, очікуваний результат.',
+      '<b>Meta prompting</b>: LLM генерує або покращує промпти, тестувальник оцінює; ефективність, менше ручної роботи, «pairing».',
+      'Техніки поєднуються між собою і зі структурою з 6 компонентів.'],
+    vis: V.compare(['Техніка', 'Суть'], [{ c: ['Chaining', 'кроки + перевірка'] }, { c: ['Few-shot', 'кілька прикладів'] }, { c: ['Meta', 'LLM пише промпт'] }]) }
+];
+
+// ---------- 2.1.3 ----------
+C2.slides['2.1.3'] = [
+  { id: 'sys', type: 'c', ref: '2.1.3', title: 'System prompt — «конституція» розмови',
+    syl: 'The system prompt is typically defined by the developer or tester, to guide the overall behavior of the LLM, and is <b>not visible or editable by the chatbot\'s user</b> in most interfaces. A system prompt acts as a predefined command set that defines the LLM\'s <b>behavior, personality, and operational parameters</b>… The system prompt sets the rules for the <b>entire conversation</b>. It may contain parts of a structured prompt such as the <b>role, context and constraints</b>. The system prompt <b>stays constant</b> throughout the interaction session…',
+    ua: 'System prompt задають один раз (розробник чи тестувальник) — і він діє на всю розмову: хто модель, яким тоном говорить, чого не робить. Користувач чатбота зазвичай його не бачить і не змінює.',
+    ex: 'Внутрішній QA-асистент команди: «You are a testing assistant for the trip management platform. Use ISTQB terminology. Never invent API fields that are not in the provided spec. Answer concisely». Тестувальники далі просто пишуть свої запити.',
+    vis: V.cards([
+      { ic: '👤', t: 'Хто задає', s: 'developer / tester', tip: 'Typically defined by the developer or tester.' },
+      { ic: '🙈', t: 'Видимість', s: 'прихований від користувача', tip: 'Not visible or editable by the chatbot’s user in most interfaces.' },
+      { ic: '📌', t: 'Тривалість', s: 'константа на всю сесію', tip: 'Stays constant throughout the interaction session.' },
+      { ic: '⚙️', t: 'Зміст', s: 'behavior, personality, operational parameters', tip: 'Може містити role, context, constraints; напр. формальний тон, стислість, доменні правила.' }
+    ]),
+    memo: '<b>System = Сталий, Схований, Спільний для всієї розмови</b> (три «С»).',
+    trap: 'Sample Q11: функція system prompt — <b>framework for LLM behavior for the entire conversation</b>. Не «змінюється з кожною взаємодією» і не «містить видимий ввід користувача».' },
+  { id: 'user', type: 'c', ref: '2.1.3', title: 'User prompt і як вони працюють разом',
+    syl: 'The user prompt… represents the <b>actual input or question</b> from the chatbot\'s user. It <b>changes with each interaction</b>… Unlike the system prompt, user prompts are <b>directly visible</b> and form the immediate context for each response… Typical usage involves setting the system prompt once at the start of the conversation, then sending successive user prompts… The LLM generates responses by <b>considering both</b> the unchanging system prompt and the current user prompt together.',
+    ua: 'User prompt — те, що ви пишете в чат кожного разу. Відповідь моделі = system prompt (незмінний) + поточний user prompt.',
+    ex: 'System prompt асистента незмінний, а ви по черзі пишете: «Згенеруй кейси для скасування поїздки», «Тепер лише для водія», «Переведи в Gherkin».',
+    vis: V.compare(['', 'System prompt', 'User prompt'], [
+      { c: ['Хто пише', 'developer / tester', 'користувач чатбота'], tip: 'Різні автори.' },
+      { c: ['Коли', 'один раз на початку', 'кожна взаємодія'], tip: 'Set once vs successive prompts.' },
+      { c: ['Змінюється?', 'ні — константа', 'так — щоразу новий'], tip: 'Ключова відмінність.' },
+      { c: ['Видимість', 'зазвичай прихований', 'видимий'], tip: 'Not visible vs directly visible.' },
+      { c: ['Роль', 'правила для всієї розмови', 'конкретне питання/задача'], tip: 'Framework vs immediate context.' }
+    ]),
+    memo: '<b>System — правила гри, User — хід у грі.</b>',
+    trap: 'LLM враховує <b>обидва</b> промпти разом. Дистрактор «user prompt перекриває system prompt» або «system prompt застосовується лише до першої відповіді» — хибні.' },
+  { id: 'chk-213a', type: 'q', q: Q2('c213-1', '2.1.3', 'user', 'Which statement CORRECTLY describes a user prompt?', [
+    ['It defines operational parameters for the entire session', 0, 'Це system prompt.'],
+    ['It changes with each interaction and is visible to the user', 1, 'User prompt — змінний і видимий (2.1.3).'],
+    ['It is hidden from the user and stays constant', 0, 'Це характеристики system prompt.'],
+    ['It replaces the system prompt for the next response', 0, 'LLM враховує обидва промпти разом.']
+  ]) },
+  { id: 'good', type: 'c', ref: '2.1.3', title: 'Якими мають бути обидва промпти',
+    syl: 'For effective implementation, system prompts should be <b>clear and specific about the LLM\'s role and possible constraints</b>. It may also contain context and general instructions, e.g. regarding the expected output. User prompts must be <b>focused and well-structured</b>, including <b>explicit instructions</b> as well as additional relevant context and output format instructions.',
+    ua: 'System prompt — чітка роль і обмеження (можна загальний контекст і вимоги до виводу). User prompt — сфокусований запит із явною інструкцією, потрібним контекстом і форматом.',
+    ex: 'Погано: system prompt «Be helpful» + user prompt «тести?». Добре: system — роль QA-асистента, ISTQB-терміни, заборона вигадувати; user — «Згенеруй 5 негативних кейсів для AC2, таблицею».',
+    vis: V.ba(
+      { t: 'System prompt', items: ['clear & specific', 'role + constraints', 'може: context, загальні інструкції про output'], tip: 'Рекомендації для system prompt.' },
+      { t: 'User prompt', items: ['focused, well-structured', 'explicit instructions', '+ релевантний context і output format'], tip: 'Рекомендації для user prompt.' }, '+'),
+    memo: 'System — «<b>хто і в яких межах</b>», User — «<b>що саме зараз і в якому вигляді</b>».',
+    trap: 'System prompt «may contain parts of a structured prompt such as the role, context and constraints» — тобто 6 компонентів можна розподілити між system і user prompt.' },
+  { id: 'sum-213', type: 's', title: 'Шпаргалка 2.1.3 · System vs User prompt (K2)',
+    points: ['<b>System prompt</b>: задає developer/tester; зазвичай прихований і нередагований для користувача; константа на всю сесію; behavior, personality, operational parameters; може містити role, context, constraints.',
+      '<b>User prompt</b>: реальний ввід користувача; змінюється щоразу; видимий; immediate context відповіді.',
+      'LLM відповідає з урахуванням <b>обох</b> одночасно.',
+      'System — clear & specific (role, constraints); User — focused, structured, explicit instructions + context + output format.'],
+    vis: V.compare(['', 'System', 'User'], [{ c: ['Змінюється', 'ні', 'так'] }, { c: ['Видимий', 'ні', 'так'] }, { c: ['Охоплення', 'вся розмова', 'одна взаємодія'] }]) }
+];
+
+// ---------- 2.2.1 ----------
+const K3TAG = 'K3 · сценарні питання';
+C2.slides['2.2.1'] = [
+  { id: 'apply', type: 'c', ref: '2.2 / 2.2.1', title: 'Test analysis з GenAI: входи і виходи',
+    syl: 'Applying prompt engineering techniques… enables GenAI to support test tasks such as test analysis, test design, test automation, test case prioritization, defect detection, coverage analysis, and test monitoring and test control… <b>High-quality input is crucial</b>. GenAI can support test analysis tasks by <b>generating and prioritizing test conditions, identifying defects in the test basis and providing coverage analysis</b>. The input data includes requirements, user stories, technical specifications, GUI wireframes… The output consists of typical test analysis work products, such as <b>prioritized test conditions (e.g., acceptance criteria)</b>.',
+    ua: 'На етапі аналізу ми відповідаємо на питання «що тестувати». GenAI бере test basis (вимоги, stories, специфікації, вайрфрейми) і допомагає отримати пріоритезовані test conditions — наприклад, acceptance criteria.',
+    ex: 'Ви даєте LLM нову story «Диспетчер може перенести поїздку на інший день» + вайрфрейм форми → отримуєте список test conditions з пріоритетами і зауваження до неясних місць у story.',
+    vis: V.flow([
+      { t: 'Test basis', s: 'requirements, stories, specs, wireframes', tip: 'Input data для test analysis.' },
+      { t: 'GenAI + prompt', s: 'structured + techniques', tip: 'Якість входу прямо впливає на точність виходу.' },
+      { t: 'Prioritized test conditions', s: 'напр. acceptance criteria', tip: 'Типовий work product test analysis.' }
+    ]),
+    memo: '<b>Аналіз = «ЩО тестувати»</b> → test conditions; дизайн (2.2.2) = «ЯК тестувати» → test cases.',
+    trap: 'Output test analysis — <b>test conditions</b> (наприклад AC), а не test cases чи скрипти. Тест-кейси — вже test design (2.2.2).' },
+  { id: 'tasks221', type: 'c', ref: '2.2.1', title: 'П’ять задач test analysis, які підтримує GenAI',
+    syl: '• <b>Identify potential defects in the test basis</b> (inconsistencies, ambiguities, incomplete information)… • <b>Generating test conditions</b>… break them down into measurable, testable statements… • <b>Prioritize test conditions based on risk level</b>: with information on the risk likelihood and risk impact… regulatory compliance, user-facing features (e.g., login or payment), historical defect data… • <b>Support coverage analysis</b>: mapping requirements and user stories to test conditions… • <b>Suggest test techniques</b> (e.g., boundary value analysis, equivalence partitioning)…',
+    ua: 'Запам’ятайте п’ять дій: знайти дефекти в базисі, згенерувати умови, пріоритезувати за ризиком, перевірити покриття, підказати техніки тест-дизайну.',
+    ex: 'Для story оплати поїздки: LLM помічає, що не описано поведінку при відмові банку (дефект базису), пропонує умови для кожного AC, ставить «payment» у високий пріоритет (user-facing + історія багів), будує матрицю AC ↔ умови і радить BVA для суми.',
+    vis: V.cards([
+      { ic: '🐞', t: 'Defects in test basis', s: 'ambiguity, inconsistency, gaps', tip: 'Порівняння схожих патернів вимог, знання з минулих defect reports.' },
+      { ic: '🧪', t: 'Generate test conditions', s: 'measurable, testable', tip: 'NLP: інтерпретує вимоги й розбиває на перевірювані твердження.' },
+      { ic: '⚖️', t: 'Prioritize by risk', s: 'likelihood × impact', tip: 'Regulatory compliance, user-facing features (login, payment), historical defect data.' },
+      { ic: '🗺️', t: 'Coverage analysis', s: 'requirements ↔ conditions', tip: 'Чи покриті всі аспекти test basis; особливо корисно для складних вимог.' },
+      { ic: '🛠️', t: 'Suggest test techniques', s: 'BVA, EP…', tip: 'За типом вимоги чи story.' }
+    ]),
+    memo: '<b>«Дефект — Умова — Ризик — Покриття — Техніка»</b> (Д-У-Р-П-Т).',
+    trap: 'Для пріоритизації LLM потрібна <b>інформація про ризики</b> (likelihood, impact). Без неї «пріоритети» — здогадка. І завжди: <b>quality of inputs directly impacts accuracy and precision</b>.' },
+  { id: 'chain221', type: 'c', ref: '2.2.1', title: 'Prompt chaining для аналізу story (HO-2.2.1b)',
+    syl: 'Practice prompt chaining to analyze a given user story and refine acceptance criteria, first by <b>identifying ambiguities</b>, then by <b>evaluating testability</b>, and finally by <b>evaluating completeness</b>… At each step, the results provided by the LLM are <b>manually verified and corrected</b>… the next stage uses a clean result from the previous stage.',
+    ua: 'Еталонний ланцюг для аналізу: неоднозначності → тестованість → повнота, з людською перевіркою між кроками. Але порядок і набір кроків підбирають під ціль: якщо вимоги вже відрев’ювлено, крок пошуку дефектів можна пропустити.',
+    ex: 'Sample Q12 (2 бали): вимоги стабільні й уже перевірені на дефекти; ціль — умови → пріоритети → прогалини покриття. Правильний ланцюг: (1) згенерувати умови, (2) пріоритезувати їх з контекстом ризиків, (3) перевірити покриття вимог.',
+    vis: V.flow([
+      { t: '1. Generate', s: 'test conditions', tip: 'Із вимог.' },
+      { t: '✔', tip: 'Людина перевіряє.' },
+      { t: '2. Prioritize', s: 'risk context', tip: 'Передати контекст ризиків.' },
+      { t: '✔', tip: 'Людина перевіряє.' },
+      { t: '3. Coverage', s: 'all aspects covered?', tip: 'Coverage analysis.' }
+    ]),
+    memo: 'Ланцюг будують <b>під ціль</b>, а не «за шаблоном»: кожен крок — одна підзадача, між кроками — ✔.',
+    trap: 'Sample Q12 дистрактори: «все одним промптом» (це не chaining) і «додати пошук дефектів», хоча вимоги вже відрев’ювлені — зайвий крок.' },
+  { id: 'chk-221a', type: 'q', q: Q2('c221-1', '2.2.1', 'tasks221', 'A tester provides an LLM with user stories and asks it to map each story to the generated test conditions and list any story aspects without a matching condition. Which test analysis task is this?', [
+    ['Prioritizing test conditions based on risk level', 0, 'Пріоритети тут не визначаються.'],
+    ['Supporting coverage analysis', 1, 'Mapping stories → test conditions + пошук непокритих аспектів = coverage analysis.'],
+    ['Identifying defects in the test basis', 0, 'Шукають не дефекти вимог, а прогалини покриття умовами.'],
+    ['Suggesting test techniques for conditions', 0, 'Техніки тест-дизайну не пропонуються.']
+  ]) },
+  { id: 'mm221', type: 'c', ref: '2.2.1', title: 'Мультимодальний промпт: AC з вайрфрейму (HO-2.2.1a)',
+    syl: 'Practice writing structured prompts using <b>multimodal input (text and image)</b>. The goal is to generate high quality (i.e. <b>well-formed, clear and complete</b>) acceptance criteria from a user story and a <b>GUI wireframe</b>. Other text elements can be added to provide context, such as <b>constraints on input fields or business rules</b>… The results… are compared to assess the impact of different formulations of the structured prompt.',
+    ua: 'Story + картинка вайрфрейму + бізнес-правила → структурований промпт → AC. Потім змінюєте формулювання компонентів і дивитеся, як змінюється якість результату.',
+    ex: 'Вайрфрейм форми «Нова поїздка» (поля дата, маршрут, кількість місць 1–8) + правило «не можна створити поїздку в минулому» → LLM пропонує AC, включно з межами 1 і 8 та забороною минулих дат.',
+    vis: V.flow([
+      { t: '📝 User story', tip: 'Текстовий input.' },
+      { t: '🖼️ GUI wireframe', tip: 'Image input.' },
+      { t: '📏 Field constraints / business rules', tip: 'Додатковий текстовий контекст.' },
+      { t: '→ AC', s: 'well-formed, clear, complete', tip: 'Критерії якості AC з HO-2.2.1a.' }
+    ]),
+    memo: '<b>Текст + Картинка + Правила = Якісні AC</b>.',
+    trap: 'Якість AC за силабусом: <b>well-formed, clear and complete</b>. І знову: якість входу визначає якість виходу.' },
+  { id: 'p221', type: 'p', ho: 'GenAI-2.2.1 · HO-2.2.1b', tag: K3TAG, title: 'Практика: ланцюг промптів для аналізу user story',
+    task: '<p><b>User story:</b> <i>«As a dispatcher, I want to reschedule a confirmed trip so that passengers are informed about the new date.» AC1: The new date must be in the future. AC2: Passengers receive a notification quickly. AC3: The driver must be reassigned if unavailable.</i></p><p><b>Завдання:</b> напишіть <b>ланцюг із 3 промптів</b> (структурованих: role, context, instruction, input data, constraints, output format) для аналізу цієї story: неоднозначності → тестованість → повнота. Вкажіть, що ви перевіряєте вручну між кроками.</p>',
+    model: 'PROMPT 1 — ambiguities\nRole: Senior test analyst. Context: trip management back office (dispatchers, drivers, passengers).\nInstruction: Identify ambiguities, inconsistencies and missing information in the user story and AC.\nInput data: <story + AC1–AC3>\nConstraints: Quote the exact phrase for each finding; do not propose test cases yet.\nOutput format: Table | # | Phrase | Problem | Question for PO |\n→ ✔ Я перевіряю: «quickly» (скільки?), «unavailable» (хто визначає?), канал сповіщення. Відповіді PO дописую в story.\n\nPROMPT 2 — testability\nInstruction: For each (clarified) AC, assess whether it is testable; rewrite non-testable AC into measurable statements.\nInput data: <clarified story + AC>\nOutput format: | AC | Testable? | Rewritten AC |\n→ ✔ Перевіряю, що переписані AC відповідають бізнес-правилам, а не вигадкам моделі.\n\nPROMPT 3 — completeness\nInstruction: Identify missing AC (negative paths, edge cases, roles) for this story.\nConstraints: Only within the story scope; mark each suggestion as "proposal".\nOutput format: numbered list with rationale.\n→ ✔ Узгоджую фінальний список AC з PO.',
+    checklist: ['Три окремі промпти, кожен — одна підзадача', 'Кожен промпт має структуру (role, context, instruction, input data, constraints, output format)', 'Між кроками — явна людська перевірка/виправлення', 'Наступний крок використовує ПЕРЕВІРЕНИЙ результат попереднього', 'Помічено неоднозначні слова (quickly, unavailable)', 'Результат — покращені, тестовані AC (test conditions), а не тест-кейси'],
+    note: 'Еталон — приклад тренера; формулювання можуть бути іншими. Головне — логіка chaining + human verification.' },
+  { id: 'sum-221', type: 's', title: 'Шпаргалка 2.2.1 · Test analysis (K3)',
+    points: ['Input: requirements, user stories, specs, GUI wireframes. Output: <b>prioritized test conditions</b> (напр. AC).',
+      'П’ять задач: <b>defects in test basis · generate test conditions · prioritize by risk · coverage analysis · suggest test techniques</b>.',
+      'Пріоритизація потребує даних про ризик: likelihood, impact; compliance, user-facing (login, payment), історія дефектів.',
+      'Chaining для аналізу: ambiguities → testability → completeness, з людською перевіркою; кроки — під ціль задачі.',
+      '<b>Якість входу</b> прямо визначає точність результату.'],
+    vis: V.flow([{ t: 'Test basis', tip: 'Input' }, { t: 'GenAI', tip: 'Prompt + technique' }, { t: 'Test conditions', tip: 'Output' }]) }
+];
+
+// ---------- 2.2.2 ----------
+C2.slides['2.2.2'] = [
+  { id: 'design', type: 'c', ref: '2.2.2', title: 'Test design і test implementation з GenAI',
+    syl: '…test design involves the elaboration and refinement of test conditions, which are then translated into <b>test cases and other testware</b>. Test implementation entails the creation or acquisition of the necessary testware… Both <b>manual tests and automated test scripts</b> can be created, prioritized, and arranged within a test execution schedule with the support of GenAI… creation and evaluation of various testware, including <b>test cases, test data, test scripts, and test environments</b>.',
+    ua: 'Після аналізу (що тестувати) — дизайн (як: тест-кейси) і реалізація (усе потрібне для запуску: дані, скрипти, середовища, розклад). GenAI допомагає і з ручними, і з автоматизованими тестами.',
+    ex: 'З пріоритезованих умов для «перенесення поїздки» LLM робить тест-кейси, синтетичних пасажирів, Playwright-скрипти для двох ключових кейсів і пропонує порядок виконання з урахуванням залежностей.',
+    vis: V.flow([
+      { t: 'Test conditions', tip: 'Результат test analysis.' },
+      { t: 'Test design', s: 'test cases', tip: 'Elaboration and refinement of test conditions → test cases.' },
+      { t: 'Test implementation', s: 'data · scripts · environments · schedule', tip: 'Створення/придбання testware для виконання.' }
+    ]),
+    memo: '<b>Аналіз — ЩО, Дизайн — ЯК, Реалізація — ЧИМ</b>.',
+    trap: 'Test environments теж згадані серед testware, з якими допомагає GenAI в 2.2.2.' },
+  { id: 'tcgen', type: 'c', ref: '2.2.2', title: 'Test case generation і test data synthesis',
+    syl: '<b>Test case generation</b>: …create draft test cases based on functional and non-functional requirements… suggest <b>test preconditions and inputs, expected results, and coverage criteria</b>… from basic functional verification to complex end-to-end testing. <b>Test data synthesis</b>: GenAI can create representative, <b>data privacy-preserving synthetic test data</b> that resembles production data, covering extreme situations and varied test conditions… for functional and non-functional testing… without exposing sensitive information.',
+    ua: 'LLM пише чернетки кейсів (передумови, входи, очікування, критерії покриття) і генерує синтетичні дані, схожі на прод, але без реальних персональних даних.',
+    ex: 'Замість копіювати з проду реальних пасажирів (ПІБ, телефони) — LLM генерує 500 вигаданих записів з реалістичними іменами, довгими прізвищами, телефонами різних країн і крайніми випадками (100 місць у бронюванні, поїздка через північ).',
+    vis: V.ba(
+      { t: '🧪 Test case generation', items: ['preconditions + inputs', 'expected results', 'coverage criteria', 'від функціональних до E2E'], tip: 'Draft test cases з functional і non-functional вимог.' },
+      { t: '🔢 Test data synthesis', items: ['схожі на production', 'privacy-preserving', 'extreme situations', 'functional + non-functional'], tip: 'Без розкриття чутливих даних.' }, '+'),
+    memo: '<b>Кейси — «чернетки»</b>, <b>дані — «двійники проду без секретів»</b>.',
+    trap: 'Згенеровані кейси — <b>draft</b>. Синтетичні дані — <b>privacy-preserving</b>: перевага саме в тому, що не розкривають чутливу інформацію.' },
+  { id: 'scripts', type: 'c', ref: '2.2.2', title: 'Скрипти і розклад виконання',
+    syl: '<b>Automated test script generation</b>: GenAI can generate <b>manual test procedures and automated test scripts from structured test cases</b>, interpreting test steps and translating them into code compatible with various test automation frameworks… can be updated or extended based on new requirements. <b>Test execution scheduling and prioritization</b>: GenAI can analyze test cases and their <b>interdependencies</b>, optimizing test execution schedules based on <b>priority, associated risks, resource availability and test objectives</b>.',
+    ua: 'Зі структурованого кейсу — ручна процедура або код під ваш фреймворк. А ще LLM може скласти розклад прогону, враховуючи залежності між тестами, пріоритети, ризики і ресурси.',
+    ex: 'Кейс у таблиці «Логін водія з простроченим документом» → Playwright-тест на TS. Для регресу на 300 кейсів — розклад: спочатку створення поїздок (від них залежать інші), потім платежі (високий ризик), UI-косметика — в кінці.',
+    vis: V.flow([
+      { t: 'Structured test cases', tip: 'Вхід для генерації скриптів.' },
+      { t: 'Manual procedures / automated scripts', s: 'під ваш фреймворк', tip: 'Інтерпретує кроки й перекладає в код.' },
+      { t: 'Execution schedule', s: 'priority · risk · resources · dependencies', tip: 'Оптимізація розкладу виконання.' }
+    ]),
+    memo: 'Розклад = <b>«ПРРЗ»</b>: Пріоритет, Ризик, Ресурси, Залежності (+ test objectives).',
+    trap: 'Скрипти генеруються <b>зі структурованих тест-кейсів</b>. Розклад враховує й <b>interdependencies</b> тестів — часта деталь у сценаріях.' },
+  { id: 'chk-222a', type: 'q', q: Q2('c222-1', '2.2.2', 'tcgen', 'A team needs realistic passenger records, including invalid and extreme values, for functional tests, without using real personal data. Which GenAI capability from the syllabus BEST fits?', [
+    ['Automated test script generation', 0, 'Скрипти не вирішують проблему даних.'],
+    ['Test data synthesis', 1, 'Privacy-preserving synthetic data, схожі на production, з extreme situations.'],
+    ['Test execution scheduling', 0, 'Розклад не створює даних.'],
+    ['Coverage analysis', 0, 'Це test analysis, не дані.']
+  ]) },
+  { id: 'ho222', type: 'c', ref: '2.2.2', title: 'Три патерни з hands-on 2.2.2',
+    syl: '<b>HO-2.2.2a</b>: functional test cases from user stories using <b>prompt chaining, structured prompts and meta prompting</b> — generate test cases in a specific output format → verify completeness with a <b>coverage table</b> per acceptance criterion → meta-prompt for end-to-end procedures. <b>HO-2.2.2b</b>: <b>few-shot prompting</b> to generate <b>Gherkin</b> test cases — select n examples (user story, test conditions, given-when-then test cases)… if inaccurate, refine prompt or examples. <b>HO-2.2.2c</b>: <b>prompt chaining</b> to prioritize test cases considering priorities and <b>dependencies</b>; results <b>manually verified</b> to detect errors in the LLM\'s reasoning.',
+    ua: 'Три готові «рецепти»: кейси з покриттям (chaining + structured + meta), Gherkin (few-shot з прикладами), пріоритизація з залежностями (chaining + ручна перевірка міркувань моделі).',
+    ex: 'Sample Q13 (2 бали): найкращий промпт для Gherkin — той, що <b>містить приклади</b> (few-shot), явно вимагає <b>Given-When-Then</b> і <b>відповідність AC</b>. Варіанти без прикладів або з розмитим «rely on best practices» — гірші.',
+    vis: V.compare(['Задача', 'Техніка', 'Ключовий момент'], [
+      { c: ['Функціональні кейси з story', 'Chaining + structured + meta', 'Таблиця покриття AC; meta для E2E'], tip: 'HO-2.2.2a.' },
+      { c: ['Gherkin-кейси', 'Few-shot', 'n прикладів story → conditions → GWT'], tip: 'HO-2.2.2b; Sample Q13.' },
+      { c: ['Пріоритизація suite', 'Chaining', 'Пріоритети + залежності; ручна перевірка'], tip: 'HO-2.2.2c: multi-criteria reasoning.' }
+    ]),
+    memo: '<b>Gherkin → приклади. Покриття → таблиця. Пріоритети → перевір міркування.</b>',
+    trap: 'У Gherkin-задачі «найкращий промпт» = приклади + GWT-синтаксис + узгодження з AC. Розмиті constraints типу «best practices» — ознака слабкого варіанту.' },
+  { id: 'chk-222b', type: 'q', q: Q2('c222-2', '2.2.2', 'ho222', 'A tester asks an LLM to prioritize a regression suite where several test cases depend on others. According to the syllabus, what should the tester do with the LLM result?', [
+    ['Accept it, since prioritization is a deterministic task', 0, 'LLM — non-deterministic; міркування можуть бути хибними.'],
+    ['Manually verify it to detect errors in the LLM’s reasoning', 1, 'HO-2.2.2c: results should be manually verified to detect errors in reasoning.'],
+    ['Convert it into Gherkin to validate its syntax', 0, 'Gherkin не перевіряє коректність пріоритетів.'],
+    ['Rerun it with zero-shot until the order stops changing', 0, 'Стабільність порядку ≠ правильність міркувань.']
+  ]) },
+  { id: 'p222', type: 'p', ho: 'GenAI-2.2.2 · HO-2.2.2b', tag: K3TAG, title: 'Практика: few-shot промпт для Gherkin',
+    task: '<p><b>Нова story:</b> <i>«As a passenger, I want to cancel my booking up to 24 hours before departure so that I get a full refund.» AC: Cancellation ≥ 24h before departure → full refund; &lt; 24h → no refund; cancelled booking frees the seats.</i></p><p><b>Завдання:</b> напишіть структурований <b>few-shot</b> промпт для генерації Gherkin-сценаріїв. Включіть 2 короткі приклади (story → test conditions → сценарій) і всі 6 компонентів.</p>',
+    model: 'Role: Test analyst experienced in BDD and Gherkin.\nContext: Passenger booking module of a trip management platform.\nInstruction: Generate Gherkin scenarios for the new user story, following the examples.\nInput data:\n  Example 1 — Story: "As a passenger, I want to book a seat…"\n    Conditions: seat available; no seats left\n    Scenario: Booking a seat when seats are available\n      Given a trip with 3 free seats\n      When the passenger books 1 seat\n      Then the booking is confirmed and 2 seats remain\n  Example 2 — Story: "As a passenger, I want to change my seat count…"\n    Conditions: increase within limit; exceed limit\n    Scenario: …\n  New story: <cancellation story + 3 AC>\nConstraints: Use strict Given-When-Then; one scenario per test condition; cover every AC, incl. the 24h boundary (exactly 24h, 23h59m); no UI details.\nOutput format: .feature text, Feature + Scenario titles like in the examples; then a table AC → scenarios.',
+    checklist: ['Є ≥ 2 приклади (few-shot), кожен: story → conditions → сценарій', 'Явна вимога Given-When-Then', 'Явна вимога покрити кожен AC', 'Згадано межу 24 години (boundary)', 'Задано output format (як у прикладах + таблиця покриття)', 'Усі 6 компонентів присутні'],
+    note: 'Логіка відповідає Sample Q13: приклади + GWT + alignment with AC = найкращий промпт.' },
+  { id: 'sum-222', type: 's', title: 'Шпаргалка 2.2.2 · Test design & implementation (K3)',
+    points: ['Testware: <b>test cases, test data, test scripts, test environments</b>; manual і automated; розклад виконання.',
+      '<b>Test case generation</b>: preconditions, inputs, expected results, coverage criteria; від функціональних до E2E (draft).',
+      '<b>Test data synthesis</b>: synthetic, privacy-preserving, схожі на prod, extreme situations.',
+      '<b>Script generation</b> зі структурованих кейсів; <b>scheduling</b> за priority, risk, resources, dependencies, objectives.',
+      'Патерни: chaining + coverage table + meta (E2E); <b>few-shot для Gherkin</b>; chaining + ручна перевірка для пріоритизації.'],
+    vis: V.flow([{ t: 'Conditions', tip: '' }, { t: 'Test cases', tip: '' }, { t: 'Data · Scripts · Schedule', tip: '' }]) }
+];
+
+// ---------- 2.2.3 ----------
+C2.slides['2.2.3'] = [
+  { id: 'regr', type: 'c', ref: '2.2.3', title: 'Чому регрес — ідеальне місце для GenAI',
+    syl: 'As each new iteration or release is completed, the number of regression test cases… often increases, making them ideal candidates for automation, particularly in <b>CI/CD pipelines</b>… GenAI can streamline this process by assisting in the <b>creation, maintenance, and optimization</b> of automated regression test suites. By dynamically adapting to codebase changes and performing <b>impact analysis</b>, GenAI can identify which areas of the software are most likely to be affected by recent modifications…',
+    ua: 'Регрес росте з кожним релізом і часто запускається в CI/CD. GenAI допомагає створювати, підтримувати й оптимізувати автотести, а також визначати, що зачепили останні зміни.',
+    ex: 'PR змінює модуль тарифів → LLM аналізує диф і підказує: зачеплено розрахунок вартості та звіти бухгалтерії; запускати спершу ці 40 тестів, а не весь регрес на 2 години.',
+    vis: V.flow([
+      { t: 'Code change', tip: 'Нова ітерація / реліз.' },
+      { t: 'Impact analysis', s: 'GenAI', tip: 'Які області найімовірніше зачеплені.' },
+      { t: 'Targeted regression', s: 'CI/CD', tip: 'Зусилля — туди, де найбільше потрібно.' }
+    ]),
+    memo: '<b>Створити · Підтримувати · Оптимізувати</b> — три дієслова GenAI для регресу.',
+    trap: 'Impact analysis — про <b>визначення зачеплених областей за змінами коду</b>, а не про «виконати всі тести швидше».' },
+  { id: 'act223', type: 'c', ref: '2.2.3', title: 'П’ять активностей регресу з GenAI',
+    syl: '• <b>Keyword-driven automation</b>: map pre-defined keywords to specific test cases, generate test scripts… • <b>Impact analysis and test optimization</b>: analyze code changes to identify high-risk areas… • <b>Self-healing and adaptive tests</b>: automatically adjust test scripts to handle minor UI or API changes… • <b>Automated test reporting and insights</b>: detailed, timely test reports… dashboards… predictive insights… • <b>Enhanced defect reporting and root cause analysis</b>: compilation of comprehensive defect reports with test logs, screenshots, and test environment data… However, the testers must be aware that <b>GenAI can make mistakes</b>. The generated output must therefore be <b>carefully checked, depending on the associated risk</b>.',
+    ua: 'П’ять напрямів: keyword-driven скрипти, impact analysis, self-healing, автозвіти, кращі баг-репорти з RCA. Але все, що згенеровано, перевіряють — тим ретельніше, чим вищий ризик.',
+    ex: 'Кнопку «Зберегти» перейменували на «Підтвердити» → self-healing-тест сам оновив локатор, а не впав 120 разів. Нічний прогін → LLM зібрав баг-репорт: лог, скриншот, версія середовища, гіпотеза причини.',
+    vis: V.cards([
+      { ic: '🔑', t: 'Keyword-driven', tip: 'Ключові слова = типові кроки; LLM мапить їх на кейси і генерує скрипти.' },
+      { ic: '🎯', t: 'Impact analysis', tip: 'Аналіз змін коду → high-risk areas → цільовий регрес.' },
+      { ic: '🩹', t: 'Self-healing', tip: 'Автоматичне підлаштування скриптів до дрібних змін UI або API.' },
+      { ic: '📊', t: 'Reporting & insights', tip: 'Детальні звіти, дашборди, тренди, predictive insights.' },
+      { ic: '🔍', t: 'Defect reports & RCA', tip: 'Повні баг-репорти з логами, скриншотами, даними середовища.' }
+    ]),
+    memo: '<b>«Ключ — Вплив — Лікування — Звіт — Причина»</b> (К-В-Л-З-П).',
+    trap: 'Self-healing — для <b>minor</b> змін UI/API. І обов’язкова фраза силабусу: GenAI can make mistakes → перевірка <b>depending on the associated risk</b> (глава 3).' },
+  { id: 'guiapi', type: 'c', ref: '2.2.3', title: 'GUI vs API регресія',
+    syl: 'GUI tests frequently become unstable due to recurrent changes to the user interface. GenAI can automatically adapt test scripts to handle changes like <b>dynamic locators and modified interactions</b>… API regression tests face challenges such as <b>changing request/response formats, endpoints, and authentication</b>. GenAI can adapt test scripts automatically to evolving API specifications and <b>generate diverse test data</b>…',
+    ua: 'У GUI ламаються локатори та взаємодії; в API — формати, ендпоінти, авторизація. GenAI адаптує скрипти в обох випадках, а для API ще й генерує різноманітні дані.',
+    ex: 'GUI: data-testid змінився після редизайну → скрипт оновлено. API: v2 перейменувала поле <code>tripDate</code> → <code>departureAt</code> і додала OAuth → LLM оновив запити й схеми валідації.',
+    vis: V.compare(['', 'GUI regression', 'API regression'], [
+      { c: ['Типова проблема', 'часті зміни UI → нестабільні тести', 'зміни форматів, ендпоінтів, auth'], tip: 'Challenges.' },
+      { c: ['Що робить GenAI', 'адаптує dynamic locators та interactions', 'адаптує скрипти до нових специфікацій'], tip: 'Solutions.' },
+      { c: ['Додатково', '—', 'генерує diverse test data'], tip: 'Підтримка покриття.' }
+    ]),
+    memo: '<b>GUI — «де кнопка?»</b>, <b>API — «який контракт?»</b>.',
+    trap: 'Не плутайте: <b>dynamic locators</b> — проблема GUI; <b>authentication / endpoints</b> — API.' },
+  { id: 'chk-223a', type: 'q', q: Q2('c223-1', '2.2.3', 'act223', 'After a provider renamed two response fields, many API regression scripts fail although the business logic is unchanged. Which GenAI activity BEST addresses this?', [
+    ['Impact analysis and test optimization', 0, 'Визначає зачеплені області, але не виправляє скрипти.'],
+    ['Self-healing and adaptive tests', 1, 'Автоматичне підлаштування скриптів до дрібних змін UI/API.'],
+    ['Enhanced defect reporting and RCA', 0, 'Дефекту продукту немає.'],
+    ['Keyword-driven test script generation', 0, 'Не вирішує нестабільність після зміни API.']
+  ]) },
+  { id: 'ho223', type: 'c', ref: '2.2.3', title: 'Keyword-driven few-shot і аналіз звіту регресу',
+    syl: '<b>HO-2.2.3a</b>: few-shot prompting to create and manage keyword-driven test scripts — documentation for a <b>keyword library</b>, generating initial test scripts, having AI validate them, expanding coverage; debugging support using <b>system prompts to create an AI assistant</b> that can check and correct test scripts. <b>HO-2.2.3b</b>: structured prompts for regression test report analysis — analysis of results and <b>comparison with the test specification</b> → <b>clustering of similar defects</b> → maintenance of a <b>known anomalies list</b> → <b>cross-checking</b> of findings; each step linked to the next in a single LLM conversation.',
+    ua: 'Два рецепти. (1) Keyword-driven: бібліотека ключових слів як приклади → скрипти → AI-валідація → розширення; плюс system prompt для асистента-«дебагера». (2) Аналіз звіту: порівняти з специфікацією → кластеризувати → known anomalies → перехресна перевірка.',
+    ex: 'Sample Q14 (2 бали): найкраще покращення промпту для аналізу результатів — розширити <b>instruction</b> кроками: розділити expected і actual, кластеризувати проблеми, підсвітити розбіжності. Покращення лише role чи «Given-When-Then» у constraints — не по суті.',
+    vis: V.flow([
+      { t: 'Results vs specification', s: 'expected ↔ actual', tip: 'Порівняння з test specification.' },
+      { t: 'Cluster similar defects', tip: 'Менше дублювання, краща пріоритизація.' },
+      { t: 'Known anomalies list', tip: 'Підтримка списку відомих аномалій.' },
+      { t: 'Cross-check findings', tip: 'Перехресна перевірка висновків.' }
+    ]),
+    memo: '<b>«Порівняй — Згрупуй — Звір із відомим — Перевір»</b>.',
+    trap: 'Gherkin «Given-When-Then» — для тест-кейсів, а не для аналізу звітів (дистрактор Sample Q14 d). Покращення лише role рідко найкраще: силабус наголошує на чітких інструкціях і кроках.' },
+  { id: 'chk-223b', type: 'q', q: Q2('c223-2', '2.2.3', 'ho223', 'A team wants an AI assistant that checks and corrects keyword-driven test scripts consistently across many chat sessions. Which approach from the syllabus fits BEST?', [
+    ['Define a system prompt describing the assistant’s role and rules', 1, 'HO-2.2.3a: debugging support using system prompts to create an AI assistant.'],
+    ['Use zero-shot prompts without any keyword documentation', 0, 'Без документації бібліотеки ключових слів якість падає; HO використовує few-shot.'],
+    ['Ask the LLM to rewrite the scripts in Gherkin syntax', 0, 'Gherkin не вирішує задачу перевірки keyword-driven скриптів.'],
+    ['Rely on the user prompt alone to set behavior each time', 0, 'Сталі правила для всієї сесії задає system prompt.']
+  ]) },
+  { id: 'p223', type: 'p', ho: 'GenAI-2.2.3 · HO-2.2.3b', tag: K3TAG, title: 'Практика: покращіть промпт аналізу регресу',
+    task: '<p><b>Чернетка промпту:</b></p><div class="model">Role: Act as a tester.\nContext: Nightly regression run.\nInstruction: Look at the results.\nInput data: attached JUnit XML.\nConstraints: Be brief.\nOutput format: Text.</div><p><b>Завдання:</b> перепишіть промпт за 6 компонентами так, щоб результат був придатний для команди: розбіжності з специфікацією, кластери схожих падінь, звірка з known anomalies, висновки для пріоритизації.</p>',
+    model: 'Role: Test analyst responsible for regression test report analysis.\nContext: Nightly regression of the trip management platform (UI + API suites), release 4.12; known anomalies list attached.\nInstruction:\n  1) Compare actual results with the test specification; separate expected vs actual for each failure.\n  2) Cluster similar failures (same error / component / root symptom).\n  3) Cross-check each cluster against the known anomalies list; mark NEW vs KNOWN.\n  4) Highlight discrepancies that need attention first.\nInput data: <JUnit XML>, <test specification>, <known anomalies list>.\nConstraints: Do not guess root causes without evidence from logs; mark uncertainty explicitly; ignore skipped tests.\nOutput format: Table | Cluster | Tests | Expected vs actual | Known/New | Suggested priority | + 3-sentence summary for the team lead.',
+    checklist: ['Role конкретна (аналіз звітів регресу)', 'Context: який прогін/реліз, що додано', 'Instruction розкладена на кроки: expected vs actual → кластери → known anomalies → розбіжності', 'Input data включає специфікацію і known anomalies list', 'Constraints обмежують вигадування причин', 'Output format: таблиця + коротке резюме'],
+    note: 'Логіка відповідає HO-2.2.3b і Sample Q14 (розширити instruction структурованими кроками).' },
+  { id: 'sum-223', type: 's', title: 'Шпаргалка 2.2.3 · Automated regression (K3)',
+    points: ['Регрес росте → автоматизація в CI/CD; GenAI: <b>creation, maintenance, optimization</b> + <b>impact analysis</b>.',
+      'Активності: <b>keyword-driven · impact analysis · self-healing · reporting & insights · defect reports & RCA</b>.',
+      'GUI: dynamic locators, interactions. API: formats, endpoints, authentication + diverse test data.',
+      'Few-shot для keyword-driven; system prompt для асистента-дебагера; аналіз звіту: vs specification → cluster → known anomalies → cross-check.',
+      'GenAI can make mistakes → перевірка <b>залежно від ризику</b>.'],
+    vis: V.cards([{ ic: '🔑', t: 'Keyword', tip: '' }, { ic: '🎯', t: 'Impact', tip: '' }, { ic: '🩹', t: 'Self-heal', tip: '' }, { ic: '📊', t: 'Report', tip: '' }, { ic: '🔍', t: 'RCA', tip: '' }]) }
+];
+
+// ---------- 2.2.4 ----------
+C2.slides['2.2.4'] = [
+  { id: 'mon', type: 'c', ref: '2.2.4', title: 'Test monitoring і test control з GenAI',
+    syl: 'Test monitoring tasks require the retrieval of <b>large quantities of (sometimes unstructured) data</b>, which are often already available in test management tools… • <b>Test monitoring and metrics analysis</b>: automation of test monitoring, analysis of trends to <b>predict potential risks</b> and alert teams of any <b>deviations from the plan</b>. • <b>Test control</b>: insights for <b>reprioritizing tests, adjusting test schedules, and reallocating resources</b>. • <b>Test completion insights and continuous learning</b>: test completion reports, successes and <b>lessons learned</b>. • <b>Enhanced test metrics visualization and reporting</b>: <b>dynamic dashboards and natural language summaries</b>…',
+    ua: 'Даних для моніторингу багато і вони розкидані по тест-менеджмент тулах. GenAI зводить їх у метрики, ловить відхилення від плану, підказує, як скоригувати план, і пише зрозумілі підсумки для стейкхолдерів.',
+    ex: 'Середина спринту: LLM бачить, що 30% кейсів платіжного модуля ще не виконано, а дефекти там ростуть → алерт «ризик зриву», пропозиція перенести двох тестувальників і відкласти косметичні UI-тести.',
+    vis: V.cards([
+      { ic: '📈', t: 'Monitoring & metrics', s: 'тренди, ризики, відхилення', tip: 'Автоматизація моніторингу, прогноз ризиків, алерти про відхилення від плану.' },
+      { ic: '🎛️', t: 'Test control', s: 'перепріоритизація, розклад, ресурси', tip: 'Insights для коригування.' },
+      { ic: '🏁', t: 'Completion & learning', s: 'completion reports, lessons learned', tip: 'Покращення майбутніх процесів.' },
+      { ic: '🖥️', t: 'Visualization & reporting', s: 'dashboards + NL summaries', tip: 'Метрики, зрозумілі всім стейкхолдерам.' }
+    ]),
+    memo: '<b>Бачу (monitoring) → Кермую (control) → Підсумовую (completion) → Показую (visualization)</b>.',
+    trap: 'Test <b>control</b> = дії: reprioritize, adjust schedules, reallocate resources. Test <b>monitoring</b> = спостереження: метрики, тренди, відхилення.' },
+  { id: 'ho224', type: 'c', ref: '2.2.4', title: 'Від сирих даних до рішень (HO-2.2.4)',
+    syl: 'Starting from test data extracted from test tools, an LLM processes it to generate key metrics like <b>test progress, defect trends, or coverage</b>, highlighting potential risks. These AI-generated metrics may then be displayed on a dashboard and <b>summarized in natural language</b> for easy understanding by all stakeholders.',
+    ua: 'Ланцюжок: дані з тулів → LLM рахує прогрес, тренди дефектів, покриття й підсвічує ризики → дашборд + пояснення звичайною мовою для всіх стейкхолдерів.',
+    ex: 'Sample Q15 (2 бали): найкраще покращення промпту для метрик — розширити <b>output format</b> plain-language summary, що інтерпретує метрики й пропонує next steps. Це прямо робить метрики actionable і зрозумілими.',
+    vis: V.flow([
+      { t: 'Test data', s: 'з test tools', tip: 'Часто неструктуровані.' },
+      { t: 'LLM', s: 'progress · defect trends · coverage', tip: 'Ключові метрики + потенційні ризики.' },
+      { t: 'Dashboard', tip: 'Візуалізація.' },
+      { t: 'NL summary', s: 'для стейкхолдерів', tip: 'Пояснення + наступні кроки.' }
+    ]),
+    memo: '<b>Цифри без пояснення — не рішення.</b> Додайте до формату «що це означає і що робити».',
+    trap: 'Sample Q15: варіант «повторити constraint про зрозумілість іншими словами» не додає нічого нового; «додати аналіз ризиків з impact і priority» відволікає від мети. Найкраще — <b>summary + next steps</b> в output format.' },
+  { id: 'chk-224a', type: 'q', q: Q2('c224-1', '2.2.4', 'mon', 'Mid-release, an LLM detects that defect inflow in the payment module exceeds the plan and proposes moving two testers there and postponing low-risk tests. Which task does the proposal belong to?', [
+    ['Test monitoring and metrics analysis', 0, 'Виявлення відхилення — моніторинг, але пропозиція дій — це вже control.'],
+    ['Test control', 1, 'Reprioritizing tests, adjusting schedules, reallocating resources.'],
+    ['Test completion insights', 0, 'Completion — підсумки після завершення.'],
+    ['Test metrics visualization', 0, 'Візуалізація не пропонує перерозподіл ресурсів.']
+  ]) },
+  { id: 'p224', type: 'p', ho: 'GenAI-2.2.4', tag: K3TAG, title: 'Практика: промпт для метрик моніторингу',
+    task: '<p>У вас експорт з TMS (CSV): статуси кейсів по днях, дефекти з severity і компонентом, покриття вимог. Стейкхолдери: PO і менеджер релізу (нетехнічні).</p><p><b>Завдання:</b> напишіть структурований промпт, щоб LLM підготувала <b>actionable</b> метрики моніторингу: прогрес, тренди дефектів, покриття, відхилення від плану — і щоб результат був зрозумілий нетехнічним людям.</p>',
+    model: 'Role: Test manager preparing a status update for release stakeholders.\nContext: Release 4.12, planned test end: Friday; plan = 95% executed, 0 open critical defects.\nInstruction: From the data, calculate test progress (executed/passed/failed vs plan), defect trends per component and severity (last 7 days), and requirements coverage. Identify deviations from the plan and the top risks.\nInput data: <tms_export.csv>, <test plan targets>.\nConstraints: Use only the provided data; state assumptions; no technical jargon in the summary.\nOutput format:\n  1) Metrics table (metric | value | target | status 🟢🟡🔴)\n  2) Data for a dashboard (one chart per metric)\n  3) Plain-language summary (≤ 5 sentences) that interprets the metrics and lists next steps for the stakeholders.',
+    checklist: ['Названо конкретні метрики: прогрес, тренди дефектів, покриття', 'Є план/цілі для порівняння (відхилення)', 'Constraints: лише надані дані, без жаргону', 'Output format містить plain-language summary з next steps (Sample Q15)', 'Є табличний/дашбордний формат'],
+    note: 'Логіка відповідає HO-2.2.4 і Sample Q15.' },
+  { id: 'sum-224', type: 's', title: 'Шпаргалка 2.2.4 · Monitoring & control (K3)',
+    points: ['Дані: великі, часто неструктуровані, з test management tools.',
+      '<b>Monitoring & metrics</b>: тренди, прогноз ризиків, алерти про відхилення від плану.',
+      '<b>Control</b>: reprioritize tests, adjust schedules, reallocate resources.',
+      '<b>Completion</b>: completion reports, successes, lessons learned. <b>Visualization</b>: dashboards + NL summaries.',
+      'Найкращий формат для стейкхолдерів: метрики + <b>plain-language summary з next steps</b>.'],
+    vis: V.flow([{ t: 'Data', tip: '' }, { t: 'Metrics', tip: '' }, { t: 'Dashboard', tip: '' }, { t: 'Summary + next steps', tip: '' }]) }
+];
+
+// ---------- 2.2.5 ----------
+C2.slides['2.2.5'] = [
+  { id: 'table225', type: 'c', ref: '2.2.5', title: 'Таблиця вибору техніки (з силабусу)',
+    syl: '<b>Prompt chaining</b> — complex tasks requiring <b>precision with human verification at each step</b>; useful for test analysis, test design and test automation. <b>Few-shot prompting</b> — <b>repetitive or specific/constrained output format</b> tasks; e.g. Gherkin style test cases, keyword-driven testing or test reporting with a specific output format. <b>Meta prompting</b> — <b>flexible, dynamic tasks, useful for crafting prompts for new tasks</b>; general description of the objective guides the LLM in creating the prompt; useful for complex tasks such as test report analysis and anomaly detection.',
+    ua: 'Вибір за характером задачі: потрібна точність і перевірка кожного кроку → chaining; повторюваний шаблон або суворий формат → few-shot; нова, гнучка задача, промпт ще треба придумати → meta.',
+    ex: 'Аналіз складної story з перевіркою — chaining. 200 однотипних keyword-driven скриптів — few-shot. «Хочу вперше аналізувати логи на аномалії, не знаю як сформулювати» — meta.',
+    vis: V.compare(['Техніка', 'Коли', 'Приклади'], [
+      { c: ['⛓️ Prompt chaining', 'складно + точність + human verification на кожному кроці', 'test analysis, test design, test automation'], tip: 'Breaks tasks into smaller steps.' },
+      { c: ['🧩 Few-shot', 'повторювано або суворий формат виводу', 'Gherkin, keyword-driven, звіти за шаблоном'], tip: 'Examples for repetitive generation with a specific pattern.' },
+      { c: ['🪞 Meta prompting', 'гнучкі/динамічні задачі; новий промпт', 'test report analysis, anomaly detection'], tip: 'General description of the objective → LLM creates the prompt.' }
+    ]),
+    memo: '<b>Точність → Ланцюг. Шаблон → Приклади. Новизна → Мета.</b>',
+    trap: 'Зверніть увагу: test report analysis згадано і як приклад few-shot («test reporting with a specific output format»), і як приклад meta. Вирішує <b>характер задачі</b>: суворий формат → few-shot; нова, гнучка → meta.' },
+  { id: 'decide', type: 'c', ref: '2.2.5', title: 'Як обирати у сценарних питаннях',
+    syl: 'It is even possible to use <b>multiple techniques for a single use case</b>… meta prompting can be used to create an initial prompt… examples… (few-shot prompting)… divide the task into smaller subtasks to enable validation of the intermediate steps (prompt chaining). <b>HO-2.2.5</b>: evaluate the nature of the task — <b>whether it requires precision or repetitive structure</b> — and suggest the prompting technique(s) that best fits.',
+    ua: 'У сценарії шукайте сигнали: «кроки з перевіркою», «складно, критично» → chaining; «є приклади», «однаковий формат», «багато однотипного» → few-shot; «не знаю, як написати промпт», «нова задача» → meta. Якщо задача проста й прямолінійна — не ускладнюйте.',
+    ex: 'Sample Q16 (2 бали): є кілька існуючих кейсів з відомими результатами і чіткі правила трансформації; LLM може напряму згенерувати нові кейси → <b>few-shot</b> (існуючі кейси = приклади). Chaining і meta тут «ускладнюють просту задачу», zero-shot не використовує приклади.',
+    vis: V.flow([
+      { t: 'Є приклади / шаблон?', s: '→ Few-shot', tip: 'Repetitive / constrained output.' },
+      { t: 'Складно + перевірка кроків?', s: '→ Chaining', tip: 'Precision with human verification.' },
+      { t: 'Нова задача, промпту немає?', s: '→ Meta', tip: 'Crafting prompts for new tasks.' }
+    ]),
+    memo: 'Читайте сценарій як баг-репорт: шукайте <b>ключові слова-симптоми</b> — «examples», «step-by-step verify», «unsure how to prompt».',
+    trap: 'Найскладніша техніка ≠ найкраща. Якщо задача <b>straightforward</b> і є приклади — few-shot кращий за chaining/meta (rationale Sample Q16).' },
+  { id: 'chk-225a', type: 'q', q: Q2('c225-1', '2.2.5', 'table225', 'A team must produce hundreds of keyword-driven test scripts that follow exactly the same structure as their existing scripts. Which prompting technique is MOST suitable?', [
+    ['Prompt chaining', 0, 'Chaining — для складних задач з перевіркою кроків, а тут повторюваний шаблон.'],
+    ['Few-shot prompting', 1, 'Повторювана генерація з конкретним патерном; keyword-driven — приклад із таблиці 2.2.5.'],
+    ['Meta prompting', 0, 'Meta — для нових, гнучких задач, коли промпт ще треба створити.'],
+    ['Zero-shot prompting', 0, 'Без прикладів модель не відтворить точну структуру існуючих скриптів.']
+  ]) },
+  { id: 'zero', type: 'c', ref: '2.1.2 / 2.2.5 · Sample A2', title: 'А де zero-shot?',
+    syl: 'Zero-shot prompting (no example) <b>relies on the model\'s pre-existing knowledge</b> to generate a response. (2.1.2) — Sample Exam A2 (official, matching question) pairs zero-shot with: "<b>Prioritizing test cases based on risk by leveraging the LLM\'s inherent reasoning without examples</b>".',
+    ua: 'Zero-shot — коли прикладів немає або вони не потрібні: модель спирається на свої знання. У таблиці 2.2.5 його немає, але на іспиті він може з’явитися як дистрактор або як відповідь для задачі «без прикладів».',
+    ex: 'Офіційне додаткове питання A2: chaining ↔ «розбити test analysis на кроки з human verification»; few-shot ↔ «Gherkin з прикладами»; meta ↔ «ітеративно уточнювати промпти»; zero-shot ↔ «пріоритизація за ризиком на власних міркуваннях моделі без прикладів».',
+    vis: V.compare(['Техніка', 'Приклад з Sample A2'], [
+      { c: ['Prompt chaining', 'test analysis кроками з iterative interactions і human verification'] },
+      { c: ['Few-shot', 'Gherkin-кейси з predefined examples'] },
+      { c: ['Meta prompting', 'ітеративно уточнювати промпти (напр. для test oracles з неоднозначних вимог)'] },
+      { c: ['Zero-shot', 'пріоритизація за ризиком без прикладів'] }
+    ]),
+    memo: '<b>Zero-shot = «без прикладів, на власних знаннях»</b>.',
+    trap: 'Якщо в сценарії є готові приклади, а варіант пропонує zero-shot — він майже напевно неправильний: приклади не використовуються.' },
+  { id: 'chk-225b', type: 'q', q: Q2('c225-2', '2.2.5', 'decide', 'A tester must analyze a complex, safety-relevant requirement set and wants to verify each intermediate LLM result before continuing. Which technique is MOST appropriate?', [
+    ['Few-shot prompting', 0, 'Приклади допомагають з форматом, але не забезпечують перевірку кроків.'],
+    ['Prompt chaining', 1, 'Complex task + precision + human verification at each step.'],
+    ['Meta prompting', 0, 'Meta — для створення промпту під нову задачу; тут головне — перевірка кроків.'],
+    ['Zero-shot prompting', 0, 'Один промпт без прикладів не дає перевірки проміжних результатів.']
+  ]) },
+  { id: 'p225', type: 'p', ho: 'GenAI-2.2.5 · HO-2.2.5', tag: K3TAG, title: 'Практика: оберіть техніку для кожної задачі',
+    task: '<p>Для кожної задачі оберіть техніку(и) і поясніть одним реченням:</p><ol><li>Перетворити 150 ручних кейсів у формат TestRail-імпорту (CSV з фіксованими колонками); є 3 готові приклади.</li><li>Вперше налаштувати аналіз логів на аномалії; незрозуміло, як сформулювати промпт.</li><li>Проаналізувати регуляторні вимоги до зберігання даних пасажирів: знайти дефекти, згенерувати умови, перевірити покриття — з перевіркою юристом після кожного кроку.</li><li>Згенерувати E2E-процедуру для нової фічі: спершу потрібен якісний промпт, потім 2 еталонні приклади, потім перевірка покриття AC.</li></ol>',
+    model: '1) Few-shot — повторювана задача з суворим форматом; 3 приклади задають патерн.\n2) Meta prompting — нова, гнучка задача; LLM допомагає створити промпт (pairing), тестувальник оцінює.\n3) Prompt chaining — складна, критична задача; кроки (дефекти → умови → покриття) з human verification після кожного.\n4) Комбінація: meta (початковий промпт) → few-shot (2 еталонні приклади) → chaining (окремий крок перевірки покриття AC) — як у прикладі з 2.2.5.',
+    checklist: ['1 → few-shot (є приклади + суворий формат)', '2 → meta (нова задача, промпт невідомий)', '3 → chaining (складно + перевірка кожного кроку)', '4 → комбінація meta → few-shot → chaining', 'Кожен вибір обґрунтовано характером задачі (precision vs repetitive structure)'],
+    note: 'HO-2.2.5 (H1). Саме так виглядають K3-питання 2.2.5 на іспиті.' },
+  { id: 'sum-225', type: 's', title: 'Шпаргалка 2.2.5 · Вибір техніки (K3)',
+    points: ['<b>Chaining</b>: complex tasks + precision + human verification на кожному кроці (analysis, design, automation).',
+      '<b>Few-shot</b>: repetitive або specific/constrained output format (Gherkin, keyword-driven, звіти за шаблоном).',
+      '<b>Meta</b>: flexible, dynamic tasks; crafting prompts for new tasks (report analysis, anomaly detection).',
+      'Можна комбінувати: meta → few-shot → chaining.',
+      'Проста задача + є приклади → few-shot; без прикладів, на знаннях моделі → zero-shot.'],
+    vis: V.compare(['Сигнал', 'Техніка'], [{ c: ['кроки + перевірка', 'Chaining'] }, { c: ['приклади / шаблон', 'Few-shot'] }, { c: ['новий промпт', 'Meta'] }]) }
+];
+
+// ---------- 2.3.1 ----------
+const METRICS = [
+  { c: ['<b>Accuracy</b>', 'загальна правильність vs expert-written test cases, requirements або стандарти', 'наскільки кейси покривають усі задані вимоги'], tip: 'Accuracy — overall correctness against expert-written test cases, requirements, or other standards.' },
+  { c: ['<b>Precision</b>', 'правильність щодо конкретної цілі', 'наскільки кейси правильно ідентифікують аномалії'], tip: 'Precision — correctness with respect to a specific objective.' },
+  { c: ['<b>Recall</b>', 'здатність знайти ВСІ релевантні випадки в наборі даних', 'чи покривають кейси валідні й невалідні partitions класу даних'], tip: 'Recall — identify all relevant instances within a dataset.' },
+  { c: ['<b>Relevance & contextual fit</b>', 'чи застосовний вивід у цьому контексті', 'узгодженість з test basis і доменними вимогами'], tip: 'Applicable and appropriate for a given context.' },
+  { c: ['<b>Diversity</b>', 'широкий спектр входів і сценаріїв, без повторів', 'різні поведінки користувачів, edge cases'], tip: 'Wide range of inputs and scenarios, avoiding repetition.' },
+  { c: ['<b>Execution success rate</b>', 'частка артефактів, що виконуються «як є»', 'скільки скриптів запускаються без синтаксичних помилок і проблем формату'], tip: 'Proportion of generated test artefacts executed successfully as is in the test environment.' },
+  { c: ['<b>Time efficiency</b>', 'зекономлений час vs ручна робота', 'час AI на генерацію vs час людини'], tip: 'Time saved compared to manual test efforts.' }
+];
+C2.slides['2.3.1'] = [
+  { id: 'why231', type: 'c', ref: '2.3 / 2.3.1', title: 'Навіщо метрики для результатів GenAI',
+    syl: 'Evaluating the performance of GenAI in software testing requires a <b>clear set of metrics</b> to assess the <b>quality, relevance, and effectiveness</b> of the generated outputs… These metrics, whether <b>general or task-specific</b>, help optimize LLM prompting… testers may perform <b>manual reviews or automate them</b> e.g. by comparing the LLM output against a <b>predefined reference</b>. Given the <b>non-deterministic nature</b> of GenAI, the metrics must be based on <b>statistically relevant data</b>.',
+    ua: '«Мені здається, стало краще» — не метрика. Потрібні вимірювані показники: загальні (7 штук) і специфічні для задачі. Міряють вручну або автоматично (порівняння з еталоном). І через non-determinism — на достатній вибірці запусків.',
+    ex: 'Ви порівнюєте два промпти для генерації API-тестів: кожен запускаєте 10 разів, рахуєте, скільки скриптів запустилося без помилок і скільки вимог покрито, — а не робите висновок з одного вдалого запуску.',
+    vis: V.flow([
+      { t: 'GenAI output', tip: 'Тест-кейси, скрипти, дані, звіти.' },
+      { t: 'Metrics', s: 'general + task-specific', tip: 'Quality, relevance, effectiveness.' },
+      { t: 'Manual review / auto vs reference', tip: 'Два способи оцінки.' },
+      { t: 'Statistically relevant data', tip: 'Через non-deterministic nature — кілька запусків, достатня вибірка.' }
+    ]),
+    memo: '<b>Один запуск — анекдот, десять запусків — статистика.</b>',
+    trap: 'Фраза для іспиту: через non-determinism метрики мають базуватися на <b>statistically relevant data</b>. І оцінювати можна <b>і вручну, і автоматично</b>.' },
+  { id: 'seven', type: 'c', ref: '2.3.1', title: 'Сім загальних метрик',
+    syl: 'Several metrics can be used to evaluate the quality and efficiency of GenAI results on a test task: <b>Accuracy · Precision · Recall · Relevance and Contextual Fit · Diversity · Execution Success Rate · Time Efficiency</b>… In addition to these general metrics, <b>task-specific metrics</b> can be tailored…',
+    ua: 'Сім метрик — по рядку на кожну (натискайте). Кожна відповідає на своє питання: правильно? влучно? все знайдено? доречно? різноманітно? запускається? швидше?',
+    ex: 'Для згенерованих Playwright-тестів: execution success rate (скільки запускається одразу), accuracy (чи покриті AC), diversity (чи є негативні й граничні сценарії), time efficiency (2 хв проти 2 год вручну).',
+    vis: V.compare(['Метрика', 'Що вимірює', 'Приклад з силабусу'], METRICS),
+    memo: '<b>«Правильно — Влучно — Повно — Доречно — Різноманітно — Запускається — Швидко»</b>.',
+    trap: 'Пари, які плутають: <b>accuracy</b> (vs еталон/вимоги загалом) ↔ <b>precision</b> (щодо конкретної цілі); <b>recall</b> (знайти всі релевантні) ↔ <b>diversity</b> (різні сценарії, без повторів).' },
+  { id: 'chk-231a', type: 'q', q: Q2('c231-1', '2.3.1', 'seven', 'A team records 6 hours to write 40 test cases manually versus 1 hour with an LLM. Which metric does this measurement represent?', [
+    ['Accuracy', 0, 'Правильність vs еталон — не час.'],
+    ['Execution success rate', 0, 'Частка артефактів, що запускаються.'],
+    ['Diversity', 0, 'Різноманітність сценаріїв.'],
+    ['Time efficiency', 1, 'Час AI vs час людини (2.3.1).']
+  ]) },
+  { id: 'pairs', type: 'c', ref: '2.3.1', title: 'Метрики під задачу: як обирати',
+    syl: 'Accuracy example: the degree to which the generated test cases <b>cover all specified requirements</b>. Precision example: …<b>correctly identify anomalies</b>. Recall example: …cover <b>valid and invalid equivalence partitions</b> of a data class. Diversity example: …cover <b>various user behaviors</b> and… explore <b>edge cases</b>. Relevance example: …consistent with the <b>test basis</b> and integrate the <b>domain-specific requirements</b>.',
+    ua: 'Під кожну ціль — своя метрика. Хочете, щоб нічого не пропустили з класів еквівалентності — recall. Щоб було багато різних сценаріїв і edge cases — diversity. Щоб скрипти одразу запускались — execution success rate.',
+    ex: 'Sample Q17: LLM генерує сценарії взаємодії, API-скрипти і синтетичні дані для edge cases → найкраща комбінація: <b>diversity</b> (різні сценарії й edge cases) + <b>execution success rate</b> (чи працюють API-скрипти).',
+    vis: V.compare(['Ціль оцінки', 'Метрика'], [
+      { c: ['Чи покрито всі вимоги?', 'Accuracy'] },
+      { c: ['Чи правильно знайдено аномалії?', 'Precision'] },
+      { c: ['Чи охоплено всі валідні/невалідні класи?', 'Recall'] },
+      { c: ['Чи відповідає домену й test basis?', 'Relevance & contextual fit'] },
+      { c: ['Чи різні поведінки та edge cases?', 'Diversity'] },
+      { c: ['Чи запускаються скрипти?', 'Execution success rate'] },
+      { c: ['Чи швидше за людину?', 'Time efficiency'] }
+    ]),
+    memo: 'Скрипти → <b>execution</b>. Edge cases → <b>diversity</b>. Класи еквівалентності → <b>recall</b>.',
+    trap: 'Sample Q17: варіанти з time efficiency або лише relevance «пропускають» ключові аспекти. Обирайте метрики, що <b>прямо відповідають типам артефактів</b> у сценарії.' },
+  { id: 'chk-231b', type: 'q', q: Q2('c231-2', '2.3.1', 'pairs', 'A tester checks whether LLM-generated test cases cover both valid and invalid equivalence partitions of an input field. Which metric does this correspond to in the syllabus?', [
+    ['Precision', 0, 'Precision — правильність щодо конкретної цілі (напр. ідентифікація аномалій).'],
+    ['Recall', 1, 'Приклад recall у силабусі — покриття valid і invalid equivalence partitions.'],
+    ['Relevance and contextual fit', 0, 'Relevance — відповідність контексту/test basis.'],
+    ['Execution success rate', 0, 'Стосується виконуваності артефактів.']
+  ]) },
+  { id: 'sum-231', type: 's', title: 'Шпаргалка 2.3.1 · Метрики (K2)',
+    points: ['Сім загальних: <b>accuracy, precision, recall, relevance & contextual fit, diversity, execution success rate, time efficiency</b> + task-specific.',
+      'Accuracy — vs еталон/вимоги; precision — щодо конкретної цілі; recall — усі релевантні випадки (valid/invalid partitions).',
+      'Diversity — різні поведінки, edge cases; execution success rate — запускається «як є»; time efficiency — vs ручна робота.',
+      'Оцінка: manual review або автоматично vs predefined reference.',
+      'Non-determinism → <b>statistically relevant data</b>.'],
+    vis: V.compare(['Метрика', 'Питання'], [{ c: ['Accuracy', 'правильно?'] }, { c: ['Precision', 'влучно?'] }, { c: ['Recall', 'все знайдено?'] }, { c: ['Diversity', 'різноманітно?'] }, { c: ['Execution', 'запускається?'] }]) }
+];
+
+// ---------- 2.3.2 ----------
+C2.slides['2.3.2'] = [
+  { id: 'five', type: 'c', ref: '2.3.2', title: 'П’ять технік оцінки та покращення промптів',
+    syl: '• <b>Iterative prompt modification</b>: start with a base prompt and iteratively modify it based on actual results, gradually adding more context or adjusting wording… • <b>A/B testing of prompts</b>: create multiple versions… evaluate which version produces better results based on <b>predefined metrics</b>. • <b>Output analysis</b>: examine AI-generated output for <b>inaccuracies or inconsistencies</b>, e.g. with respect to test basis. Understanding the types of errors… • <b>Integrate user feedback</b>: gather input from testers about the <b>usefulness and clarity</b>… e.g. level of detail. • <b>Adjust prompt length and specificity</b>: sometimes adding more context can improve… in other cases <b>shorter prompts may yield better generalization</b>.',
+    ua: 'Промпт — теж «код», його тестують і рефакторять. П’ять інструментів: поступово міняти; порівнювати версії за метриками; розбирати помилки у виводі; збирати відгуки колег; гратися довжиною й деталізацією.',
+    ex: 'Промпт генерує кейси без негативних сценаріїв → output analysis показує патерн → додаєте constraint → A/B: версія B дає на 40% більше edge cases за метрикою diversity → колеги кажуть «забагато кроків» → user feedback → скорочуєте.',
+    vis: V.cards([
+      { ic: '🔁', t: 'Iterative modification', tip: 'База → поступові зміни за реальними результатами (контекст, терміни).' },
+      { ic: '🆎', t: 'A/B testing', tip: 'Кілька версій промпту, порівняння за predefined metrics.' },
+      { ic: '🔬', t: 'Output analysis', tip: 'Аналіз помилок і неузгодженостей у виводі (напр. vs test basis) → розуміння типів помилок.' },
+      { ic: '🗣️', t: 'User feedback', tip: 'Відгуки тестувальників про корисність і зрозумілість (напр. рівень деталізації).' },
+      { ic: '📏', t: 'Length & specificity', tip: 'Більше контексту іноді краще; коротші промпти іноді краще узагальнюють.' }
+    ]),
+    memo: '<b>«Міняй — Порівнюй — Розбирай — Питай — Довжину крути»</b>.',
+    trap: 'Довший промпт ≠ завжди кращий: силабус прямо каже, що <b>shorter prompts may yield better generalization</b>.' },
+  { id: 'which232', type: 'c', ref: '2.3.2', title: 'Яку техніку обрати під ситуацію',
+    syl: 'Output analysis: …Understanding the <b>types of errors and inconsistencies</b> can help refine prompts to <b>avoid similar defects</b> in future iterations. A/B testing: helps determine which prompt <b>phrasing or structure</b> produces the most accurate and relevant results.',
+    ua: 'Питання «ЧОМУ модель помиляється?» → output analysis. «ЯКА з версій краща?» → A/B testing. «Чи зручно це людям?» → user feedback. «Як поступово дійти до хорошого?» → iterative modification.',
+    ex: 'Sample Q18: LLM систематично генерує кейси з неправильними expected results, що суперечать вимогам. Щоб зрозуміти <b>чому</b> і не повторювати — <b>output analysis</b>. A/B порівнює версії, але не діагностує причину.',
+    vis: V.compare(['Питання команди', 'Техніка'], [
+      { c: ['Чому вивід систематично хибний?', '🔬 Output analysis'], tip: 'Sample Q18.' },
+      { c: ['Яка з двох версій промпту краща за метриками?', '🆎 A/B testing'] },
+      { c: ['Чи корисні й зрозумілі кейси для команди?', '🗣️ User feedback'] },
+      { c: ['Як крок за кроком дійти до якісного промпту?', '🔁 Iterative modification'] },
+      { c: ['Чи не забагато/замало контексту?', '📏 Length & specificity'] }
+    ]),
+    memo: '<b>Чому? → аналіз виводу. Яка краща? → A/B. Чи зручно? → фідбек.</b>',
+    trap: 'A/B testing — <b>порівняння версій</b>, а не діагностика причин помилок (rationale Sample Q18).' },
+  { id: 'chk-232a', type: 'q', q: Q2('c232-1', '2.3.2', 'which232', 'A team has two prompt versions for generating API test cases and wants to know which one yields better results according to predefined metrics. Which technique should they use?', [
+    ['Output analysis', 0, 'Output analysis шукає типи помилок у виводі; тут треба порівняти версії.'],
+    ['A/B testing of prompts', 1, 'Кілька версій + порівняння за predefined metrics.'],
+    ['Integrating user feedback', 0, 'Відгуки людей — інше джерело, не порівняння за метриками.'],
+    ['Adjusting prompt length', 0, 'Це зміна промпту, а не спосіб визначити кращу версію.']
+  ]) },
+  { id: 'team232', type: 'c', ref: '2.3.2', title: 'Командна практика: бібліотеки промптів',
+    syl: 'Test teams can organize <b>prompt evaluation and optimization sessions</b> to ensure continuous improvement… <b>Sharing practices</b> across the test team or test organization not only helps <b>standardize prompt techniques and maintain consistent quality</b> but also promotes a <b>culture of learning and iterative improvement</b>… e.g. by <b>sharing prompt libraries</b>.',
+    ua: 'Найкращі промпти не мають жити в чиємусь блокноті. Команда регулярно оцінює й покращує промпти та тримає спільну бібліотеку — так якість стабільна, а помилки не повторюються.',
+    ex: 'У Confluence-просторі QA — сторінка «Prompt library»: перевірені промпти для аналізу story, генерації API-тестів, аналізу звіту регресу; у кожного — версія, метрики, автор, дата останнього A/B.',
+    vis: V.flow([
+      { t: 'Evaluation sessions', tip: 'Регулярні сесії оцінки та оптимізації.' },
+      { t: 'Shared practices', s: 'prompt libraries', tip: 'Обмін практиками в команді/організації.' },
+      { t: 'Standard + consistent quality', tip: 'Стандартизація технік.' },
+      { t: 'Learning culture', tip: 'Колективний досвід, менше повторних помилок.' }
+    ]),
+    memo: '<b>Промпт-бібліотека = «тест-кейси для промптів»</b>, спільні для всіх.',
+    trap: 'Мета обміну — <b>стандартизація, стабільна якість і культура навчання</b>, а не «щоб AI сам навчався на бібліотеці».' },
+  { id: 'chk-232b', type: 'q', q: Q2('c232-2', '2.3.2', 'five', 'Testers report that LLM-generated test cases are correct but far too detailed to be practical. Which refinement technique uses this input MOST directly?', [
+    ['A/B testing of prompts', 0, 'Можна потім, але вхід тут — думка людей, а не порівняння версій.'],
+    ['Integrating user feedback', 1, 'Відгуки тестувальників про корисність і рівень деталізації.'],
+    ['Output analysis', 0, 'Output analysis шукає помилки й неузгодженості; тут вивід правильний.'],
+    ['Execution success rate', 0, 'Це метрика (2.3.1), а не техніка покращення промптів.']
+  ]) },
+  { id: 'sum-232', type: 's', title: 'Шпаргалка 2.3.2 · Покращення промптів (K2)',
+    points: ['<b>Iterative modification</b> — від базового промпту поступово (контекст, терміни).',
+      '<b>A/B testing</b> — кілька версій, порівняння за predefined metrics.',
+      '<b>Output analysis</b> — типи помилок у виводі (vs test basis) → чому і як не повторювати.',
+      '<b>User feedback</b> — корисність і зрозумілість для тестувальників (рівень деталізації).',
+      '<b>Length & specificity</b> — іноді більше контексту краще, іноді коротше краще узагальнює. Командні сесії + <b>prompt libraries</b>.'],
+    vis: V.cards([{ ic: '🔁', t: 'Iterate', tip: '' }, { ic: '🆎', t: 'A/B', tip: '' }, { ic: '🔬', t: 'Output', tip: '' }, { ic: '🗣️', t: 'Feedback', tip: '' }, { ic: '📏', t: 'Length', tip: '' }]) }
+];
+
+// ===================== CHAPTER 2 QUIZZES =====================
+C2.quizzes['2.1.1'] = [
+  Q2('q211-1', '2.1.1', 'six', 'Which list contains ONLY components of the six-part structured prompt described in the syllabus?', [
+    ['Role, context, instruction, input data, constraints, output format', 1, 'Саме ці шість компонентів.'],
+    ['Role, persona, task, examples, constraints, output format', 0, 'Persona входить у role; examples — частина input data; «task» — це instruction.'],
+    ['Context, instruction, temperature, input data, constraints, output', 0, 'Temperature — параметр моделі (глава 3), не компонент промпту.'],
+    ['Role, context, instruction, input data, tone, output format', 0, 'Tone — не окремий компонент; тон задає role.']
+  ]),
+  Q2('q211-2', '2.1.1', 'role-ctx', 'What is the main purpose of the role component in a structured prompt?', [
+    ['It lists the test basis documents the model must analyze', 0, 'Це input data.'],
+    ['It defines the perspective the model takes, e.g. a test manager', 1, 'Role — perspective or persona; допомагає з відповідальністю і тоном.'],
+    ['It specifies how the answer must be formatted and structured', 0, 'Це output format.'],
+    ['It restricts which parts of the input may be considered', 0, 'Це constraints.']
+  ]),
+  Q2('q211-3', '2.1.1', 'instr-input', 'According to the syllabus, which of the following belongs to the input data component?', [
+    ['A sample of the expected output to be produced', 1, 'Output examples прямо згадані серед input data.'],
+    ['A description of the tester persona to adopt', 0, 'Це role.'],
+    ['A requirement to answer in a markdown table', 0, 'Це output format.'],
+    ['A rule to ignore cosmetic issues in the analysis', 0, 'Це constraints.']
+  ]),
+  Q2('q211-4', '2.1.1', 'instr-input', 'Which description of a good instruction component matches the syllabus?', [
+    ['Long and descriptive, repeating the context for safety', 0, 'Силабус: clear, imperative, concise.'],
+    ['Clear, imperative and concise, describing the task', 1, 'Clear, imperative and concise instructions include a task description and relevant requirements.'],
+    ['Written as a question so the model can choose a task', 0, 'Instruction — директива, а не питання.'],
+    ['Placed in the system prompt only, never in the user prompt', 0, 'Немає такого правила.']
+  ]),
+  Q2('q211-5', '2.1.1', 'constr-out', 'A prompt line states: "Return the result as JSON with fields id, title, steps and expected." Which component is this?', [
+    ['Constraints', 0, 'Обмежень на обробку тут немає; описано форму відповіді.'],
+    ['Instruction', 0, 'Задача описана деінде; тут — формат.'],
+    ['Output format', 1, 'Формат і структура відповіді.'],
+    ['Input data', 0, 'Це не дані для обробки.']
+  ]),
+  Q2('q211-6', '2.1.1', 'constr-out', 'Which statement about constraints is CORRECT according to the syllabus?', [
+    ['They describe the test object and functionality being tested', 0, 'Це context.'],
+    ['They specify how instructions should be applied to input data', 1, 'Дослівно з 2.1.1.'],
+    ['They provide examples of the expected output to the model', 0, 'Приклади — input data.'],
+    ['They define the persona and tone the model should adopt', 0, 'Це role.']
+  ]),
+  Q2('q211-7', '2.1.1', 'role-ctx', 'A prompt includes: "Logs from the last three nightly runs and the list of open defects." In which component would this MOST LIKELY appear?', [
+    ['Context', 0, 'Context — фон про систему; тут перелічено конкретні дані, які модель має обробити (2.1.1: input data).'],
+    ['Input data', 1, 'Конкретні джерела даних, які модель має проаналізувати.'],
+    ['Constraints', 0, 'Обмежень немає.'],
+    ['Role', 0, 'Не персона.']
+  ]),
+  Q2('q211-8', '2.1.1', 'full', 'Which TWO statements about the structured prompt are CORRECT?', [
+    ['Providing detailed, structured input data helps produce more accurate results', 1, '2.1.1 про input data.'],
+    ['The structure should be combined with prompting techniques depending on task and LLM', 1, '2.1.1: combined with the implementation of prompting techniques.'],
+    ['A structured prompt makes LLM output deterministic', 0, 'Структура не прибирає non-determinism.'],
+    ['All six components must always be placed in the system prompt', 0, 'Не вимагається; частини можуть бути в system, частини — в user prompt.'],
+    ['Constraints and output format are the same component', 0, 'Це два різні компоненти.']
+  ], { multi: 2 })
+];
+
+C2.quizzes['2.1.2'] = [
+  Q2('q212-1', '2.1.2', 'three', 'Which three core prompting techniques does the syllabus name for test tasks?', [
+    ['Prompt chaining, few-shot prompting, meta prompting', 1, 'Три core techniques з 2.1.2.'],
+    ['Zero-shot prompting, one-shot prompting, few-shot prompting', 0, 'Це варіанти за кількістю прикладів, а не три core techniques.'],
+    ['Prompt chaining, system prompting, user prompting', 0, 'System/user prompt — типи промптів (2.1.3), не техніки.'],
+    ['Few-shot prompting, chain-of-thought, retrieval prompting', 0, 'Chain-of-thought і retrieval prompting не входять до трьох core techniques із 2.1.2 (prompt chaining, few-shot, meta prompting).']
+  ]),
+  Q2('q212-2', '2.1.2', 'chaining', 'What characterizes prompt chaining?', [
+    ['Several examples are included in a single prompt', 0, 'Це few-shot.'],
+    ['The LLM writes the prompt that the tester will use', 0, 'Це meta prompting.'],
+    ['A task is split into steps, each result checked before the next', 1, 'Intermediate steps (multiple prompts), кожен результат перевіряють і уточнюють.'],
+    ['One long prompt lists all subtasks to be done at once', 0, 'Один промпт — не chaining.']
+  ]),
+  Q2('q212-3', '2.1.2', 'chaining', 'Why does prompt chaining lead to greater accuracy according to the syllabus?', [
+    ['Each checked response informs the next prompt', 1, '«Leads to greater accuracy as each response informs the next prompt.»'],
+    ['The model is retrained after each step of the chain', 0, 'Моделі не довчаються між кроками.'],
+    ['It removes the need for human verification entirely', 0, 'Навпаки, передбачає перевірку кроків.'],
+    ['It always uses a reasoning LLM for every step', 0, 'Тип моделі не визначає техніку.']
+  ]),
+  Q2('q212-4', '2.1.2', 'fewshot', 'What is the difference between zero-shot and few-shot prompting?', [
+    ['Zero-shot uses no examples; few-shot provides more than one example', 1, 'Zero = 0, few = більше одного.'],
+    ['Zero-shot uses one example; few-shot provides up to three examples', 0, 'One example — це one-shot; фіксованої межі «три» немає.'],
+    ['Zero-shot needs no instruction; few-shot needs a detailed instruction', 0, 'Різниця — у прикладах, а не в інструкції.'],
+    ['Zero-shot is for chatbots; few-shot is for LLM-powered applications', 0, 'Не пов’язано з моделлю взаємодії.']
+  ]),
+  Q2('q212-5', '2.1.2', 'fewshot', 'When is few-shot prompting particularly effective according to the syllabus?', [
+    ['When a complex task must be verified step by step', 0, 'Це сценарій для prompt chaining.'],
+    ['When examples can illustrate the required behavior', 1, '«Particularly effective for tasks where examples can illustrate the required behavior.»'],
+    ['When the tester does not know how to write a prompt', 0, 'Це сценарій для meta prompting.'],
+    ['When the model must rely only on its prior knowledge', 0, 'Це zero-shot.']
+  ]),
+  Q2('q212-6', '2.1.2', 'meta', 'Which TWO statements about meta prompting are CORRECT?', [
+    ['The LLM generates or refines prompts that the tester evaluates', 1, 'Дослівна суть meta prompting.'],
+    ['It reduces the manual effort needed to design effective prompts', 1, 'Beneficial when efficiency and prompt optimization are critical.'],
+    ['It requires providing several output examples in the prompt', 0, 'Це few-shot.'],
+    ['It replaces the tester’s evaluation of the generated prompts', 0, 'Тестувальник оцінює й уточнює.'],
+    ['It is only usable with system prompts, not user prompts', 0, 'Немає такого обмеження.']
+  ], { multi: 2 }),
+  Q2('q212-7', '2.1.2', 'meta', 'The syllabus describes meta prompting as a form of "pairing". What does this mean?', [
+    ['Two testers review each prompt together before use', 0, 'Pairing тут — тестувальник + AI.'],
+    ['The tester and the AI interactively co-create a prompt', 1, 'Form of pairing with the GenAI tool: tester and AI work together.'],
+    ['Each prompt is paired with a reference output for A/B testing', 0, 'A/B — техніка 2.3.2.'],
+    ['Two LLMs exchange prompts until they agree on the answer', 0, 'Не описано в силабусі.']
+  ]),
+  Q2('q212-8', '2.1.2', 'combo', 'Which statement about combining prompting techniques is CORRECT?', [
+    ['Techniques are mutually exclusive within a single test task', 0, 'Силабус: можна поєднувати.'],
+    ['Combination is only possible for reasoning LLMs', 0, 'Не пов’язано з типом моделі.'],
+    ['Meta prompting can create an initial prompt later enriched with examples', 1, 'Приклад комбінації з 2.2.5: meta → few-shot → chaining.'],
+    ['Combining techniques removes the need for the six-part structure', 0, 'Техніки використовують разом зі структурою.']
+  ])
+];
+
+C2.quizzes['2.1.3'] = [
+  Q2('q213-1', '2.1.3', 'sys', 'Who typically defines the system prompt according to the syllabus?', [
+    ['The developer or tester configuring the LLM', 1, 'Typically defined by the developer or tester.'],
+    ['The chatbot’s user at the start of each message', 0, 'Це user prompt.'],
+    ['The LLM itself during meta prompting', 0, 'Meta prompting — про генерацію промптів, не про system prompt.'],
+    ['The test manager in the test plan document', 0, 'Не описано так.']
+  ]),
+  Q2('q213-2', '2.1.3', 'sys', 'Which TWO statements describe a system prompt?', [
+    ['It stays constant throughout the interaction session', 1, '2.1.3.'],
+    ['It is usually not visible or editable by the chatbot user', 1, '2.1.3: not visible or editable by the chatbot’s user in most interfaces.'],
+    ['It changes with each new question from the user', 0, 'Це user prompt.'],
+    ['It contains the user’s current question', 0, 'Це user prompt.'],
+    ['It applies only to the first response of a session', 0, 'Застосовується до всієї розмови.']
+  ], { multi: 2 }),
+  Q2('q213-3', '2.1.3', 'sys', 'Which components of a structured prompt does the syllabus say a system prompt may contain?', [
+    ['Role, context and constraints', 1, '«It may contain parts of a structured prompt such as the role, context and constraints.»'],
+    ['Only the input data to be analyzed', 0, '2.1.3 називає role, context, constraints (і загальні інструкції щодо output), а не «лише input data».'],
+    ['Only the output format of each answer', 0, 'Може містити загальні інструкції про output, але не «лише» це.'],
+    ['None — it only sets the model temperature', 0, 'System prompt задає поведінку, роль, обмеження.']
+  ]),
+  Q2('q213-4', '2.1.3', 'user', 'How does the LLM generate a response in a session that uses both prompt types?', [
+    ['It uses only the latest user prompt and ignores the system prompt', 0, 'Обидва враховуються.'],
+    ['It considers the unchanging system prompt and the current user prompt together', 1, 'Дослівно з 2.1.3.'],
+    ['It uses the system prompt only when the user prompt is empty', 0, 'Ні.'],
+    ['It merges all previous user prompts into a new system prompt', 0, 'Ні.']
+  ]),
+  Q2('q213-5', '2.1.3', 'good', 'Which recommendation for user prompts does the syllabus give?', [
+    ['Keep them vague so the system prompt can fill in the details', 0, 'Навпаки — focused and well-structured.'],
+    ['Make them focused and well-structured, with explicit instructions', 1, '2.1.3: focused, well-structured, explicit instructions + context + output format.'],
+    ['Repeat the full system prompt in every user prompt', 0, 'Не рекомендується.'],
+    ['Avoid output format instructions in user prompts', 0, 'Силабус їх, навпаки, рекомендує.']
+  ]),
+  Q2('q213-6', '2.1.3', 'good', 'A company builds an internal QA assistant. Every answer must use ISTQB terminology and never invent API fields. Where should these rules be defined?', [
+    ['In each user prompt written by the testers', 0, 'Тоді правила залежать від кожного користувача і можуть загубитися.'],
+    ['In the system prompt of the assistant', 1, 'Сталі правила поведінки для всієї розмови — system prompt.'],
+    ['In the output format of the first answer only', 0, 'Правило має діяти на всю сесію.'],
+    ['In a few-shot example attached to every question', 0, 'Приклади не задають правила поведінки на всю розмову.']
+  ]),
+  Q2('q213-7', '2.1.3', 'user', 'Which line is MOST LIKELY a user prompt rather than part of a system prompt?', [
+    ['"You are a testing assistant; always use formal language."', 0, 'Це типовий system prompt.'],
+    ['"List the key differences between black-box and white-box testing."', 1, 'Приклад user prompt з 2.1.3.'],
+    ['"Avoid speculation and cite testing principles when relevant."', 0, 'Частина прикладу system prompt з 2.1.3.'],
+    ['"Respond concisely and respect domain-specific rules."', 0, 'Operational parameters — system prompt.']
+  ]),
+  Q2('q213-8', '2.1.3', 'sys', 'What are "operational parameters" in a system prompt according to the syllabus?', [
+    ['Settings such as temperature and token limits of the model', 0, 'Силабус описує їх як правила відповіді, а не як гіперпараметри.'],
+    ['Rules for how the LLM responds, e.g. formal tone or concise answers', 1, 'Operational parameters determine how the LLM responds: tone, conciseness, domain rules.'],
+    ['The input data that changes with every user question', 0, 'Це user prompt.'],
+    ['The metrics used to evaluate the LLM output', 0, 'Метрики — 2.3.1.']
+  ])
+];
+
+C2.quizzes['2.2.1'] = [
+  Q2('q221-1', '2.2.1', 'apply', 'What is a typical output of GenAI-supported test analysis according to the syllabus?', [
+    ['Executable automated test scripts for CI', 0, 'Це test implementation (2.2.2).'],
+    ['Prioritized test conditions, e.g. AC', 1, 'Typical test analysis work products.'],
+    ['A test execution schedule with dependencies', 0, 'Це test implementation (2.2.2).'],
+    ['A test completion report with lessons learned', 0, 'Це test completion (2.2.4).']
+  ]),
+  Q2('q221-2', '2.2.1', 'tasks221', 'A tester gives an LLM the risk likelihood and impact for each test condition, plus history of defects in login and payment. What can the LLM now support BEST?', [
+    ['Generating synthetic production-like test data', 0, 'Дані — 2.2.2.'],
+    ['Prioritizing test conditions based on risk level', 1, 'Likelihood + impact + user-facing features + historical defects → priority levels.'],
+    ['Self-healing of GUI test scripts', 0, 'Регрес, 2.2.3.'],
+    ['Generating a keyword library', 0, 'Не пов’язано з наданими ризиками.']
+  ]),
+  Q2('q221-3', '2.2.1', 'tasks221', 'An LLM flags that two acceptance criteria of a user story contradict each other. Which test analysis task is demonstrated?', [
+    ['Supporting coverage analysis', 0, 'Покриття — мапінг вимог на умови.'],
+    ['Identifying potential defects in the test basis', 1, 'Inconsistencies у test basis.'],
+    ['Suggesting test techniques', 0, 'Техніки тест-дизайну не пропонуються.'],
+    ['Prioritizing test conditions by risk', 0, 'Пріоритетів немає.']
+  ]),
+  Q2('q221-4', '2.2.1', 'tasks221', 'For a requirement about a numeric input range, the LLM recommends boundary value analysis. Which task is this?', [
+    ['Suggesting test techniques', 1, 'GenAI can suggest relevant test techniques (BVA, EP) based on the requirement type.'],
+    ['Generating test data', 0, 'Даних не згенеровано — запропоновано техніку.'],
+    ['Identifying defects in the test basis', 0, 'Дефект вимоги не знайдено.'],
+    ['Supporting coverage analysis', 0, 'Покриття не аналізувалося.']
+  ]),
+  Q2('q221-5', '2.2.1', 'chain221', 'New user stories for a booking-cancellation feature have NOT been reviewed yet. The test lead wants a prompt chain that improves the stories, derives test conditions, and then recommends test techniques. Which sequence is BEST?', [
+    ['Detect ambiguities → generate test conditions → suggest test techniques', 1, 'Спершу усунути дефекти test basis, далі умови, потім техніки (2.2.1); між кроками — перевірка людиною.'],
+    ['Generate test conditions → suggest test techniques → detect ambiguities', 0, 'Дефекти в stories потраплять в умови; їх треба прибрати на початку.'],
+    ['One prompt that fixes the stories and outputs conditions with techniques', 0, 'Один промпт — не chaining, немає перевірки проміжних результатів.'],
+    ['Suggest test techniques → generate test scripts → prioritize them by risk', 0, 'Скрипти — не test analysis; кроки не відповідають цілі.']
+  ]),
+  Q2('q221-6', '2.2.1', 'mm221', 'A tester wants well-formed, clear and complete acceptance criteria from a user story and a GUI wireframe. Which prompt approach fits the syllabus BEST?', [
+    ['Structured multimodal prompt: story, wireframe image and field rules', 1, 'HO-2.2.1a: структурований мультимодальний промпт (text + image) + обмеження полів / бізнес-правила.'],
+    ['Zero-shot text prompt with the story only, asking to "write AC"', 0, 'Втрачається візуальний вхід і контекст.'],
+    ['A few-shot prompt of Gherkin scenarios from other projects only', 0, 'Приклади інших проєктів не замінюють story + wireframe.'],
+    ['A system prompt instructing the model to accept any AC format', 0, 'Не забезпечує якість AC.']
+  ]),
+  Q2('q221-7', '2.2.1', 'chain221', 'In a prompt chain refining acceptance criteria (ambiguities → testability → completeness), what should happen between steps?', [
+    ['The LLM retrains on the corrected acceptance criteria', 0, 'Перетренування немає.'],
+    ['The tester verifies and corrects the output before the next step', 1, 'HO-2.2.1b: results manually verified and corrected; next stage uses a clean result.'],
+    ['The tester switches to a different LLM for each step', 0, 'Не вимагається.'],
+    ['Nothing — the chain should run without interruption', 0, 'Тоді втрачається сенс chaining.']
+  ]),
+  Q2('q221-8', '2.2.1', 'tasks221', 'An LLM produced vague test conditions for a payment user story; the prompt contained only the story title. Which TWO changes are MOST likely to improve the accuracy of the output?', [
+    ['Add the full user story with its acceptance criteria', 1, 'Якісні, релевантні вхідні дані прямо впливають на точність (2.2.1).'],
+    ['Add relevant business rules, e.g. payment limits', 1, 'Релевантний контекст і вхідні дані для задачі.'],
+    ['Ask for the output as a markdown table', 0, 'Змінює форму, не точність.'],
+    ['Change the role from tester to test manager', 0, 'Роль не замінює відсутні вхідні дані.'],
+    ['Ask the LLM to answer in a more formal tone', 0, 'Тон не впливає на точність умов.']
+  ], { multi: 2 })
+];
+
+C2.quizzes['2.2.2'] = [
+  Q2('q222-1', '2.2.2', 'tcgen', 'Which elements can an LLM suggest when generating test cases, according to the syllabus?', [
+    ['Preconditions, inputs, expected results and coverage criteria', 1, 'Дослівно з 2.2.2.'],
+    ['Only test step descriptions without expected results', 0, 'LLM може пропонувати й expected results.'],
+    ['Only automated scripts, never manual test cases', 0, 'Підтримуються і ручні, і автоматизовані.'],
+    ['Final release decisions and sign-off criteria', 0, 'Не test case elements.']
+  ]),
+  Q2('q222-2', '2.2.2', 'tcgen', 'What is a key benefit of GenAI test data synthesis described in the syllabus?', [
+    ['It copies production data exactly for realistic tests', 0, 'Навпаки — синтетичні, без розкриття чутливих даних.'],
+    ['It creates realistic data without exposing sensitive information', 1, 'Privacy-preserving synthetic data resembling production.'],
+    ['It is limited to functional testing only', 0, 'Functional і non-functional.'],
+    ['It avoids extreme values to keep tests stable', 0, 'Навпаки, covers extreme situations.']
+  ]),
+  Q2('q222-3', '2.2.2', 'scripts', 'From what does GenAI generate manual test procedures and automated test scripts, according to the syllabus?', [
+    ['From structured test cases', 1, '«From structured test cases, interpreting test steps…»'],
+    ['From production logs only', 0, 'Не описано так.'],
+    ['From the test completion report', 0, 'Ні.'],
+    ['From the system prompt alone', 0, 'Ні.']
+  ]),
+  Q2('q222-4', '2.2.2', 'scripts', 'Which TWO factors can GenAI use to optimize a test execution schedule?', [
+    ['Interdependencies between test cases', 1, 'Analyze test cases and their interdependencies.'],
+    ['Associated risks and priority', 1, 'Based on priority, associated risks, resource availability and test objectives.'],
+    ['The date each test case was last modified', 0, 'Не названо серед критеріїв.'],
+    ['The model’s context window size', 0, 'Не критерій розкладу.'],
+    ['The number of steps in each test case', 0, 'Не названо серед критеріїв.']
+  ], { multi: 2 }),
+  Q2('q222-5', '2.2.2', 'ho222', 'You must write functional test cases for 25 user stories in your team’s test management template. Four approved cases in that template exist. Which prompt is BEST?', [
+    ['Four approved cases as examples; constraint: one case per AC; output: team template', 1, 'Few-shot із затвердженими прикладами + обмеження для покриття AC + фіксований формат.'],
+    ['Instruction "follow industry best practices"; output: team template; no examples', 0, 'Без прикладів шаблон команди відтворюється гірше; «best practices» — розмито.'],
+    ['Four approved cases as examples; constraint: cover negative cases only', 0, 'Обмеження лише негативними кейсами не покриває всі AC.'],
+    ['Instruction "generate as many cases as possible"; output: free text', 0, 'Немає прикладів, формату і критерію покриття.']
+  ]),
+  Q2('q222-6', '2.2.2', 'ho222', 'A tester generated functional test cases from 12 acceptance criteria with an LLM. Before extending them to end-to-end tests, the tester wants to confirm completeness. Which next prompt in the chain is BEST?', [
+    ['Ask for a table mapping each acceptance criterion to its test cases', 1, 'Таблиця покриття AC → TC перевіряє повноту.'],
+    ['Ask the LLM to count the test cases and compare the total with 12', 0, 'Кількість ≠ покриття.'],
+    ['Ask the LLM to convert all test cases into keyword-driven scripts', 0, 'Це реалізація, не перевірка повноти.'],
+    ['Ask the LLM to rate its own confidence in each case from 1 to 5', 0, 'Самооцінка не показує прогалини покриття.']
+  ]),
+  Q2('q222-7', '2.2.2', 'ho222', 'A tester uses GenAI to prioritize a test suite with risks and dependencies. Why does the syllabus require manual verification of the result?', [
+    ['To detect errors in the LLM’s multi-criteria reasoning', 1, 'HO-2.2.2c: manually verified to detect any errors in the LLM’s reasoning.'],
+    ['Because LLMs cannot read dependency information', 0, 'Можуть, але можуть помилятися.'],
+    ['Because prioritization must be done in Gherkin', 0, 'Не пов’язано.'],
+    ['To measure the time efficiency of the LLM', 0, 'Це метрика, не ціль перевірки.']
+  ]),
+  Q2('q222-8', '2.2.2', 'design', 'Which testware does the syllabus list as created or evaluated with GenAI support in test design and implementation?', [
+    ['Test cases, test data, test scripts and test environments', 1, 'Дослівно з 2.2.2.'],
+    ['Only test cases and test plans', 0, 'Занадто вузько; test plan — інший етап.'],
+    ['Only automated scripts for CI/CD pipelines', 0, 'Занадто вузько.'],
+    ['Requirements, user stories and wireframes', 0, 'Це test basis (вхід test analysis).']
+  ])
+];
+
+C2.quizzes['2.2.3'] = [
+  Q2('q223-1', '2.2.3', 'regr', 'Why are regression tests described as ideal candidates for automation with GenAI support?', [
+    ['They grow with each release and run often in CI/CD', 1, '2.2.3: зростання кількості + висока частота виконання в CI/CD.'],
+    ['They never change, so their scripts need no maintenance', 0, 'Навпаки, потребують підтримки (self-healing).'],
+    ['They only cover the non-functional requirements', 0, 'Functional і non-functional.'],
+    ['They are always executed manually by domain experts', 0, 'Ні.']
+  ]),
+  Q2('q223-2', '2.2.3', 'regr', 'What is the purpose of GenAI-based impact analysis in regression testing?', [
+    ['Identify areas most likely affected by recent code changes', 1, 'Focus regression test efforts where they are most needed.'],
+    ['Automatically fix defects found in the regression run', 0, 'Не описано.'],
+    ['Replace all regression tests with exploratory sessions', 0, 'Ні.'],
+    ['Measure the time efficiency of generated scripts', 0, 'Метрика, не impact analysis.']
+  ]),
+  Q2('q223-3', '2.2.3', 'act223', 'Which GenAI activity compiles defect reports with test logs, screenshots and test environment data?', [
+    ['Self-healing and adaptive tests', 0, 'Про стабільність скриптів.'],
+    ['Enhanced defect reporting and root cause analysis', 1, 'Дослівно з 2.2.3.'],
+    ['Keyword-driven automation', 0, 'Про скрипти з ключових слів.'],
+    ['Impact analysis and test optimization', 0, 'Про вибір зачеплених областей.']
+  ]),
+  Q2('q223-4', '2.2.3', 'act223', 'What does the syllabus require regarding the output of GenAI in regression testing?', [
+    ['It can be used without review because tests are automated', 0, 'GenAI can make mistakes.'],
+    ['It must be carefully checked, depending on the associated risk', 1, 'Дослівно з 2.2.3.'],
+    ['It must be checked only for non-functional tests', 0, 'Перевірка — для всіх, залежно від ризику.'],
+    ['It must be regenerated until two runs are identical', 0, 'Не описано.']
+  ]),
+  Q2('q223-5', '2.2.3', 'guiapi', 'An API changed its authentication method and renamed several fields, breaking many regression scripts. How can GenAI help according to the syllabus?', [
+    ['By adapting the scripts to the evolving API specification', 1, 'API regression: adapt test scripts automatically to evolving API specifications.'],
+    ['By updating dynamic locators in the GUI test scripts', 0, 'Dynamic locators — GUI.'],
+    ['By converting the API tests into manual test procedures', 0, 'Не вирішує проблему.'],
+    ['By removing the affected tests from the suite', 0, 'Не те, що описано.']
+  ]),
+  Q2('q223-7', '2.2.3', 'ho223', 'A draft prompt asks an LLM to "summarize last night’s regression results". Stakeholders need to know which failures are new and which are already known. Which change BEST improves the prompt?', [
+    ['Add the known anomalies list as input and ask to mark each failure new or known', 1, 'Потрібні вхідні дані (known anomalies) і чітка інструкція перехресної перевірки (2.2.3).'],
+    ['Change the role to a senior regression analyst who writes executive summaries', 0, 'Роль не дає моделі знати, які збої вже відомі.'],
+    ['Add a constraint that every failure is described in Given-When-Then syntax', 0, 'Gherkin нерелевантний для аналізу звіту.'],
+    ['Shorten the prompt to a single sentence so the model generalizes better', 0, 'Проблема — відсутні дані, а не довжина.']
+  ]),
+  Q2('q223-8', '2.2.3', 'act223', 'Which TWO are activities of GenAI in automated regression testing listed in the syllabus?', [
+    ['Self-healing and adaptive tests', 1, 'Названо в 2.2.3.'],
+    ['Automated test reporting and insights', 1, 'Названо в 2.2.3.'],
+    ['Formal approval of release candidates', 0, 'Не активність GenAI.'],
+    ['Replacing CI/CD pipelines with chatbots', 0, 'Ні.'],
+    ['Writing user stories for new features', 0, 'Не регрес.']
+  ], { multi: 2 })
+];
+
+C2.quizzes['2.2.4'] = [
+  Q2('q224-1', '2.2.4', 'mon', 'Why is GenAI helpful for test monitoring tasks according to the syllabus?', [
+    ['Monitoring needs large amounts of sometimes unstructured data from tools', 1, 'Retrieval of large quantities of (sometimes unstructured) data.'],
+    ['Monitoring data never exists before the test project ends', 0, 'Дані часто вже є в test management tools.'],
+    ['Monitoring requires executing all tests again', 0, 'Ні.'],
+    ['Monitoring is only needed for non-functional testing', 0, 'Ні.']
+  ]),
+  Q2('q224-2', '2.2.4', 'mon', 'Which activity is an example of test control supported by GenAI?', [
+    ['Detecting a trend of increasing defects', 0, 'Це моніторинг.'],
+    ['Suggesting to reallocate testers to a high-risk area', 1, 'Test control: reprioritize, adjust schedules, reallocate resources.'],
+    ['Producing a natural language summary of metrics', 0, 'Visualization & reporting.'],
+    ['Writing a lessons-learned section', 0, 'Completion insights.']
+  ]),
+  Q2('q224-3', '2.2.4', 'mon', 'What does GenAI provide for test completion according to the syllabus?', [
+    ['Completion reports with successes and lessons learned', 1, 'Test completion insights and continuous learning.'],
+    ['Automatic closure of all remaining open defects', 0, 'Не описано.'],
+    ['A new test basis prepared for the next release', 0, 'Ні.'],
+    ['Self-healing of the failed regression test scripts', 0, 'Це регрес (2.2.3).']
+  ]),
+  Q2('q224-4', '2.2.4', 'ho224', 'An LLM builds a weekly progress dashboard from test management exports. The test manager notices it silently drops test cases with status "Blocked", so progress looks better than it is. Which prompt change is BEST?', [
+    ['Add a constraint that all statuses, including Blocked, must be counted and shown', 1, 'Constraint задає, як застосувати інструкцію до даних, і усуває викривлення метрики.'],
+    ['Change the role to a test manager focused on stakeholder communication', 0, 'Роль не виправляє неточні дані.'],
+    ['Add a plain-language summary of the dashboard for business stakeholders', 0, 'Корисно для зрозумілості, але не виправляє неточні дані.'],
+    ['Add a lessons-learned section to each weekly dashboard', 0, 'Lessons learned — для completion, не для точності прогресу.']
+  ]),
+  Q2('q224-5', '2.2.4', 'ho224', 'From raw exports of the test management tool, a test manager prompts an LLM to prepare input for the weekly steering meeting. Which output BEST matches GenAI support for test monitoring?', [
+    ['Progress, defect trend and coverage metrics with highlighted risks', 1, '2.2.4: метрики й тренди з виявленням ризиків.'],
+    ['Accuracy, precision and recall of the LLM’s own answers', 0, 'Це метрики оцінки GenAI (2.3.1).'],
+    ['Token counts and context window usage per prompt', 0, 'Технічні параметри LLM (глава 1).'],
+    ['A refactored automation codebase with fewer locators', 0, 'Це регрес / self-healing (2.2.3).']
+  ]),
+  Q2('q224-6', '2.2.4', 'mon', 'Which TWO describe test monitoring and metrics analysis with GenAI?', [
+    ['Analyzing trends to predict potential risks', 1, '2.2.4.'],
+    ['Alerting teams about deviations from the plan', 1, '2.2.4.'],
+    ['Reallocating resources between teams', 0, 'Це test control.'],
+    ['Generating Gherkin test cases', 0, 'Test design.'],
+    ['Adapting locators in GUI scripts', 0, 'Регрес (self-healing).']
+  ], { multi: 2 }),
+  Q2('q224-7', '2.2.4', 'mon', 'What is the purpose of dynamic dashboards and natural language summaries produced with GenAI?', [
+    ['To give all stakeholders relevant metrics for quick decisions', 1, 'Enhanced visualization & reporting.'],
+    ['To replace the test plan with an automatically generated one', 0, 'Не описано.'],
+    ['To store prompts in a shared prompt library', 0, 'Це 2.3.2.'],
+    ['To train the LLM on project-specific data', 0, 'Не описано.']
+  ])
+];
+
+C2.quizzes['2.2.5'] = [
+  Q2('q225-1', '2.2.5', 'table225', 'Which prompting technique does the syllabus recommend for complex tasks requiring precision with human verification at each step?', [
+    ['Few-shot prompting', 0, 'Для повторюваних/шаблонних задач.'],
+    ['Prompt chaining', 1, 'Таблиця 2.2.5.'],
+    ['Meta prompting', 0, 'Для нових, гнучких задач.'],
+    ['Zero-shot prompting', 0, 'Немає перевірки кроків.']
+  ]),
+  Q2('q225-2', '2.2.5', 'table225', 'Which technique fits "flexible, dynamic tasks, useful for crafting prompts for new tasks"?', [
+    ['Prompt chaining', 0, 'Складні задачі з перевіркою кроків.'],
+    ['Few-shot prompting', 0, 'Повторювані задачі з форматом.'],
+    ['Meta prompting', 1, 'Таблиця 2.2.5.'],
+    ['One-shot prompting', 0, 'One-shot — рівно один приклад; це не техніка для створення промптів під нові задачі.']
+  ]),
+  Q2('q225-3', '2.2.5', 'decide', 'A tester is new to generating performance-test reports with an LLM. The team needs a reusable prompt that produces reports in a fixed company layout, and wants to check the metric extraction before the report is written. Which approach is BEST?', [
+    ['Meta prompt a draft, add sample reports as examples, chain extraction and reporting', 1, '2.2.5: meta для початкового промпту, few-shot для фіксованого формату, chaining для перевірки проміжного кроку.'],
+    ['One few-shot prompt with sample reports as examples, no intermediate checks', 0, 'Немає перевірки витягнутих метрик перед звітом.'],
+    ['Prompt chain for extraction and reporting, describing the layout only in words', 0, 'Без прикладів фіксований формат відтворюється гірше; немає допомоги з новою задачею.'],
+    ['Meta prompt a draft once, then use it zero-shot without any examples', 0, 'Без прикладів і без перевірки проміжних кроків.']
+  ]),
+  Q2('q225-4', '2.2.5', 'decide', 'A tester must generate test reports in a strict company template every week. Which technique fits BEST?', [
+    ['Few-shot prompting with previous reports as examples', 1, 'Test reporting with a specific output format — few-shot (таблиця 2.2.5).'],
+    ['Meta prompting to invent a new structure every week', 0, 'Структура фіксована, не нова.'],
+    ['Prompt chaining with human checks of every sentence', 0, 'Надмірно для шаблонної задачі.'],
+    ['Zero-shot prompting without a template', 0, 'Не забезпечить суворий формат.']
+  ]),
+  Q2('q225-5', '2.2.5', 'decide', 'A tester has never analyzed logs for anomalies with an LLM, has no example analyses available, and does not know how to phrase the prompt. Which technique is MOST appropriate as a start?', [
+    ['Few-shot prompting', 0, 'Прикладів ще немає.'],
+    ['Prompt chaining', 0, 'Спочатку треба зрозуміти, яким має бути промпт.'],
+    ['Meta prompting', 1, 'Нова задача, промпт невідомий; anomaly detection — приклад із таблиці.'],
+    ['One-shot prompting', 0, 'Немає навіть одного прикладу.']
+  ]),
+  Q2('q225-6', '2.2.5', 'decide', 'Which combination does the syllabus give as an example for a single use case?', [
+    ['Meta prompting → few-shot prompting → prompt chaining', 1, 'Приклад з 2.2.5.'],
+    ['Zero-shot → one-shot → few-shot', 0, 'Не приклад із силабусу.'],
+    ['Prompt chaining → meta prompting → zero-shot', 0, 'Не приклад із силабусу.'],
+    ['Few-shot → A/B testing → output analysis', 0, 'A/B і output analysis — техніки оцінки (2.3.2).']
+  ]),
+  Q2('q225-7', '2.2.5', 'table225', 'Which TWO are listed in the syllabus as typical applications of few-shot prompting?', [
+    ['Gherkin style test cases', 1, 'Таблиця 2.2.5.'],
+    ['Keyword-driven testing', 1, 'Таблиця 2.2.5.'],
+    ['Crafting prompts for new tasks', 0, 'Meta prompting.'],
+    ['Complex test analysis with step checks', 0, 'Prompt chaining.'],
+    ['Collaborative prompt co-creation', 0, 'Meta prompting (pairing).']
+  ], { multi: 2 }),
+  Q2('q225-8', '2.1.2', 'fewshot', 'In which situation would zero-shot prompting be the LEAST suitable choice?', [
+    ['A simple question the model can answer from its own knowledge', 0, 'Тут zero-shot цілком підходить.'],
+    ['Reproducing the exact structure of existing team scripts', 1, 'Потрібні приклади → few-shot; zero-shot не відтворить точний патерн.'],
+    ['Asking for a short explanation of what a test oracle is', 0, 'Загальне знання моделі — zero-shot доречний («relies on the model’s pre-existing knowledge», 2.1.2).'],
+    ['Asking for a definition of equivalence partitioning', 0, 'Знання моделі достатньо.']
+  ])
+];
+
+C2.quizzes['2.3.1'] = [
+  Q2('q231-1', '2.3.1', 'seven', 'Which metric evaluates the overall correctness of generated output against expert-written test cases or requirements?', [
+    ['Precision', 0, 'Precision — щодо конкретної цілі.'],
+    ['Accuracy', 1, 'Дослівно з таблиці 2.3.1.'],
+    ['Recall', 0, 'Recall — знайти всі релевантні випадки.'],
+    ['Diversity', 0, 'Різноманітність сценаріїв.']
+  ]),
+  Q2('q231-2', '2.3.1', 'seven', 'Which metric is illustrated by "generated test cases cover various user behaviors and explore edge cases"?', [
+    ['Relevance and contextual fit', 0, 'Відповідність контексту.'],
+    ['Execution success rate', 0, 'Виконуваність.'],
+    ['Diversity', 1, 'Приклад diversity з 2.3.1.'],
+    ['Precision', 0, 'Правильність щодо цілі.']
+  ]),
+  Q2('q231-3', '2.3.1', 'seven', 'What does time efficiency measure according to the syllabus?', [
+    ['The time saved compared to manual test efforts', 1, '2.3.1.'],
+    ['The response latency of the LLM API', 0, 'Не цей сенс.'],
+    ['The duration of test execution in CI/CD', 0, 'Не описано так.'],
+    ['How fast testers read the generated output', 0, 'Ні.']
+  ]),
+  Q2('q231-4', '2.3.1', 'why231', 'Why must evaluation metrics for GenAI be based on statistically relevant data?', [
+    ['Because GenAI output is non-deterministic', 1, '«Given the non-deterministic nature of GenAI…»'],
+    ['Because metrics can only be computed automatically', 0, 'Можна й вручну.'],
+    ['Because each metric needs a separate LLM', 0, 'Ні.'],
+    ['Because prompts are always too long', 0, 'Ні.']
+  ]),
+  Q2('q231-5', '2.3.1', 'why231', 'Which TWO ways of evaluating the metrics does the syllabus mention?', [
+    ['Manual reviews by testers', 1, '2.3.1.'],
+    ['Automated comparison against a predefined reference', 1, '2.3.1.'],
+    ['Asking the same LLM to grade itself only', 0, 'Не описано.'],
+    ['Counting tokens of the generated output', 0, 'Не метрика якості.'],
+    ['Measuring the size of the training dataset', 0, 'Не стосується.']
+  ], { multi: 2 }),
+  Q2('q231-6', '2.3.1', 'pairs', 'An LLM generates API test scripts and test cases for a booking flow. The team wants to know how many scripts run as is without errors, and whether the cases cover valid and invalid partitions of the "passengers" field. Which metric pair BEST fits?', [
+    ['Execution success rate and recall', 1, 'Обидва приклади — з таблиці 2.3.1.'],
+    ['Accuracy and time efficiency', 0, 'Не вимірюють ні запуск скриптів, ні покриття partitions.'],
+    ['Precision and diversity', 0, 'Precision — щодо конкретної цілі; diversity — різні сценарії, а не partitions.'],
+    ['Relevance/contextual fit and time efficiency', 0, 'Не відповідають на жодне з двох питань команди.']
+  ]),
+  Q2('q231-7', '2.3.1', 'pairs', 'Which metric matches "generated test cases are consistent with the test basis and integrate domain-specific requirements"?', [
+    ['Relevance and contextual fit', 1, 'Приклад із 2.3.1.'],
+    ['Recall of relevant instances', 0, 'Recall — усі релевантні випадки (partitions).'],
+    ['Diversity of scenarios', 0, 'Різноманітність.'],
+    ['Time efficiency of generation', 0, 'Час.']
+  ]),
+  Q2('q231-8', '2.3.1', 'seven', 'Which metric is illustrated by "the degree to which generated test cases correctly identify anomalies"?', [
+    ['Accuracy', 0, 'Accuracy — загалом vs еталон; приклад — покриття вимог.'],
+    ['Precision', 1, 'Приклад precision із 2.3.1.'],
+    ['Recall', 0, 'Приклад recall — partitions.'],
+    ['Execution success rate', 0, 'Виконуваність.']
+  ])
+];
+
+C2.quizzes['2.3.2'] = [
+  Q2('q232-1', '2.3.2', 'which232', 'Generated test cases for a discount feature repeatedly use a 10% discount, although the requirements specify 15% for loyalty members. The tester wants to understand what type of error occurs and why, to change the prompt. Which technique is BEST?', [
+    ['A/B testing of prompts', 0, 'Порівнює версії, не діагностує причину.'],
+    ['Output analysis', 1, 'Логіка Sample Q18: типи помилок → причина → покращення.'],
+    ['Adjusting prompt length', 0, 'Не адресує причину напряму.'],
+    ['Integrating user feedback', 0, 'Про корисність/зрозумілість, не про причину помилок.']
+  ]),
+  Q2('q232-2', '2.3.2', 'five', 'What does iterative prompt modification involve?', [
+    ['Starting from a base prompt and adjusting it based on actual results', 1, '2.3.2.'],
+    ['Running two prompts in parallel and keeping the faster one', 0, 'Ближче до A/B, і критерій — метрики, не швидкість.'],
+    ['Letting testers vote on the clarity of the output', 0, 'User feedback.'],
+    ['Removing all context to improve generalization', 0, 'Не те; і «всі» — абсолют.']
+  ]),
+  Q2('q232-3', '2.3.2', 'five', 'What does the syllabus say about prompt length and specificity?', [
+    ['Longer prompts always produce better results', 0, 'Абсолют; силабус — «sometimes».'],
+    ['More context can help, yet shorter prompts may generalize better', 1, '2.3.2.'],
+    ['Prompt length has no measurable impact on results', 0, 'Має вплив.'],
+    ['Highly specific prompts should be avoided in testing', 0, 'Ні.']
+  ]),
+  Q2('q232-4', '2.3.2', 'team232', 'Which TWO benefits of sharing prompt practices across a test organization are mentioned?', [
+    ['Standardizing prompt techniques and consistent quality', 1, '2.3.2.'],
+    ['Promoting a culture of learning and iterative improvement', 1, '2.3.2.'],
+    ['Making LLM outputs deterministic', 0, 'Ні.'],
+    ['Removing the need for metrics', 0, 'Ні.'],
+    ['Allowing the LLM to train on the library automatically', 0, 'Не описано.']
+  ], { multi: 2 }),
+  Q2('q232-6', '2.3.2', 'team232', 'What is given as an example of sharing practices in the test organization?', [
+    ['Sharing prompt libraries', 1, '2.3.2: e.g. by sharing prompt libraries.'],
+    ['Sharing one generic prompt for all test tasks', 0, 'Один загальний промпт суперечить ідеї бібліотеки під різні задачі.'],
+    ['Sharing generated test cases without review', 0, 'Не практика з 2.3.2 і суперечить перевірці результатів.'],
+    ['Sharing test environments', 0, 'Не про промпти.']
+  ]),
+  Q2('q232-7', '2.3.2', 'five', 'Testers say generated test cases use different terms than the project glossary. Which refinement technique addresses this MOST directly?', [
+    ['Iterative modification of wording and terminology', 1, 'Приклад iterative modification: adjusting wording (e.g., regarding terminology).'],
+    ['A/B testing of ten randomly varied prompt versions', 0, 'Спершу варто виправити очевидну причину.'],
+    ['Switching from few-shot to zero-shot prompting', 0, 'Не вирішує термінологію.'],
+    ['Measuring the execution success rate of the cases', 0, 'Метрика, не покращення.']
+  ]),
+  Q2('q232-8', '2.3.2', 'team232', 'What are prompt evaluation and optimization sessions intended to ensure?', [
+    ['Continuous improvement of GenAI prompts', 1, '2.3.2.'],
+    ['Formal certification of each tester', 0, 'Ні.'],
+    ['That no prompt is ever changed again', 0, 'Навпаки.'],
+    ['That LLMs stop hallucinating', 0, 'Не гарантується.']
+  ])
+];
+
+// ===================== CHAPTER 2 FINAL (20) =====================
+C2.final = [
+  Q2('f2-01', '2.1.1', 'instr-input', 'A prompt contains: "Here are two correctly written test conditions from our project as a reference." In which component does this MOST LIKELY belong?', [
+    ['Input data', 1, 'Output examples входять в input data.'],
+    ['Output format', 0, 'Формат описують вимогами до структури, а не прикладами з проєкту.'],
+    ['Context', 0, 'Context — фон про систему.'],
+    ['Role', 0, 'Не персона.']
+  ]),
+  Q2('f2-02', '2.1.1', 'constr-out', 'Which prompt line is BEST classified as a constraint?', [
+    ['"Use only requirements from section 4 of the specification."', 1, 'Обмежує, як застосувати інструкцію до даних.'],
+    ['"Act as a senior test analyst for banking apps."', 0, 'Role.'],
+    ['"The system is a mobile app used by retail customers."', 0, 'Context.'],
+    ['"Present the findings in a table with five columns."', 0, 'Output format.']
+  ]),
+  Q2('f2-03', '2.1.2', 'fewshot', 'Which statement BEST differentiates one-shot from few-shot prompting?', [
+    ['One-shot gives a single example; few-shot gives more than one', 1, '2.1.2.'],
+    ['One-shot uses one prompt; few-shot uses a chain of prompts', 0, 'Кількість промптів — це про chaining.'],
+    ['One-shot needs no examples; few-shot needs exactly three', 0, 'Zero-shot — без прикладів; «рівно три» не вимагається.'],
+    ['One-shot is for system prompts; few-shot is for user prompts', 0, 'Не пов’язано.']
+  ]),
+  Q2('f2-04', '2.1.2', 'chaining', 'Which TWO statements about prompt chaining are CORRECT?', [
+    ['Intermediate results are checked manually or automatically', 1, '2.1.2.'],
+    ['It supports dynamic interactions in test processes', 1, '2.1.2: allows for dynamic interactions.'],
+    ['It relies on the LLM to write its own prompts', 0, 'Meta prompting.'],
+    ['It requires a few examples in every prompt', 0, 'Few-shot.'],
+    ['It is limited to a single prompt with numbered steps', 0, 'Chaining = кілька промптів.']
+  ], { multi: 2 }),
+  Q2('f2-05', '2.1.3', 'sys', 'A tester notices that the company chatbot always answers formally and refuses to speculate, whatever they ask. What MOST LIKELY causes this?', [
+    ['The rules in the system prompt', 1, 'System prompt задає поведінку й операційні параметри на всю розмову.'],
+    ['The output format of the tester’s last user prompt', 0, 'Поведінка стала для всіх запитів — не від одного user prompt.'],
+    ['Few-shot examples the tester added', 0, 'Тестувальник прикладів не додавав.'],
+    ['The context window of the model', 0, 'Не визначає тон і заборони.']
+  ]),
+  Q2('f2-06', '2.1.3', 'user', 'Which statement about user prompts is CORRECT?', [
+    ['They form the immediate context for each response', 1, '2.1.3.'],
+    ['They are typically hidden from the chatbot’s user', 0, 'Видимі.'],
+    ['They remain unchanged for the whole session', 0, 'Змінюються щоразу.'],
+    ['They define the personality of the LLM', 0, 'Це system prompt.']
+  ]),
+  Q2('f2-07', '2.2.1', 'tasks221', 'For a payment feature, an LLM receives user stories, regulatory requirements and the defect history, and is asked to rank test conditions. Which additional information is MOST important to make the ranking risk-based?', [
+    ['Risk likelihood and impact of failure for each condition', 1, '2.2.1: with information on risk likelihood and risk impact… an LLM can help prioritize.'],
+    ['The preferred output format for the ranking table', 0, 'Корисно, але не робить ранжування risk-based.'],
+    ['A system prompt asking for formal language', 0, 'Тон не впливає на ризик.'],
+    ['A list of boundary values for each input field', 0, 'Це про техніки/дані, не про ризик.']
+  ], { k: 'K3' }),
+  Q2('f2-08', '2.2.1', 'chain221', 'A tester analyzes a vague user story with prompt chaining: ambiguities → testability → completeness. After step 1 the LLM flags an issue that is not actually a problem. What should the tester do?', [
+    ['Correct the result before passing it to the testability step', 1, 'HO-2.2.1b: кожен крок перевіряють і виправляють; наступний крок отримує чистий результат.'],
+    ['Continue to step 2 and fix everything at the end', 0, 'Помилка пошириться на наступні кроки.'],
+    ['Restart the chain with a zero-shot prompt', 0, 'Не обов’язково; достатньо виправити результат.'],
+    ['Add more examples and skip the testability step', 0, 'Пропуск кроку зменшить якість AC.']
+  ]),
+  Q2('f2-09', '2.2.2', 'ho222', 'You must generate 60 Gherkin scenarios in your team’s style for new user stories. You have five approved scenarios from previous stories. Which prompt approach is BEST?', [
+    ['Few-shot prompt with the approved scenarios, GWT and AC alignment', 1, 'Few-shot + GWT + AC — як у Sample Q13 та HO-2.2.2b.'],
+    ['Zero-shot prompt asking for "high-quality BDD scenarios" only', 0, 'Без прикладів стиль команди не відтвориться.'],
+    ['Meta prompt asking the LLM to invent a new Gherkin style first', 0, 'Стиль уже визначено прикладами.'],
+    ['Prompt chain generating one scenario per prompt, no examples', 0, 'Неефективно і без еталону стилю.']
+  ]),
+  Q2('f2-10', '2.2.2', 'tcgen', 'A team needs load-test data resembling production customer records, including extreme values, without privacy risks. Which approach BEST fits the syllabus?', [
+    ['GenAI test data synthesis with production-like synthetic records', 1, 'Privacy-preserving synthetic data, covering extreme situations; functional and non-functional.'],
+    ['Anonymizing a copy of production data with a GenAI chatbot', 0, 'Силабус описує синтез privacy-preserving даних; передача копії production-даних у чатбот сама створює ризик для приватності (глава 3).'],
+    ['Generating automated scripts from structured test cases', 0, 'Скрипти ≠ дані.'],
+    ['Asking GenAI to prioritize the load test schedule', 0, 'Не вирішує задачу даних.']
+  ]),
+  Q2('f2-11', '2.2.3', 'guiapi', 'After a frontend redesign, many GUI regression tests fail because element locators changed, although the features work. Which GenAI use from the syllabus BEST addresses this?', [
+    ['Adapting scripts to dynamic locators and modified interactions', 1, 'GUI regression: GenAI can automatically adapt test scripts to handle dynamic locators.'],
+    ['Generating diverse API test data for the endpoints', 0, 'Це API-напрям.'],
+    ['Impact analysis of the backend code changes', 0, 'Зміни у фронтенді, а проблема — локатори.'],
+    ['Compiling defect reports with screenshots', 0, 'Дефектів продукту немає.']
+  ]),
+  Q2('f2-12', '2.2.3', 'ho223', 'A team analyzes nightly regression results in one LLM conversation. Many failures repeat known issues; stakeholders need only genuinely new problems. Which prompt sequence is BEST?', [
+    ['Compare with the test specification → cluster failures → cross-check known anomalies', 1, 'Послідовні структуровані кроки з перехресною перевіркою за списком відомих аномалій (2.2.3).'],
+    ['Cluster failures → generate Gherkin scenarios for them → rerun all failed tests', 0, 'Gherkin і перезапуск не відповідають на питання «що нове».'],
+    ['Compare with the test specification → delete known anomalies list → report all', 0, 'Список відомих аномалій якраз потрібен для відсіювання.'],
+    ['Summarize all logs in one prompt → let the LLM decide what is new, without a list', 0, 'Без списку відомих аномалій модель не може надійно відрізнити нове.']
+  ]),
+  Q2('f2-13', '2.2.4', 'mon', 'Halfway through testing, the LLM dashboard shows coverage of high-risk requirements lagging behind plan. Which GenAI support is MOST appropriate next?', [
+    ['Insights for reprioritizing tests and reallocating resources', 1, 'Test control у відповідь на відхилення.'],
+    ['A test completion report with lessons learned', 0, 'Тестування ще триває.'],
+    ['Self-healing of failed GUI scripts', 0, 'Не адресує відставання покриття.'],
+    ['Generating a new system prompt for the chatbot', 0, 'Не вирішує проблему.']
+  ]),
+  Q2('f2-14', '2.2.4', 'ho224', 'Business stakeholders say AI-generated test metrics on the dashboard are hard to interpret. Which prompt change is BEST?', [
+    ['Ask for a plain-language summary explaining the metrics and next steps', 1, 'Відповідає 2.2.4 (NL summaries) і логіці Sample Q15.'],
+    ['Ask the LLM to add more technical metrics to the dashboard', 0, 'Ускладнить інтерпретацію.'],
+    ['Change the role from test manager to test automation engineer', 0, 'Не робить метрики зрозумілішими.'],
+    ['Remove the output format to let the LLM decide freely', 0, 'Погіршить передбачуваність.']
+  ]),
+  Q2('f2-15', '2.2.5', 'decide', 'You must convert 300 legacy test cases into a fixed CSV import format; you have four correctly converted samples. Which technique is MOST suitable?', [
+    ['Few-shot prompting with the four samples', 1, 'Повторювана задача з суворим форматом.'],
+    ['Prompt chaining with human verification of each case', 0, 'Надмірно для шаблонної конвертації.'],
+    ['Meta prompting to design a new CSV structure', 0, 'Формат уже фіксований.'],
+    ['Zero-shot prompting describing the CSV in words', 0, 'Не використовує наявні приклади.']
+  ]),
+  Q2('f2-16', '2.2.5', 'decide', 'A team must analyze test reports from a newly adopted performance-test tool. Nobody has done this with an LLM before, no example analyses exist, and the team does not know how to structure the prompt. Which approach is BEST to begin with?', [
+    ['Meta prompting to co-create the prompt with the LLM', 1, 'Нова, гнучка задача; test report analysis — приклад meta з таблиці 2.2.5.'],
+    ['Few-shot prompting with sample analyses written by the team', 0, 'Прикладів аналізу ще немає — few-shot неможливий; для нової задачі спершу meta prompting (таблиця 2.2.5: test report analysis).'],
+    ['Prompt chaining of ten predefined steps', 0, 'Кроки ще не визначені.'],
+    ['One-shot prompting with a random log excerpt', 0, 'Випадковий фрагмент не є еталоном.']
+  ]),
+  Q2('f2-17', '2.3.1', 'pairs', 'A team evaluates LLM-generated API test scripts before adding them to CI/CD. Which metric directly shows how many scripts can run as is?', [
+    ['Execution success rate', 1, '2.3.1.'],
+    ['Relevance and contextual fit', 0, 'Про відповідність контексту.'],
+    ['Diversity', 0, 'Про різноманітність.'],
+    ['Recall', 0, 'Про повноту релевантних випадків.']
+  ]),
+  Q2('f2-18', '2.3.1', 'why231', 'A tester compares two prompts by running each once and picks the one whose output looked better. What is the MAIN weakness?', [
+    ['One run is not statistically relevant for a non-deterministic LLM', 1, '2.3.1: metrics must be based on statistically relevant data.'],
+    ['Prompts should never be compared directly with each other', 0, 'A/B — саме порівняння.'],
+    ['Only automated metrics are allowed for this comparison', 0, 'Manual review теж допустимий.'],
+    ['Time efficiency is the only valid metric for prompts', 0, 'Ні.']
+  ]),
+  Q2('f2-19', '2.3.2', 'which232', 'Generated test cases are correct, but testers say they are too verbose to use. Which TWO refinement techniques fit this situation BEST?', [
+    ['Integrating user feedback', 1, 'Відгуки про корисність і рівень деталізації.'],
+    ['Adjusting prompt length and specificity', 1, 'Регулювання деталізації/довжини.'],
+    ['Output analysis of wrong expected results', 0, 'Результати правильні; проблема не в помилках.'],
+    ['Switching to a reasoning LLM', 0, 'Не техніка покращення промптів.'],
+    ['Increasing the context window', 0, 'Не стосується.']
+  ], { multi: 2 }),
+  Q2('f2-20', '2.3.2', 'team232', 'Each tester in a team writes their own prompts and quality varies greatly. Which practice from the syllabus BEST addresses this?', [
+    ['Prompt evaluation sessions and a shared prompt library', 1, '2.3.2: стандартизація, стабільна якість, культура навчання.'],
+    ['Requiring every tester to use zero-shot prompts', 0, 'Не вирішує різну якість.'],
+    ['Disabling system prompts in all tools', 0, 'Ні.'],
+    ['Letting only the test manager use GenAI', 0, 'Не практика з силабусу.']
+  ])
+];
+
+// ===================== OFFICIAL SAMPLE EXAM A v1.1 (Q8–Q18) =====================
+function SQ2(num, sec, slide, q, opts, official, ua, multi) {
+  return Object.assign(Q2('s' + num, sec, slide, q, opts, { fixed: true, num, official, ua }), multi ? { multi } : {});
+}
+const PROMPT_Q14 = 'Role: Act as a test analyst.\nContext: Analyze raw regression test results from a recent test execution cycle.\nInstruction: Identify discrepancies in the test results.\nInput Data: Use the attached file containing raw test results.\nConstraints: Use the known anomalies list for cross-checking.\nOutput Format: Provide a list of discrepancies using a table format.';
+const PROMPT_Q15 = 'Role: Act as a test manager.\nContext: You are provided with raw data from test tools.\nInstruction: Generate test progress metrics, defect trend metrics, and coverage metrics from the raw data.\nInput Data: Use the attached file containing raw test results.\nConstraints: Ensure that the output is concise and understandable.\nOutput Format: Display metrics on a dashboard.';
+C2.sample = [
+  SQ2(8, '2.1.1', 'role-ctx', 'A tester is examining a structured prompt used to obtain LLM assistance for performance test analysis. One of the components of this prompt reads: "Test reports from performance testing tools, system monitoring logs during peak usage periods, and application performance benchmarks from previous releases".<br>In which component of the six-part prompt structure would this description MOST LIKELY appear?', [
+    ['Context', 0, 'Not correct. Context provides background information about the test environment or system being tested, not specific (input) data to be analyzed. While this mentions performance testing, it is listing actual data sources rather than providing background information.'],
+    ['Input data', 1, 'Correct. The description lists specific data sources (test reports, monitoring logs, performance benchmarks) that will be processed by the LLM to perform the analysis task.'],
+    ['Constraints', 0, 'Not correct. Constraints outline restrictions or special considerations for how the task should be performed. The description lists actual data sources rather than restrictions on the analysis approach.'],
+    ['Output format', 0, 'Not correct. Output format specifies the expected structure and characteristics of the LLM’s response. The description lists actual data sources, without any reference to how results should be presented.']],
+    '', 'Правило: <b>конкретні джерела даних, які модель обробляє → input data</b>; <b>фонова інформація про систему → context</b>. Слово «performance» у тексті — пастка, що штовхає до context.'),
+  SQ2(9, '2.1.1', 'constr-out', 'A tester wants an LLM to analyze a requirements specification for potential defects. In the structured prompt the tester is using, one line reads: "The potential defects must be provided in a markdown table with the following columns: ID, requirement reference, defect type, description, severity".<br>In which component of the six-part prompt structure would this line MOST LIKELY appear?', [
+    ['Instructions', 0, 'Not correct. The given line does not describe what task to perform, but rather how to present the results.'],
+    ['Constraints', 0, 'Not correct. The given line is not imposing restrictions or limitations on the analysis process, but rather specifying the desired presentation format. Constraints might include aspects like “exclude cosmetic issues”.'],
+    ['Output format', 1, 'Correct. The given line matches the syllabus definition of output format specifications that guide how the LLM should format the output.'],
+    ['Context', 0, 'Not correct. The given line provides no background information such as the context of the requirements specification. Instead, it is about formatting the output.']],
+    '', '«Must» звучить як обмеження, але зміст — <b>як подати результат</b> (таблиця, колонки) → output format. Constraints — про обробку («exclude cosmetic issues»).'),
+  SQ2(10, '2.1.2', 'three', 'Which of the following BEST differentiates prompt chaining, few-shot prompting, and meta prompting techniques?', [
+    ['Prompt chaining focuses on providing examples, few-shot prompting breaks tasks into subtasks, and meta prompting refines prompts manually.', 0, 'Not correct. Prompt chaining is defined by decomposing a task into sequential prompts; few-shot supplies examples; meta prompting relies on the LLM to revise prompts by itself, not on the tester refining manually.'],
+    ['Few-shot prompting provides guidance with examples, prompt chaining breaks tasks into multiple prompts, and meta prompting allows the model to iteratively refine its own prompts.', 1, 'Correct. Few-shot provides guidance with examples, prompt chaining decomposes tasks into intermediate steps (multiple prompts), and meta prompting uses AI to refine its own prompts iteratively.'],
+    ['Meta prompting emphasizes breaking down tasks into steps, prompt chaining uses examples, and few-shot prompting focuses on manual optimization of prompts.', 0, 'Not correct. Meta prompting’s core purpose is automatic prompt refinement by the LLM; prompt chaining is step-by-step decomposition; few-shot supplies examples.'],
+    ['Prompt chaining provides guidance without examples, few-shot provides guidance with examples, and meta prompting relies on tester-defined prompts.', 0, 'Not correct. Prompt chaining is defined by stepwise decomposition, not “guidance without examples”. Meta prompting relies on the LLM to generate/refine prompts.']],
+    '', 'Класичне «перемішування»: правильний варіант — єдиний, де кожна техніка має <b>свою</b> суть: few-shot = приклади, chaining = кілька промптів, meta = LLM покращує власні промпти.'),
+  SQ2(11, '2.1.3', 'sys', 'What is the primary function of a system prompt in interactions with LLMs?', [
+    ['To provide a framework for the LLM behavior for the entire conversation.', 1, 'Correct. The system prompt stays constant throughout the interaction session and establishes the fundamental framework for how the LLM should respond.'],
+    ['To provide specific questions or instructions from the user to the LLM.', 0, 'Not correct. This describes the function of a user prompt, not a system prompt.'],
+    ['To adjust dynamically with each user interaction and set the conversation’s context.', 0, 'Not correct. The system prompt does not adjust dynamically; it remains constant.'],
+    ['To include visible input from the user and set rules for the conversation.', 0, 'Not correct. The system prompt is hidden and does not include visible input from the user.']],
+    '', 'System prompt: <b>сталий, прихований, на всю розмову</b>. Варіанти b–d описують ознаки user prompt (змінний, видимий, від користувача).'),
+  SQ2(12, '2.2.1', 'chain221', 'You are tasked with applying the following test approach to a set of stable requirements for a new project: generate test conditions, prioritize them based on risk level, and identify potential coverage gaps. The requirements have already been thoroughly reviewed for defects.<br>Which of the following sequences of steps (i-v) should you follow to effectively apply Generative AI to implement this test approach using a prompt chaining technique?<div class="pre">i.   Submit the requirements to the LLM and prompt it to produce test conditions based on those requirements.\nii.  Provide the test conditions to the LLM, ensuring it understands the context for prioritization, and prompt it to prioritize those test conditions accordingly.\niii. Provide the prioritized test conditions to the LLM and prompt it to analyze them to determine whether all aspects of the requirements are addressed in the test conditions.\niv.  Submit the requirements to the LLM and prompt it to produce prioritized test conditions that address all aspects of the requirements.\nv.   Submit the requirements to the LLM and prompt it to detect inconsistencies and ambiguities in those requirements.</div>', [
+    ['i, ii, and iii', 1], ['iv, and ii', 0], ['i, iii, and v', 0], ['v, and iv', 0]],
+    'i. Correct — begins with generating test conditions from the requirements. ii. Correct — LLMs can prioritize test conditions based on risk level when provided with proper context. iii. Correct — coverage analysis to determine whether all aspects of the test basis are covered. iv. Not correct — attempts to do everything in one step rather than breaking it down. v. Not correct — the requirements are stable and already thoroughly reviewed for defects. Thus a) is correct.',
+    'Читайте умову як вимогу до ланцюга: <b>три цілі = три кроки</b> (умови → пріоритети → покриття). (iv) — «все одним промптом» (не chaining), (v) — зайвий крок, бо вимоги вже відрев’ювлені. K3, 2 бали.'),
+  SQ2(13, '2.2.2', 'ho222', 'Consider applying the few-shot structured prompting technique to generate Gherkin-style test cases (i.e., scenario-based) for the following user story and acceptance criterion:<br>– User story: "As a user, I want to reset my password so that I can regain access to my account if I forget it."<br>– Acceptance criterion: "When a user submits a registered email address then they receive a password reset email."<br>You can rely on predefined examples that include user stories, acceptance criteria, and Gherkin-style test cases. Which one of the following prompts is BEST suited to this task?', [
+    ['<b>Prompt A</b><div class="pre">Role: Act as a test analyst.\nContext: You are testing a password reset functionality.\nInstruction: Generate Gherkin-style test cases for the user story and acceptance criterion, using the following predefined examples as a guide: << predefined examples >>.\nInput Data: <<< user story >>> and <<< acceptance criterion >>>.\nConstraints: Rely on best practices to create test cases.\nOutput Format: Generate test cases with expected results.</div>', 0, 'Not correct. It does not explicitly require the “Given-When-Then” syntax and relies on vague best practices in the constraints; does not ensure alignment with the acceptance criterion.'],
+    ['<b>Prompt B</b><div class="pre">Role: Act as a test analyst specializing in Gherkin-style test cases.\nContext: You are testing a password reset functionality.\nInstruction: Generate Gherkin-style test cases for the user story and acceptance criterion, using the following predefined examples as a guide: << predefined examples >>.\nInput Data: <<< user story >>> and <<< acceptance criterion >>>.\nConstraints: Use "Given-When-Then" syntax and ensure alignment with the acceptance criterion.\nOutput Format: Respect the given Gherkin-style test case format.</div>', 1, 'Correct. Comprehensive and leverages predefined examples to guide the LLM.'],
+    ['<b>Prompt C</b><div class="pre">Role: Act as a test analyst.\nContext: You are testing a password reset functionality.\nInstruction: Generate Gherkin-style test cases for the user story and acceptance criterion. Rely on best practices to create test cases.\nInput Data: <<< user story >>> and <<< acceptance criterion >>>.\nConstraints: Use "Given-When-Then" syntax and ensure alignment with the acceptance criterion.\nOutput Format: Respect the given Gherkin-style test case format.</div>', 0, 'Not correct. Lacks the use of predefined examples and relies on vague best practices in the instructions.'],
+    ['<b>Prompt D</b><div class="pre">Role: Act as a test analyst.\nContext: You are testing a password reset functionality.\nInstruction: Generate at least two Gherkin-style test cases for the user story and acceptance criterion. Focus on edge cases.\nInput Data: <<< user story >>> and <<< acceptance criterion >>>.\nConstraints: Ensure all test cases follow "Given-When-Then" syntax.\nOutput Format: Respect the given Gherkin-style test case format.</div>', 0, 'Not correct. Focuses on edge cases but neglects comprehensive coverage and the use of examples for guidance.']],
+    '', 'Чек-лист для таких питань: <b>(1) є приклади?</b> (few-shot) <b>(2) явний GWT-синтаксис?</b> <b>(3) відповідність AC?</b> Лише B має всі три. «Best practices» — розмите формулювання, ознака слабкого варіанту. K3, 2 бали.'),
+  SQ2(14, '2.2.3', 'ho223', 'You are tasked with applying structured prompting to analyze regression test results. Here is an initial draft of the prompt:<div class="pre">' + PROMPT_Q14 + '</div>You are asked to improve this prompt. Which of the following improvements would BEST align the prompt with structured prompt engineering best practices for comprehensive regression test report analysis?', [
+    ['Add a step to cluster similar issues and cross-check findings against the known anomalies list.', 0, 'Not correct. Addresses clustering and cross-checking but misses other critical steps like separating test results.'],
+    ['Specify that the role is a regression test analyst specializing in actionable insights.', 0, 'Not correct. Improves role clarity but does not expand instructions or address structured steps.'],
+    ['Expand the instruction to include separating expected results and actual results, clustering issues, and highlighting discrepancies.', 1, 'Correct. Expands instructions to include all critical structured analysis steps: separating expected and actual results, clustering issues, highlighting discrepancies.'],
+    ['Include references to regression testing principles such as "Given-When-Then" in the constraints.', 0, 'Not correct. Introduces irrelevant constraints, misaligning the prompt with the task requirements.']],
+    '', 'Найслабше місце чернетки — розмита <b>instruction</b>. Найкраще покращення додає <b>усі</b> ключові кроки аналізу; a) — частково, b) — лише role, d) — нерелевантний Gherkin. K3, 2 бали.'),
+  SQ2(15, '2.2.4', 'ho224', 'You are using an LLM to assist in preparing actionable test metrics from raw data. The metrics include test progress, defect trends, and coverage, which are graphically displayed and explained with text. Your goal is to ensure the generated metrics are accurate, actionable, and easily interpretable by stakeholders. Here is an initial draft of a prompt:<div class="pre">' + PROMPT_Q15 + '</div>Which of the following improvements would BEST enhance the LLM’s ability to produce accurate and actionable metrics?', [
+    ['Specify that the role is a test manager focusing on actionable insights and decision support, ensuring comprehensive analysis of test data.', 0, 'Not correct. Clarifies the role but does not add any concrete instruction that improves accuracy, actionability, or interpretability.'],
+    ['Add an instruction to include potential risks identified from the trends in the generated metrics, along with their impact assessment and priority levels.', 0, 'Not correct. Adds a risk-analysis task that could distract the model from the core metrics and offers no mechanism for making results clear to stakeholders.'],
+    ['Expand the output format to include a plain-language summary that interprets the metrics and outlines next steps for stakeholders.', 1, 'Correct. A plain-language summary that interprets the metrics and outlines next steps directly supports stakeholder understanding and actionability (see 2.2.4: “Enhanced test metrics visualization and reporting”).'],
+    ['Emphasize constraints that the output is also easily interpretable by stakeholders, using clear language and avoiding technical jargon throughout the response.', 0, 'Not correct. Merely re-states an existing constraint and gives no specific guidance on how to achieve stakeholder-level interpretability.']],
+    '', 'Мета — <b>actionable + interpretable</b>. Конкретна зміна output format (summary + next steps) досягає обох. Дистрактори: «краща role», «повтор constraint», «додатковий аналіз ризиків» — правдоподібні, але не по суті. K3, 2 бали.'),
+  SQ2(16, '2.2.5', 'decide', 'Your goal is to create test cases for an AI-based system that suffers from the test oracle problem, preventing you from determining expected results. You can only count on a few existing test cases with known expected results. Through appropriate analysis, you have identified a set of well-defined transformation rules that specify how changes to inputs affect expected results. These rules can be applied to all existing test cases. You have decided to rely on Generative AI, providing a given LLM with the existing test cases with their inputs and expected results, a clear description of the transformation rules, and guidelines for generating additional test cases by precisely applying these rules. With the specified information, the chosen LLM can directly generate additional test cases in line with your expectations.<br>Which of the following prompting techniques is BEST suited to achieve your goal in this scenario?', [
+    ['Few-shot prompting', 1, 'Correct. Few-shot prompting is ideal: you provide some examples (the existing test cases with inputs and expected results) to guide the LLM in applying the transformation rules.'],
+    ['Prompt chaining', 0, 'Not correct. While prompt chaining could be used, it could unnecessarily complicate this very straightforward task.'],
+    ['Meta prompting', 0, 'Not correct. While meta-prompting could be used, it is not as direct and specific as few-shot prompting for this very straightforward task.'],
+    ['Zero-shot prompting', 0, 'Not correct. Zero-shot prompting would not be effective since it would not leverage existing test cases as examples.']],
+    '', 'Ключові сигнали: «a few existing test cases» (= приклади), «can directly generate» (= проста задача). Довгий текст про oracle problem і metamorphic-правила — шум. K3, 2 бали.'),
+  SQ2(17, '2.3.1', 'pairs', 'You are leveraging Generative AI to assist in testing an entertainment software application. The Generative AI model generates test cases for user interaction scenarios, test scripts for API interactions, and synthetic test data to address edge cases.<br>To effectively evaluate the Generative AI model’s performance and to refine prompts, which combination of metrics and actions BEST ensures comprehensive assessment and improvement?', [
+    ['Evaluate the diversity of test cases to ensure varied input scenarios and use test execution success rate to validate the functionality of generated API test scripts.', 1, 'Correct. Diversity ensures comprehensive coverage of edge cases, and test execution success rate evaluates the reliability of API test scripts.'],
+    ['Apply accuracy and completeness metrics to validate test cases against entertainment software requirements and rely on time efficiency to compare AI-generated test scripts with manual test efforts.', 0, 'Not correct. Relying primarily on time efficiency does not fully evaluate coverage or test execution reliability.'],
+    ['Focus on precision to ensure generated test data meets entertainment software compliance standards, while contextual fit and test execution success rate assesses the alignment and usability of test scripts.', 0, 'Not correct. Precision and contextual fit are valuable but do not address diversity or thoroughly evaluate test execution success for API test scripts.'],
+    ['Prioritize relevance and contextual fit for all outputs to maintain consistency with entertainment software requirements and include diversity metrics to expand edge case coverage.', 0, 'Not correct. Without considering metrics like test execution success rate or accuracy, critical aspects of evaluation are missed.']],
+    '', 'Зіставте артефакти з метриками: сценарії + edge cases → <b>diversity</b>; API-скрипти → <b>execution success rate</b>. Лише a) покриває обидва ключові артефакти.'),
+  SQ2(18, '2.3.2', 'which232', 'Which of the following techniques for evaluating and iteratively refining prompts is BEST suited for determining why an LLM consistently generates test cases with wrong expected results that contradict the input requirements, thereby providing insights to optimize the prompt and prevent similar errors?', [
+    ['Output analysis', 1, 'Correct. Output analysis examines LLM outputs for inaccuracies or inconsistencies; classifying the wrong expected results reveals why the prompt misled the LLM.'],
+    ['A/B testing of prompts', 0, 'Not correct. A/B testing is better suited for comparing different prompt versions than for diagnosing the cause of wrong expected results.'],
+    ['Adjusting prompt length and specificity', 0, 'Not correct. It can improve responses, but does not directly address the cause of wrong expected results.'],
+    ['Integrating user feedback', 0, 'Not correct. Useful for real-world needs, but does not directly address the cause of wrong expected results.']],
+    '', 'Слова-сигнали: «determining <b>why</b>», «prevent similar errors» → <b>output analysis</b> (типи помилок). A/B — «яка версія краща», а не «чому».')
+];
+
+// ===================== GLOSSARY =====================
+const AD2 = 'Appendix D';
+C2.glossary = [
+  { id: 'g2-zero', term: 'Zero-shot prompting', sec: '2.1.2', src: AD2, en: 'A prompt writing technique where the prompt contains no examples, relying on the model’s pre-existing knowledge to generate a response.', ua: 'Промпт без прикладів — модель спирається на власні знання.' },
+  { id: 'g2-one', term: 'One-shot prompting', sec: '2.1.2', src: AD2, en: 'A prompt writing technique where the prompt contains one example to guide the LLM’s response.', ua: 'Рівно один приклад очікуваного результату.' },
+  { id: 'g2-few', term: 'Few-shot prompting', sec: '2.1.2', src: AD2, en: 'A technique where a model is given a few examples within the prompt to guide it in generating appropriate responses.', ua: 'Кілька прикладів у промпті → стабільний, очікуваний результат.' },
+  { id: 'g2-meta', term: 'Meta prompting', sec: '2.1.2', src: AD2, en: 'The crafting of higher-level instructions that generate specific prompts for exploring or automating capabilities.', ua: '«Промпт про промпт»: LLM генерує/покращує промпти, тестувальник оцінює.' },
+  { id: 'g2-sys', term: 'System prompt', sec: '2.1.3', src: AD2, en: 'A predefined instruction set, typically hidden from the chatbot’s users, that consistently establishes the context, tone, and boundaries for an LLM’s responses and guides its behavior throughout interactions.', ua: 'Сталі приховані правила на всю розмову: роль, тон, обмеження.' },
+  { id: 'g2-user', term: 'User prompt', sec: '2.1.3', src: AD2, en: 'An instruction or query entered by a user into a Large Language Model (LLM) that directs the model’s response to fulfil specific tasks or provide desired information.', ua: 'Видимий запит користувача; змінюється з кожною взаємодією.' },
+  { id: 'g2-nlp', term: 'Natural language processing (NLP)', sec: '2.2.1', src: AD2, en: 'The processing of data encoded in natural language by computers to retrieve information and for knowledge representation.', ua: 'Обробка природної мови; завдяки їй LLM розбиває вимоги на тестовані твердження.' },
+  { id: 'g2-6c', term: 'Six prompt components', sec: '2.1.1', src: '§2.1.1', en: 'Role, context, instruction, input data, constraints, output format.', ua: 'Хто? Де? Що? З чим? У яких межах? Як віддати?' },
+  { id: 'g2-ctx', term: 'Context (prompt component)', sec: '2.1.1', src: '§2.1.1', en: 'Background information the GenAI model needs to determine the test conditions: details about the test object, the functionality to be tested, and relevant contextual information.', ua: 'Фон про систему — не плутати з input data (дані для обробки).' },
+  { id: 'g2-con', term: 'Constraints (prompt component)', sec: '2.1.1', src: '§2.1.1', en: 'Restrictions or special considerations the LLM should adhere to; they specify how instructions should be applied to input data.', ua: '«Як можна/не можна» обробляти дані (напр. exclude cosmetic issues).' },
+  { id: 'g2-out', term: 'Output format (prompt component)', sec: '2.1.1', src: '§2.1.1', en: 'Output specifications that denote the expected format, structure or characteristics of the response.', ua: 'Як віддати результат: таблиця, колонки, JSON, Gherkin.' },
+  { id: 'g2-tds', term: 'Test data synthesis', sec: '2.2.2', src: '§2.2.2', en: 'GenAI can create representative, data privacy-preserving synthetic test data that resembles production data, covering extreme situations and varied test conditions.', ua: 'Синтетичні дані «як у проді», без чутливої інформації.' },
+  { id: 'g2-heal', term: 'Self-healing and adaptive tests', sec: '2.2.3', src: '§2.2.3', en: 'GenAI can be used to automatically adjust test scripts to handle minor UI or API changes, preventing unnecessary failures from small modifications.', ua: 'Скрипти самі підлаштовуються під дрібні зміни UI/API.' },
+  { id: 'g2-imp', term: 'Impact analysis (regression)', sec: '2.2.3', src: '§2.2.3', en: 'Analyzing code changes to identify high-risk areas, enabling targeted regression testing where it is most needed.', ua: 'Що зачепили зміни коду → цільовий регрес.' },
+  { id: 'g2-kdt', term: 'Keyword-driven automation (with GenAI)', sec: '2.2.3', src: '§2.2.3', en: 'LLMs implement test scripts based on keyword-driven frameworks, where pre-defined keywords represent common test steps; GenAI maps keywords to test cases and generates scripts.', ua: 'Ключові слова = типові кроки; LLM генерує з них скрипти (few-shot).' },
+  { id: 'g2-ctrl', term: 'Test control (GenAI support)', sec: '2.2.4', src: '§2.2.4', en: 'GenAI can assist with test control by providing insights for reprioritizing tests, adjusting test schedules, and reallocating resources as needed.', ua: 'Monitoring — бачу відхилення; control — коригую план, розклад, ресурси.' },
+  { id: 'g2-nls', term: 'Natural language summary (test metrics)', sec: '2.2.4', src: '§2.2.4', en: 'GenAI can assist in the creation of dynamic dashboards and natural language summaries, ensuring that all stakeholders have access to the relevant metrics.', ua: 'Пояснення метрик звичайною мовою + наступні кроки для стейкхолдерів.' },
+  { id: 'g2-sel', term: 'Choosing a prompting technique', sec: '2.2.5', src: '§2.2.5', en: 'Prompt chaining: complex tasks requiring precision with human verification at each step. Few-shot: repetitive or specific/constrained output format tasks. Meta prompting: flexible, dynamic tasks; crafting prompts for new tasks.', ua: 'Точність → ланцюг. Шаблон → приклади. Новизна → мета. Можна поєднувати.' },
+  { id: 'g2-acc', term: 'Accuracy (GenAI metric)', sec: '2.3.1', src: '§2.3.1', en: 'Measures the overall correctness of the generated output against expert-written test cases, requirements, or other standards.', ua: 'Загальна правильність vs еталон. Приклад: покриття всіх вимог.' },
+  { id: 'g2-prec', term: 'Precision (GenAI metric)', sec: '2.3.1', src: '§2.3.1', en: 'Evaluates the correctness of the generated output with respect to a specific objective.', ua: 'Правильність щодо конкретної цілі. Приклад: правильно знайдені аномалії.' },
+  { id: 'g2-rec', term: 'Recall (GenAI metric)', sec: '2.3.1', src: '§2.3.1', en: 'Measures the ability of a model to identify all relevant instances within a dataset.', ua: 'Чи знайдено ВСЕ релевантне. Приклад: valid та invalid partitions.' },
+  { id: 'g2-rel', term: 'Relevance and contextual fit', sec: '2.3.1', src: '§2.3.1', en: 'Determines whether the generated output is applicable and appropriate for a given context.', ua: 'Узгодженість з test basis і доменом.' },
+  { id: 'g2-div', term: 'Diversity (GenAI metric)', sec: '2.3.1', src: '§2.3.1', en: 'Enables a wide range of inputs and scenarios to be covered, avoiding repetition.', ua: 'Різні поведінки користувачів, edge cases, без повторів.' },
+  { id: 'g2-exe', term: 'Execution success rate', sec: '2.3.1', src: '§2.3.1', en: 'Measures the proportion of generated test artefacts that can be executed successfully as is in the test environment.', ua: 'Скільки скриптів запускаються одразу, без синтаксичних помилок.' },
+  { id: 'g2-time', term: 'Time efficiency', sec: '2.3.1', src: '§2.3.1', en: 'Evaluates the time saved compared to manual test efforts.', ua: 'Час AI vs час людини на ту саму роботу.' },
+  { id: 'g2-ab', term: 'A/B testing of prompts', sec: '2.3.2', src: '§2.3.2', en: 'Create multiple versions of prompts and evaluate which version produces better results based on predefined metrics.', ua: 'Порівняння версій промпту за метриками.' },
+  { id: 'g2-oa', term: 'Output analysis', sec: '2.3.2', src: '§2.3.2', en: 'Examine AI-generated output for inaccuracies or inconsistencies, e.g. with respect to the test basis; understanding error types helps refine prompts.', ua: 'Розбір помилок у виводі → «чому?» → кращий промпт.' },
+  { id: 'g2-lib', term: 'Prompt library', sec: '2.3.2', src: '§2.3.2', en: 'Shared collection of prompts across a test team or organization, supporting standardized techniques, consistent quality and a culture of learning.', ua: 'Спільна бібліотека перевірених промптів команди.' }
+];
+C2.flashcards = C2.glossary.map(g => ({ id: 'fc-' + g.id, term: g.term, sec: g.sec, en: g.en, ua: g.ua, kind: 'term' })).concat([
+  { id: 'fc2-k1', kind: 'concept', sec: '2.2.5', term: 'Chaining vs Few-shot vs Meta: коли що?', en: 'Chaining: complex tasks requiring precision with human verification at each step. Few-shot: repetitive or specific/constrained output format tasks. Meta: flexible, dynamic tasks; crafting prompts for new tasks.', ua: 'Точність → ланцюг. Шаблон → приклади. Новизна → мета.' },
+  { id: 'fc2-k2', kind: 'concept', sec: '2.2.1', term: '5 задач test analysis з GenAI', en: 'Identify defects in the test basis; generate test conditions; prioritize by risk; support coverage analysis; suggest test techniques.', ua: 'Д-У-Р-П-Т: дефект, умова, ризик, покриття, техніка.' },
+  { id: 'fc2-k3', kind: 'concept', sec: '2.2.3', term: '5 активностей регресу з GenAI', en: 'Keyword-driven automation; impact analysis & test optimization; self-healing & adaptive tests; automated reporting & insights; enhanced defect reporting & RCA.', ua: 'Ключ — Вплив — Лікування — Звіт — Причина.' },
+  { id: 'fc2-k4', kind: 'concept', sec: '2.2.4', term: 'Monitoring vs Control', en: 'Monitoring: metrics, trends, predict risks, alert deviations from plan. Control: reprioritize tests, adjust schedules, reallocate resources.', ua: 'Monitoring — бачу; Control — кермую.' },
+  { id: 'fc2-k5', kind: 'concept', sec: '2.3.2', term: '5 технік покращення промптів', en: 'Iterative prompt modification; A/B testing; output analysis; integrate user feedback; adjust prompt length and specificity.', ua: '«Чому?» → output analysis; «Яка краща?» → A/B; «Чи зручно?» → feedback.' }
+]);
+
+// ---- review adjustments: recall drills in K3 sections are K2 (1 point); q225-8 belongs to LO 2.1.2
+['q221-1','q221-7','c222-2','q222-1','q222-2','q222-3','q222-4','q222-7','q222-8','q223-1','q223-2','q223-3','q223-4','q223-8','q224-1','q224-3','q224-6','q224-7','q225-1','q225-2','q225-6','q225-7','c221-1','c223-1','c224-1','q221-2','q221-3','q221-4','q224-2'].forEach(id => {
+  const all = Object.values(C2.quizzes).flat().concat(...Object.values(C2.slides).map(a => a.filter(x => x.type === 'q').map(x => x.q)));
+  const q = all.find(z => z.id === id); if (q) { q.k = 'K2'; q.drill = true; }
+});
+(function () { const i = C2.quizzes['2.2.5'].findIndex(q => q.id === 'q225-8'); if (i >= 0) { const q = C2.quizzes['2.2.5'].splice(i, 1)[0]; q.lo = 'GenAI-2.1.2'; q.k = 'K2'; C2.quizzes['2.1.2'].push(q); } })();
+
 </script>
 <script>
 // ===== storage =====
@@ -1578,7 +3018,7 @@ function questionEl(q, o) {
   const order = q.fixed ? q.opts.map((_, i) => i) : shuffle(q.opts.map((_, i) => i));
   const sec = secById(q.sec) || {};
   const el = h(`<div class="q fade">
-    <div class="row small"><span class="chip acc">${q.lo}</span>${kchip(q.k)}<span class="chip">розділ ${q.sec}</span>${q.num ? `<span class="chip">Sample Q${q.num}</span>` : ''}${need > 1 ? '<span class="chip k3">Select TWO</span>' : ''}<span class="spacer"></span>${o.counter || ''}</div>
+    <div class="row small"><span class="chip acc">${q.lo}</span>${kchip(q.k)}<span class="chip">розділ ${q.sec}</span>${q.num ? `<span class="chip">Sample Q${q.num}</span>` : ''}${need > 1 ? '<span class="chip k3">Select TWO</span>' : ''}${q.k === 'K3' ? '<span class="chip k3">2 бали</span>' : ''}<span class="spacer"></span>${o.counter || ''}</div>
     <div class="stem">${q.q}</div>
     <div class="opts"></div>
     <div class="actions row" style="margin-top:8px"></div>
@@ -1683,7 +3123,7 @@ function vHome(app) {
       <div class="small"><b>${cc.examQ}</b> пит. · <b>${cc.examPts}</b> балів · ${pct(cc.examPts, e.points)}% іспиту</div>
       ${open ? `<div class="bar"><i style="width:${cc.id === cur() ? chPct : 0}%;background:${cc.color}"></i></div>` : ''}
     </div>`);
-    if (open) { card.style.cursor = 'pointer'; card.onclick = () => { G.cur = cc.id; save(); applyChapter(); render(); }; }
+    if (open) { card.style.cursor = 'pointer'; card.onclick = () => { G.cur = cc.id; quiz = null; exam = null; learn.sec = null; save(); applyChapter(); render(); }; }
     grid.appendChild(card);
   });
   app.appendChild(grid);
@@ -1773,6 +3213,18 @@ function badgesModal() {
   modal(`<h3>🏅 Бейджі · ⭐ Рівень ${levelInfo().lvl}</h3><div class="small muted" style="margin-bottom:8px">⚡ ${G.xp} XP · до рівня ${levelInfo().lvl + 1}: ${levelInfo().to - G.xp} XP</div><div class="badge-grid">${BADGES.map(b => `<div class="bdg ${G.badges.includes(bkey(b.id)) ? 'got' : ''}"><div class="e">${b.e}</div><b>${b.t}</b><div>${b.d}</div></div>`).join('')}</div>`, [{ t: 'Закрити', cls: 'primary' }]);
 }
 
+function chapterPicker() {
+  const bg = h(`<div class="modal-bg"><div class="card modal fade"><h3>Оберіть главу</h3><div class="list"></div><div class="row" style="margin-top:12px;justify-content:flex-end"><button class="btn">Закрити</button></div></div></div>`);
+  COURSE.chapters.forEach(c => {
+    const open = !!chapters[c.id];
+    const b = h(`<button class="opt" ${open ? '' : 'disabled'} style="border-left:4px solid ${c.color}"><span class="L" style="background:${c.color};color:#fff">${c.id}</span><span class="tx"><b>${c.title}</b><span class="why" style="display:block">${open ? (c.id === cur() ? '● поточна' : c.examPts + ' балів на іспиті') : '🔒 скоро'}</span></span></button>`);
+    if (open) b.onclick = () => { bg.remove(); G.cur = c.id; quiz = null; exam = null; learn.sec = null; save(); applyChapter(); render(); };
+    $('.list', bg).appendChild(b);
+  });
+  $('.row .btn', bg).onclick = () => bg.remove();
+  bg.addEventListener('click', e => { if (e.target === bg) bg.remove(); });
+  document.body.appendChild(bg);
+}
 // ---- learn
 function blk(cls, label, html, own) { return `<div class="blk ${cls}"><div class="lbl">${label}${own ? ' <span class="own">💡 тренер</span>' : ''}</div>${html}</div>`; }
 function vLearn(app) {
@@ -1828,7 +3280,7 @@ function drawSlide(holder) {
     card.appendChild(qe);
   } else if (sl.type === 'p') {
     const st = s.practice[sl.id] || {};
-    card.innerHTML = `<div class="row"><span class="chip k3">Практика · ${sl.ho}</span><span class="chip">hands-on · не екзаменується</span></div><h2>${sl.title}</h2>
+    card.innerHTML = `<div class="row"><span class="chip k3">Практика · ${sl.ho}</span><span class="chip">${sl.tag || 'hands-on · не екзаменується'}</span></div><h2>${sl.title}</h2>
       <div class="blk syl">${sl.task}</div>
       <h3>Ваша відповідь / промпт</h3><textarea placeholder="Напишіть тут свою відповідь або промпт…">${esc(st.text || '')}</textarea>
       <div class="row" style="margin-top:8px"><button class="btn primary" data-a="show">Показати еталон і чек-лист</button><span class="small muted">Текст зберігається автоматично.</span></div>
@@ -1911,7 +3363,7 @@ function drawQuiz(app) {
   KEY = e => { qe._key(e); };
 }
 function quizSummary(app) {
-  const qz = quiz, s = ch(), ok = qz.res.filter(r => r.ok).length, p = pct(ok, qz.res.length);
+  const qz = quiz, s = ch(), ok = qz.res.filter(r => r.ok).length, p = qz.mode === 'sample' ? pct(qz.res.reduce((a, r) => a + (r.ok ? qPts(r.q) : 0), 0), qz.res.reduce((a, r) => a + qPts(r.q), 0)) : pct(ok, qz.res.length);
   if (!qz.retry && qz.mode === 'quiz' && !qz.saved) {
     qz.saved = 1; const prev = s.quizBest[qz.sec];
     if (prev == null || p > prev) s.quizBest[qz.sec] = p;
@@ -1950,14 +3402,14 @@ function vFinal(app) {
     const n = d.final.length, base = Math.round(n * 1.5), ext = Math.round(n * 1.5 * 1.25 * 10) / 10;
     const bySec = {}; d.final.forEach(q => bySec[q.sec] = (bySec[q.sec] || 0) + 1);
     const c = h(`<div class="card fade"><h2 style="margin-top:0">Режим іспиту</h2>
-      <p>${n} нових питань по всіх розділах глави (не повторюють квізи). Відповіді та розбір — після завершення, як на реальному іспиті. Поріг: <b>65%</b>.</p>
+      <p>${n} нових питань по всіх розділах глави (не повторюють квізи). Відповіді та розбір — після завершення, як на реальному іспиті. Поріг: <b>65%</b> балів${d.final.some(q => q.k === 'K3') ? ' (K3-питання = 2 бали, як на іспиті)' : ''}.</p>
       <p class="small muted">Розподіл: ${Object.entries(bySec).map(([k, v]) => k + ' — ' + v).join(' · ')}</p>
       <p class="small muted">Кращий результат: <b>${s.finalBest == null ? '—' : s.finalBest + '%'}</b> ${s.finalPass ? '(PASS)' : ''}</p>
       <div class="row"><button class="btn primary" data-m="${base}">Старт · ${base} хв (1,5 хв/пит.)</button><button class="btn" data-m="${ext}">Старт · ${String(ext).replace('.', ',')} хв (+25%, не рідна мова)</button></div></div>`);
     $$('[data-m]', c).forEach(b => b.onclick = () => { startExam(+b.dataset.m); render(); });
     app.appendChild(c);
   } else {
-    const c = h(`<div class="card fade"><h2 style="margin-top:0">Офіційні питання Sample Exam A v1.1 до глави 1</h2>
+    const c = h(`<div class="card fade"><h2 style="margin-top:0">Офіційні питання Sample Exam A v1.1 до глави ${cur()}</h2>
       <p>Питання ${d.sample.map(q => 'Q' + q.num).join(', ')} з офіційного Sample Exam (у справжньому іспиті питання перемішані, тут — за LO). Після кожної відповіді: офіційний rationale ISTQB (EN) і пояснення тренера українською. Варіанти <b>не</b> перемішуються, бо rationale посилається на літери.</p>
       <p class="small muted">Кращий результат: <b>${s.sampleBest == null ? '—' : s.sampleBest + '%'}</b></p>
       <button class="btn primary">Почати</button></div>`);
@@ -2004,13 +3456,15 @@ function drawExam(app) {
     else if (e.key === 'ArrowLeft' && ex.i > 0) { ex.i--; redraw(); }
   };
 }
+function qPts(q) { return q.k === 'K3' ? 2 : 1; }
 function isCorrect(q, sel) { const ok = q.opts.map((o, i) => o.ok ? i : -1).filter(i => i >= 0); return !!sel && ok.length === sel.length && ok.every(i => sel.includes(i)); }
 function finishExam() {
   if (!exam || exam.done) return;
   clearInterval(timerId); timerId = null; exam.done = true;
   const s = ch(); let ok = 0;
-  exam.list.forEach(q => { const c = isCorrect(q, exam.ans[q.id]); if (c) ok++; recordAnswer(q, c, 'final'); });
-  const p = pct(ok, exam.list.length); exam.score = { ok, p }; step(STEP.finalDone);
+  let pts = 0, max = 0;
+  exam.list.forEach(q => { const c = isCorrect(q, exam.ans[q.id]); max += qPts(q); if (c) { ok++; pts += qPts(q); } recordAnswer(q, c, 'final'); });
+  const p = pct(pts, max); exam.score = { ok, p, pts, max }; step(STEP.finalDone);
   if (s.finalBest == null || p > s.finalBest) s.finalBest = p;
   if (p >= 65) { if (!s.finalPass) { s.finalPass = true; addXP(100); } award('final'); }
   save(); checkChapterBadges();
@@ -2018,10 +3472,10 @@ function finishExam() {
 }
 function examResult(app) {
   const ex = exam, d = D(), p = ex.score.p, pass = p >= 65;
-  const secs = {}; ex.list.forEach(q => { const r = secs[q.sec] = secs[q.sec] || { n: 0, ok: 0 }; r.n++; if (isCorrect(q, ex.ans[q.id])) r.ok++; });
+  const secs = {}; ex.list.forEach(q => { const r = secs[q.sec] = secs[q.sec] || { n: 0, ok: 0 }; r.n += qPts(q); if (isCorrect(q, ex.ans[q.id])) r.ok += qPts(q); });
   const weak = d.sections.filter(sc => secs[sc.id] && pct(secs[sc.id].ok, secs[sc.id].n) < 65);
   const c = h(`<div class="card fade"><h1>Результат підсумкового тесту</h1>
-    <div class="row"><div class="result-big ${pass ? 'pass' : 'fail'}">${pass ? 'PASS' : 'FAIL'}</div><div><div style="font-size:1.4rem;font-weight:800">${ex.score.ok} / ${ex.list.length} · ${p}%</div><div class="muted small">Поріг 65% · ліміт ${String(ex.min).replace('.', ',')} хв</div></div></div>
+    <div class="row"><div class="result-big ${pass ? 'pass' : 'fail'}">${pass ? 'PASS' : 'FAIL'}</div><div><div style="font-size:1.4rem;font-weight:800">${ex.score.pts} / ${ex.score.max} балів · ${p}%</div><div class="small muted">правильних відповідей: ${ex.score.ok} з ${ex.list.length}${ex.score.max > ex.list.length ? ' · K3-питання = 2 бали' : ''}</div><div class="muted small">Поріг 65% · ліміт ${String(ex.min).replace('.', ',')} хв</div></div></div>
     <h3>Розбивка по розділах</h3><div class="sb"></div>
     <h3>Рекомендації</h3><div class="rec"></div>
     <div class="row" style="margin-top:14px"><button class="btn primary" data-a="again">Пройти ще раз</button><button class="btn" data-a="rev">Робота над помилками</button></div></div>`);
@@ -2337,7 +3791,7 @@ function applyTheme() {
 function applyChapter() {
   const c = COURSE.chapters.find(x => x.id === cur()), r = document.documentElement.style;
   r.setProperty('--accent', c.color); r.setProperty('--accent-soft', hexA(c.color, .13)); r.setProperty('--accent-mid', hexA(c.color, .32));
-  $('#chLabel').textContent = 'Глава ' + c.id; QIDX = null;
+  $('#chLabel').textContent = 'Глава ' + c.id + ' ▾'; QIDX = null;
 }
 function init() {
   const tabs = $('#tabs');
@@ -2351,6 +3805,7 @@ function init() {
   });
   window.addEventListener('hashchange', render);
   $('#sync').onclick = syncInfo;
+  $('#chLabel').onclick = chapterPicker;
   $('#goalPill').onclick = () => { go('home'); setTimeout(() => { const pl = $('#plan'); pl && pl.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50); };
   $('#streakPill').onclick = streakModal;
   $('#badgePill').onclick = badgesModal;

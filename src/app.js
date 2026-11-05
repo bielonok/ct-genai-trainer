@@ -157,7 +157,7 @@ function questionEl(q, o) {
   const order = q.fixed ? q.opts.map((_, i) => i) : shuffle(q.opts.map((_, i) => i));
   const sec = secById(q.sec) || {};
   const el = h(`<div class="q fade">
-    <div class="row small"><span class="chip acc">${q.lo}</span>${kchip(q.k)}<span class="chip">розділ ${q.sec}</span>${q.num ? `<span class="chip">Sample Q${q.num}</span>` : ''}${need > 1 ? '<span class="chip k3">Select TWO</span>' : ''}<span class="spacer"></span>${o.counter || ''}</div>
+    <div class="row small"><span class="chip acc">${q.lo}</span>${kchip(q.k)}<span class="chip">розділ ${q.sec}</span>${q.num ? `<span class="chip">Sample Q${q.num}</span>` : ''}${need > 1 ? '<span class="chip k3">Select TWO</span>' : ''}${q.k === 'K3' ? '<span class="chip k3">2 бали</span>' : ''}<span class="spacer"></span>${o.counter || ''}</div>
     <div class="stem">${q.q}</div>
     <div class="opts"></div>
     <div class="actions row" style="margin-top:8px"></div>
@@ -262,7 +262,7 @@ function vHome(app) {
       <div class="small"><b>${cc.examQ}</b> пит. · <b>${cc.examPts}</b> балів · ${pct(cc.examPts, e.points)}% іспиту</div>
       ${open ? `<div class="bar"><i style="width:${cc.id === cur() ? chPct : 0}%;background:${cc.color}"></i></div>` : ''}
     </div>`);
-    if (open) { card.style.cursor = 'pointer'; card.onclick = () => { G.cur = cc.id; save(); applyChapter(); render(); }; }
+    if (open) { card.style.cursor = 'pointer'; card.onclick = () => { G.cur = cc.id; quiz = null; exam = null; learn.sec = null; save(); applyChapter(); render(); }; }
     grid.appendChild(card);
   });
   app.appendChild(grid);
@@ -352,6 +352,18 @@ function badgesModal() {
   modal(`<h3>🏅 Бейджі · ⭐ Рівень ${levelInfo().lvl}</h3><div class="small muted" style="margin-bottom:8px">⚡ ${G.xp} XP · до рівня ${levelInfo().lvl + 1}: ${levelInfo().to - G.xp} XP</div><div class="badge-grid">${BADGES.map(b => `<div class="bdg ${G.badges.includes(bkey(b.id)) ? 'got' : ''}"><div class="e">${b.e}</div><b>${b.t}</b><div>${b.d}</div></div>`).join('')}</div>`, [{ t: 'Закрити', cls: 'primary' }]);
 }
 
+function chapterPicker() {
+  const bg = h(`<div class="modal-bg"><div class="card modal fade"><h3>Оберіть главу</h3><div class="list"></div><div class="row" style="margin-top:12px;justify-content:flex-end"><button class="btn">Закрити</button></div></div></div>`);
+  COURSE.chapters.forEach(c => {
+    const open = !!chapters[c.id];
+    const b = h(`<button class="opt" ${open ? '' : 'disabled'} style="border-left:4px solid ${c.color}"><span class="L" style="background:${c.color};color:#fff">${c.id}</span><span class="tx"><b>${c.title}</b><span class="why" style="display:block">${open ? (c.id === cur() ? '● поточна' : c.examPts + ' балів на іспиті') : '🔒 скоро'}</span></span></button>`);
+    if (open) b.onclick = () => { bg.remove(); G.cur = c.id; quiz = null; exam = null; learn.sec = null; save(); applyChapter(); render(); };
+    $('.list', bg).appendChild(b);
+  });
+  $('.row .btn', bg).onclick = () => bg.remove();
+  bg.addEventListener('click', e => { if (e.target === bg) bg.remove(); });
+  document.body.appendChild(bg);
+}
 // ---- learn
 function blk(cls, label, html, own) { return `<div class="blk ${cls}"><div class="lbl">${label}${own ? ' <span class="own">💡 тренер</span>' : ''}</div>${html}</div>`; }
 function vLearn(app) {
@@ -407,7 +419,7 @@ function drawSlide(holder) {
     card.appendChild(qe);
   } else if (sl.type === 'p') {
     const st = s.practice[sl.id] || {};
-    card.innerHTML = `<div class="row"><span class="chip k3">Практика · ${sl.ho}</span><span class="chip">hands-on · не екзаменується</span></div><h2>${sl.title}</h2>
+    card.innerHTML = `<div class="row"><span class="chip k3">Практика · ${sl.ho}</span><span class="chip">${sl.tag || 'hands-on · не екзаменується'}</span></div><h2>${sl.title}</h2>
       <div class="blk syl">${sl.task}</div>
       <h3>Ваша відповідь / промпт</h3><textarea placeholder="Напишіть тут свою відповідь або промпт…">${esc(st.text || '')}</textarea>
       <div class="row" style="margin-top:8px"><button class="btn primary" data-a="show">Показати еталон і чек-лист</button><span class="small muted">Текст зберігається автоматично.</span></div>
@@ -490,7 +502,7 @@ function drawQuiz(app) {
   KEY = e => { qe._key(e); };
 }
 function quizSummary(app) {
-  const qz = quiz, s = ch(), ok = qz.res.filter(r => r.ok).length, p = pct(ok, qz.res.length);
+  const qz = quiz, s = ch(), ok = qz.res.filter(r => r.ok).length, p = qz.mode === 'sample' ? pct(qz.res.reduce((a, r) => a + (r.ok ? qPts(r.q) : 0), 0), qz.res.reduce((a, r) => a + qPts(r.q), 0)) : pct(ok, qz.res.length);
   if (!qz.retry && qz.mode === 'quiz' && !qz.saved) {
     qz.saved = 1; const prev = s.quizBest[qz.sec];
     if (prev == null || p > prev) s.quizBest[qz.sec] = p;
@@ -529,14 +541,14 @@ function vFinal(app) {
     const n = d.final.length, base = Math.round(n * 1.5), ext = Math.round(n * 1.5 * 1.25 * 10) / 10;
     const bySec = {}; d.final.forEach(q => bySec[q.sec] = (bySec[q.sec] || 0) + 1);
     const c = h(`<div class="card fade"><h2 style="margin-top:0">Режим іспиту</h2>
-      <p>${n} нових питань по всіх розділах глави (не повторюють квізи). Відповіді та розбір — після завершення, як на реальному іспиті. Поріг: <b>65%</b>.</p>
+      <p>${n} нових питань по всіх розділах глави (не повторюють квізи). Відповіді та розбір — після завершення, як на реальному іспиті. Поріг: <b>65%</b> балів${d.final.some(q => q.k === 'K3') ? ' (K3-питання = 2 бали, як на іспиті)' : ''}.</p>
       <p class="small muted">Розподіл: ${Object.entries(bySec).map(([k, v]) => k + ' — ' + v).join(' · ')}</p>
       <p class="small muted">Кращий результат: <b>${s.finalBest == null ? '—' : s.finalBest + '%'}</b> ${s.finalPass ? '(PASS)' : ''}</p>
       <div class="row"><button class="btn primary" data-m="${base}">Старт · ${base} хв (1,5 хв/пит.)</button><button class="btn" data-m="${ext}">Старт · ${String(ext).replace('.', ',')} хв (+25%, не рідна мова)</button></div></div>`);
     $$('[data-m]', c).forEach(b => b.onclick = () => { startExam(+b.dataset.m); render(); });
     app.appendChild(c);
   } else {
-    const c = h(`<div class="card fade"><h2 style="margin-top:0">Офіційні питання Sample Exam A v1.1 до глави 1</h2>
+    const c = h(`<div class="card fade"><h2 style="margin-top:0">Офіційні питання Sample Exam A v1.1 до глави ${cur()}</h2>
       <p>Питання ${d.sample.map(q => 'Q' + q.num).join(', ')} з офіційного Sample Exam (у справжньому іспиті питання перемішані, тут — за LO). Після кожної відповіді: офіційний rationale ISTQB (EN) і пояснення тренера українською. Варіанти <b>не</b> перемішуються, бо rationale посилається на літери.</p>
       <p class="small muted">Кращий результат: <b>${s.sampleBest == null ? '—' : s.sampleBest + '%'}</b></p>
       <button class="btn primary">Почати</button></div>`);
@@ -583,13 +595,15 @@ function drawExam(app) {
     else if (e.key === 'ArrowLeft' && ex.i > 0) { ex.i--; redraw(); }
   };
 }
+function qPts(q) { return q.k === 'K3' ? 2 : 1; }
 function isCorrect(q, sel) { const ok = q.opts.map((o, i) => o.ok ? i : -1).filter(i => i >= 0); return !!sel && ok.length === sel.length && ok.every(i => sel.includes(i)); }
 function finishExam() {
   if (!exam || exam.done) return;
   clearInterval(timerId); timerId = null; exam.done = true;
   const s = ch(); let ok = 0;
-  exam.list.forEach(q => { const c = isCorrect(q, exam.ans[q.id]); if (c) ok++; recordAnswer(q, c, 'final'); });
-  const p = pct(ok, exam.list.length); exam.score = { ok, p }; step(STEP.finalDone);
+  let pts = 0, max = 0;
+  exam.list.forEach(q => { const c = isCorrect(q, exam.ans[q.id]); max += qPts(q); if (c) { ok++; pts += qPts(q); } recordAnswer(q, c, 'final'); });
+  const p = pct(pts, max); exam.score = { ok, p, pts, max }; step(STEP.finalDone);
   if (s.finalBest == null || p > s.finalBest) s.finalBest = p;
   if (p >= 65) { if (!s.finalPass) { s.finalPass = true; addXP(100); } award('final'); }
   save(); checkChapterBadges();
@@ -597,10 +611,10 @@ function finishExam() {
 }
 function examResult(app) {
   const ex = exam, d = D(), p = ex.score.p, pass = p >= 65;
-  const secs = {}; ex.list.forEach(q => { const r = secs[q.sec] = secs[q.sec] || { n: 0, ok: 0 }; r.n++; if (isCorrect(q, ex.ans[q.id])) r.ok++; });
+  const secs = {}; ex.list.forEach(q => { const r = secs[q.sec] = secs[q.sec] || { n: 0, ok: 0 }; r.n += qPts(q); if (isCorrect(q, ex.ans[q.id])) r.ok += qPts(q); });
   const weak = d.sections.filter(sc => secs[sc.id] && pct(secs[sc.id].ok, secs[sc.id].n) < 65);
   const c = h(`<div class="card fade"><h1>Результат підсумкового тесту</h1>
-    <div class="row"><div class="result-big ${pass ? 'pass' : 'fail'}">${pass ? 'PASS' : 'FAIL'}</div><div><div style="font-size:1.4rem;font-weight:800">${ex.score.ok} / ${ex.list.length} · ${p}%</div><div class="muted small">Поріг 65% · ліміт ${String(ex.min).replace('.', ',')} хв</div></div></div>
+    <div class="row"><div class="result-big ${pass ? 'pass' : 'fail'}">${pass ? 'PASS' : 'FAIL'}</div><div><div style="font-size:1.4rem;font-weight:800">${ex.score.pts} / ${ex.score.max} балів · ${p}%</div><div class="small muted">правильних відповідей: ${ex.score.ok} з ${ex.list.length}${ex.score.max > ex.list.length ? ' · K3-питання = 2 бали' : ''}</div><div class="muted small">Поріг 65% · ліміт ${String(ex.min).replace('.', ',')} хв</div></div></div>
     <h3>Розбивка по розділах</h3><div class="sb"></div>
     <h3>Рекомендації</h3><div class="rec"></div>
     <div class="row" style="margin-top:14px"><button class="btn primary" data-a="again">Пройти ще раз</button><button class="btn" data-a="rev">Робота над помилками</button></div></div>`);
@@ -916,7 +930,7 @@ function applyTheme() {
 function applyChapter() {
   const c = COURSE.chapters.find(x => x.id === cur()), r = document.documentElement.style;
   r.setProperty('--accent', c.color); r.setProperty('--accent-soft', hexA(c.color, .13)); r.setProperty('--accent-mid', hexA(c.color, .32));
-  $('#chLabel').textContent = 'Глава ' + c.id; QIDX = null;
+  $('#chLabel').textContent = 'Глава ' + c.id + ' ▾'; QIDX = null;
 }
 function init() {
   const tabs = $('#tabs');
@@ -930,6 +944,7 @@ function init() {
   });
   window.addEventListener('hashchange', render);
   $('#sync').onclick = syncInfo;
+  $('#chLabel').onclick = chapterPicker;
   $('#goalPill').onclick = () => { go('home'); setTimeout(() => { const pl = $('#plan'); pl && pl.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50); };
   $('#streakPill').onclick = streakModal;
   $('#badgePill').onclick = badgesModal;
