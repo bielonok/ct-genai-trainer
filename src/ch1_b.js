@@ -198,8 +198,8 @@ C1.slides['1.2.2'] = [
   { id: 'chk-122a', type: 'q', q: Q('c122-1', '1.2.2', 'apps', 'A tool vendor embeds an LLM via an API into its test management tool so that draft test cases are automatically generated for every new user story. Which interaction model is this?', [
     ['AI chatbot, because the LLM generates natural language', 0, 'Природна мова є в обох моделях; тут немає діалогу — задача автоматизована й інтегрована.'],
     ['LLM-powered testing application', 1, 'Інтеграція через API у test tool, well-defined automated task, customization/scalability.'],
-    ['Symbolic AI system', 0, 'LLM — не rule-based система.'],
-    ['Multimodal vision-language model', 0, 'Немає візуального входу; це не модель взаємодії.']
+    ['AI chatbot, because the generated test cases need human review', 0, 'Review потрібен в обох моделях; ознака тут — інтеграція через API у test tool.'],
+    ['LLM-powered testing application, because it removes the need for prompt engineering', 0, 'Причина хибна: prompt engineering потрібен regardless (1.2.2).']
   ]) },
   { id: 'cmp', type: 'c', ref: '1.2.2', title: 'Порівняння: chatbot vs LLM-powered app',
     syl: 'AI chatbots and LLM-powered testing applications can both assist testers, though they <b>differ in functionality, flexibility, and integration approaches</b>.',

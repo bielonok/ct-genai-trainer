@@ -93,7 +93,7 @@ C1.slides['1.1.1'] = [
     trap: 'Типовий дистрактор: «GenAI requires an additional training phase before it can be used for test tasks» — навпаки. Але й «GenAI has no risks» — теж хибно: силабус одразу згадує ризики.' },
   { id: 'chk-111b', type: 'q', q: Q('c111-2', '1.1.1', 'genai', 'According to the syllabus, what is the KEY advantage of using generative AI for software testing?', [
     ['It applies symbolic rules that make its outputs fully deterministic', 0, 'Це радше про symbolic AI; LLM — non-deterministic (1.1.2).'],
-    ['It uses pre-trained models that can be applied directly to test tasks without an additional training phase', 1, 'Дослівно key advantage з 1.1.1 (з приміткою про ризики, Section 3.1).'],
+    ['It uses pre-trained models that need no additional training phase', 1, 'Дослівно key advantage з 1.1.1 (з приміткою про ризики, Section 3.1).'],
     ['It removes the need for data annotation, model tuning and result validation', 0, 'Перевірка результату потрібна завжди; ця фраза перекручує текст про deep learning.'],
     ['It requires testers to manually select features before each use', 0, 'Manual feature selection — ознака classical ML.']
   ]) },
@@ -169,7 +169,7 @@ C1.slides['1.1.2'] = [
     trap: 'Близькість embeddings = схожість <b>значення / контекстної ролі</b>, а не схожість написання. Порядок: спочатку tokenization, потім embeddings.' },
   { id: 'chk-112a', type: 'q', q: Q('c112-1', '1.1.2', 'emb', 'Which statement BEST describes embeddings in LLMs?', [
     ['They split input text into characters, sub-words or words', 0, 'Це tokenization.'],
-    ['They are numerical vector representations of tokens in which tokens with similar meanings are positioned close together', 1, 'Саме так у 1.1.2: vector у high-dimensional space, схожі значення — поруч.'],
+    ['They are token vectors that place similar meanings close together', 1, 'Саме так у 1.1.2: vector у high-dimensional space, схожі значення — поруч.'],
     ['They limit how many tokens the model can consider at once', 0, 'Це context window.'],
     ['They are hyperparameters that make outputs non-deterministic', 0, 'Non-determinism пов’язаний з probabilistic inference та hyperparameter settings, а не з embeddings.']
   ]) },

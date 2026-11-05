@@ -13,10 +13,10 @@ C1.quizzes['1.1.1'] = [
     ['Pre-training on books, articles and websites', 0, 'Це про LLM (1.1.2).']
   ]),
   Q('q111-3', '1.1.1', 'deep', 'What distinguishes deep learning from classical machine learning?', [
-    ['Deep learning uses neural networks that automatically learn features from data', 1, 'Ключова відмінність: features вивчаються автоматично, без ручного визначення.'],
+    ['Deep learning uses neural networks that learn features automatically', 1, 'Ключова відмінність: features вивчаються автоматично, без ручного визначення.'],
     ['Deep learning works only with structured tabular data', 0, 'Навпаки: DL знаходить патерни у very large and complex datasets — images, video, audio, text.'],
-    ['Deep learning does not use any training data', 0, 'DL вчиться на даних.'],
-    ['Deep learning is rule-based and needs no data', 0, 'Rule-based — це symbolic AI.']
+    ['Deep learning requires manual feature selection before training', 0, 'Ручний вибір features — ознака classical ML.'],
+    ['Deep learning cannot process images, video or audio', 0, 'Навпаки: DL працює саме з images, video, audio, text (1.1.1).']
   ]),
   Q('q111-4', '1.1.1', 'deep', 'Which statement about human involvement in deep learning is CORRECT according to the syllabus?', [
     ['Deep learning completely removes the need for human involvement', 0, 'Абсолют; силабус: may still require human involvement.'],
@@ -25,7 +25,7 @@ C1.quizzes['1.1.1'] = [
     ['Humans are only needed to write the logical rules', 0, 'Логічні правила — symbolic AI.']
   ]),
   Q('q111-5', '1.1.1', 'genai', 'Generative AI is BEST described as:', [
-    ['AI that uses deep learning techniques to create new content such as text, images or code', 1, 'Визначення з 1.1.1.'],
+    ['AI that uses deep learning to create new text, images or code', 1, 'Визначення з 1.1.1.'],
     ['AI that applies predefined IF-THEN rules written by experts', 0, 'Symbolic AI.'],
     ['A data-driven approach that requires manual feature selection', 0, 'Classical ML.'],
     ['A technique for storing vectors in a database', 0, 'Це про vector database (глава 4), не визначення GenAI.']
@@ -38,7 +38,7 @@ C1.quizzes['1.1.1'] = [
   ]),
   Q('q111-7', '1.1.1', 'ai-map', 'Which of the following correctly describes the relationship between the AI types in the syllabus?', [
     ['Symbolic AI is a subset of deep learning', 0, 'Symbolic AI не вчиться на даних; це не частина DL.'],
-    ['Generative AI uses deep learning techniques, and deep learning uses machine learning structures called neural networks', 1, 'Обидві частини є в 1.1.1: GenAI uses deep learning techniques; DL uses ML structures called neural networks.'],
+    ['GenAI uses deep learning, which relies on neural networks', 1, 'Обидві частини є в 1.1.1: GenAI uses deep learning techniques; DL uses ML structures called neural networks.'],
     ['Classical machine learning is a type of generative AI', 0, 'Навпаки, GenAI спирається на DL ⊂ ML.'],
     ['Deep learning and symbolic AI are interchangeable terms', 0, 'Це принципово різні підходи.']
   ]),
@@ -59,14 +59,14 @@ C1.quizzes['1.1.2'] = [
     ['Vector databases', 0, 'Vector DB — сховище embeddings (глава 4), не модель.']
   ]),
   Q('q112-2', '1.1.2', 'slm', 'What is the main characteristic of small language models (SLMs) compared to LLMs?', [
-    ['They have fewer parameters and provide lightweight, focused GenAI solutions', 1, 'Визначення SLM з 1.1.2.'],
+    ['They have fewer parameters and are lightweight and focused', 1, 'Визначення SLM з 1.1.2.'],
     ['They cannot generate text, only classify it', 0, 'Такого обмеження в силабусі немає.'],
     ['They are rule-based and do not use neural networks', 0, 'SLM — мовні моделі, не symbolic AI.'],
     ['They always have larger context windows than LLMs', 0, 'Немає такого твердження в силабусі.']
   ]),
   Q('q112-3', '1.1.2', 'token', 'How large can a token be according to the syllabus?', [
     ['Always exactly one word', 0, 'Токен може бути і символом, і частиною слова.'],
-    ['From a single character up to a sub-word or word', 1, '«As small as a character or as large as a sub-word or word».'],
+    ['A character, a sub-word or a whole word', 1, '«As small as a character or as large as a sub-word or word».'],
     ['Always exactly four characters', 0, 'Фіксованого розміру немає.'],
     ['A full sentence or paragraph', 0, 'Речення розбивається на кілька токенів.']
   ]),
@@ -84,16 +84,16 @@ C1.quizzes['1.1.2'] = [
     ['It applies symbolic rules defined by experts', 0, 'Symbolic AI.']
   ]),
   Q('q112-6', '1.1.2', 'transformer', 'Why do transformer models excel at language tasks?', [
-    ['Because they process the context of extensive text sequences and learn how tokens relate to each other', 1, 'Пояснення з 1.1.2.'],
+    ['Because they learn how tokens relate across long sequences', 1, 'Пояснення з 1.1.2.'],
     ['Because they rely on manually selected features', 0, 'Classical ML.'],
     ['Because they guarantee factually correct output', 0, 'Plausible is not necessarily correct.'],
     ['Because they do not require tokenization', 0, 'Вхід спершу токенізується.']
   ]),
   Q('q112-7', '1.1.2', 'plausible', 'A tester notices that an LLM produced an expected result that sounds convincing but contradicts the specification. Which statement from the syllabus BEST explains this?', [
-    ['LLMs have a limited number of parameters', 0, 'Не пояснює правдоподібну, але хибну відповідь.'],
-    ['Transformer output is statistically plausible, but plausible is not necessarily correct', 1, 'Саме це твердження з 1.1.2.'],
-    ['Embeddings place similar tokens far apart', 0, 'Хибно: схожі токени — поруч.'],
-    ['LLMs cannot process natural language', 0, 'LLM якраз відмінно обробляють природну мову.']
+    ['LLMs have too few parameters to follow a specification', 0, 'Не пояснює правдоподібну, але хибну відповідь.'],
+    ['Its output is plausible, but plausible is not always correct', 1, 'Саме це твердження з 1.1.2.'],
+    ['Embeddings place tokens with similar meanings far apart', 0, 'Хибно: схожі токени — поруч.'],
+    ['LLMs cannot process natural language specifications', 0, 'LLM якраз відмінно обробляють природну мову.']
   ]),
   Q('q112-8', '1.1.2', 'nondet', 'Which TWO factors does the syllabus name as the primary causes of non-deterministic LLM behavior?', [
     ['The probabilistic nature of inference mechanisms', 1, 'Причина №1.'],
@@ -109,19 +109,19 @@ C1.quizzes['1.1.2'] = [
     ['Parameters', 0, 'Parameters — характеристика розміру моделі (див. SLM), не context window.']
   ]),
   Q('q112-10', '1.1.2', 'ctx', 'A team wants to analyze very large test logs with an LLM and chooses a model with a much larger context window. Which trade-off should they expect according to the syllabus?', [
-    ['Lower coherence over long passages', 0, 'Навпаки, більше вікно покращує coherence.'],
+    ['Lower coherence when analyzing long passages', 0, 'Навпаки, більше вікно покращує coherence.'],
     ['Increased computational complexity and processing time', 1, 'Дослівно: increasing tokens increases computational complexity and processing time.'],
-    ['Loss of the ability to tokenize text', 0, 'Tokenization не залежить від розміру вікна; компроміс — складність і час обробки.'],
-    ['Fully deterministic outputs', 0, 'Розмір вікна не прибирає non-determinism.']
+    ['Loss of the ability to tokenize long text', 0, 'Tokenization не залежить від розміру вікна; компроміс — складність і час обробки.'],
+    ['Fully deterministic outputs for every prompt', 0, 'Розмір вікна не прибирає non-determinism.']
   ]),
   Q('q112-11', '1.1.2', 'ctx', 'What is the MOST likely consequence when a defect report and its attached log together exceed the LLM\'s context window?', [
     ['The model automatically switches to a reasoning LLM', 0, 'Такого механізму немає.'],
-    ['The model cannot consider all parts at once and may miss relevant earlier information', 1, 'Як у rationale Sample Q2: tokens outside the window are effectively discarded.'],
+    ['Earlier relevant details may fall outside the window and be missed', 1, 'Як у rationale Sample Q2: tokens outside the window are effectively discarded.'],
     ['The model automatically summarizes the log before reading it', 0, 'Такого автоматичного механізму в силабусі немає; модель просто не враховує текст поза вікном.'],
     ['The model becomes deterministic', 0, 'Перевищення вікна не впливає на non-determinism; проблема — втрата ранньої інформації.']
   ]),
   Q('q112-12', '1.1.2', 'llm', 'Which statement about LLMs is CORRECT according to the syllabus?', [
-    ['LLMs are pre-trained on large textual datasets, enabling them to determine context and produce relevant responses to prompts', 1, 'Визначення LLM з 1.1.'],
+    ['They are pre-trained on large text datasets to answer prompts in context', 1, 'Визначення LLM з 1.1.'],
     ['LLMs are trained only on the test basis of the current project', 0, 'Вони навчені на very large datasets (books, articles, websites).'],
     ['LLMs are symbolic AI systems based on logical rules', 0, 'LLM — deep learning (transformer).'],
     ['LLMs always produce the same response for the same prompt', 0, 'LLM — non-deterministic.']
@@ -137,7 +137,7 @@ C1.quizzes['1.1.3'] = [
   ]),
   Q('q113-2', '1.1.3', 'foundation', 'Which statement BEST describes foundation LLMs?', [
     ['Task-specific models that need no further adaptation', 0, 'Силабус: typically require further adaptation.'],
-    ['General-purpose models trained on vast, diverse datasets that typically require further adaptation for specific tasks', 1, 'Визначення з 1.1.3.'],
+    ['General-purpose models that typically need further adaptation', 1, 'Визначення з 1.1.3.'],
     ['Models fine-tuned on pairs of prompts and expected responses', 0, 'Це instruction-tuned.'],
     ['Models specialized in chain-of-thought reasoning', 0, 'Це reasoning LLMs.']
   ]),
@@ -149,32 +149,32 @@ C1.quizzes['1.1.3'] = [
     ['Larger context windows', 0, 'Не ціль instruction-tuning у силабусі.']
   ], { multi: 2 }),
   Q('q113-4', '1.1.3', 'reasoning', 'Which capabilities are emphasized by reasoning LLMs?', [
-    ['Strict adherence to output templates', 0, 'Сильна сторона instruction-tuned.'],
-    ['Logical inference, multi-step problem-solving and chain-of-thought reasoning', 1, 'Дослівно з 1.1.3.'],
-    ['Converting images into embeddings', 0, 'VLM.'],
+    ['Strict adherence to predefined output templates', 0, 'Сильна сторона instruction-tuned.'],
+    ['Logical inference and multi-step, chain-of-thought reasoning', 1, 'Дослівно з 1.1.3.'],
+    ['Converting images into embeddings before processing', 0, 'VLM.'],
     ['Lightweight focused deployment with fewer parameters', 0, 'SLM.']
   ]),
   Q('q113-5', '1.1.3', 'reasoning', 'A test manager wants an LLM to synthesize information from defect reports, test results and change logs to identify risk areas and prioritize test efforts. Which LLM type is MOST suitable?', [
     ['Foundation LLM', 0, 'Потребує адаптації, не спеціалізована на багатокрокових міркуваннях.'],
     ['Instruction-tuned LLM', 0, 'Добре тримає формат, але задача — high-cognitive-load синтез.'],
     ['Reasoning LLM', 1, 'Синтез складної інформації + пріоритизація = reasoning (пор. Sample Q4 iv).'],
-    ['Small language model', 0, 'SLM — lightweight, focused; не найкращий вибір для складного синтезу.']
+    ['Small language model', 0, 'SLM — характеристика розміру моделі (fewer parameters, lightweight, focused), а не одна з трьох категорій 1.1.3; для high-cognitive-load задач силабус вказує reasoning LLMs.']
   ]),
   Q('q113-6', '1.1.3', 'choose', 'Instruction-tuned LLMs are sometimes referred to as:', [
     ['Base LLMs', 0, 'Base LLM — синонім foundation LLM.'],
     ['Non-reasoning LLMs', 1, '«Instruction-tuned (sometimes referred to as non-reasoning)».'],
     ['Vision-language models', 0, 'Інша категорія (1.1.4).'],
-    ['Foundation LLMs', 0, 'Instruction-tuned походять від foundation, але це різні категорії; синонім foundation — Base LLM.']
+    ['Chain-of-thought LLMs', 0, 'Chain-of-thought — ознака reasoning LLMs, а не синонім instruction-tuned.']
   ]),
   Q('q113-7', '1.1.3', 'choose', 'According to the syllabus, what determines the selection between instruction-tuned and reasoning LLMs for a testing task?', [
-    ['The number of testers in the team', 0, 'Не критерій із силабусу.'],
-    ['The complexity and reasoning demands of the specific testing task', 1, 'Дослівно з 1.1.3.'],
+    ['The number of testers in the test team', 0, 'Не критерій із силабусу.'],
+    ['The complexity and reasoning demands of the task', 1, 'Дослівно з 1.1.3.'],
     ['Whether the model is multimodal', 0, 'Не критерій вибору між цими двома.'],
     ['Whether the model was released recently', 0, 'Новизна моделі не є критерієм у силабусі; критерій — складність і reasoning demands задачі.']
   ]),
   Q('q113-8', '1.1.3', 'reasoning', 'How do reasoning LLMs relate to instruction-tuned LLMs?', [
     ['They are unrelated model families', 0, 'Пов’язані: reasoning будуються на instruction-tuned.'],
-    ['Reasoning LLMs extend instruction-tuned models through further training on carefully selected tasks', 1, '«Reasoning models extend instruction-tuned models… further trained or fine-tuned on carefully selected tasks».'],
+    ['They extend instruction-tuned models with further training', 1, '«Reasoning models extend instruction-tuned models… further trained or fine-tuned on carefully selected tasks».'],
     ['Instruction-tuned LLMs are derived from reasoning LLMs', 0, 'Порядок переплутано: reasoning LLMs розширюють instruction-tuned.'],
     ['Reasoning LLMs are small language models optimized for speed', 0, 'Плутанина з SLM; reasoning LLMs — про багатокрокові міркування, а не компактність.']
   ]),
@@ -191,7 +191,7 @@ C1.quizzes['1.1.4'] = [
     ['Only text in multiple languages', 0, 'Multimodal ≠ multilingual.'],
     ['Text, images, sound and video', 1, 'Перелік з 1.1.4.'],
     ['Only images and screenshots', 0, 'Це занадто вузько (ближче до VLM).'],
-    ['Text in several natural languages only', 0, 'Multimodal ≠ multilingual: мова не є модальністю.']
+    ['Images and video only', 0, 'Занадто вузько; силабус: text, images, sound and video.']
   ]),
   Q('q114-2', '1.1.4', 'mmtok', 'How are images handled before being processed in the transformer of a multimodal LLM?', [
     ['They are converted into embeddings using vision-language models', 1, 'Дослівно з 1.1.4.'],
@@ -212,23 +212,23 @@ C1.quizzes['1.1.4'] = [
     ['Feature selection for regression models', 0, 'Classical ML.'],
     ['Executing GUI test scripts', 0, 'Не задача VLM.']
   ], { multi: 2 }),
-  Q('q114-5', '1.1.4', 'mmtest', 'A tester provides a multimodal LLM with a screenshot of a checkout page and the related user story. What is the PRIMARY testing benefit described in the syllabus?', [
-    ['The LLM can identify discrepancies between expected results and actual visual elements on the screenshot', 1, 'Дослівно з 1.1.4.'],
+  Q('q114-5', '1.1.4', 'mmtest', 'A tester provides a multimodal LLM with a screenshot of a checkout page and the related user story. Which testing benefit described in the syllabus does this enable?', [
+    ['It can spot discrepancies between expected results and the screenshot', 1, 'Дослівно з 1.1.4.'],
     ['The LLM can guarantee the page has no defects', 0, 'Абсолют; plausible ≠ correct.'],
     ['The LLM can execute the checkout flow in production', 0, 'Не описано в силабусі.'],
     ['The LLM can automatically fix the UI defects it detects', 0, 'Силабус говорить про виявлення розбіжностей, а не про виправлення дефектів.']
   ]),
   Q('q114-6', '1.1.4', 'mmtest', 'How can LLMs augmented with vision-language models increase overall test coverage?', [
     ['By replacing all manual exploratory testing', 0, 'Не стверджується; exploratory testing вимагає людини.'],
-    ['By generating rich, realistic test cases that incorporate both textual data and visual cues', 1, 'Дослівно з 1.1.4.'],
-    ['By reducing the context window', 0, 'Context window не пов’язаний із покриттям; coverage зростає завдяки кейсам з текстом і візуальними підказками.'],
+    ['By generating test cases that combine text and visual cues', 1, 'Дослівно з 1.1.4.'],
+    ['By executing generated UI tests across browsers', 0, 'Виконання тестів не описано в 1.1.4; coverage зростає завдяки тест-кейсам з текстом і візуальними підказками.'],
     ['By increasing the context window for screenshots', 0, 'Coverage зростає завдяки тест-кейсам з текстом і візуальними підказками, а не розміру вікна.']
   ]),
   Q('q114-7', '1.1.4', 'mm', 'What enables multimodal LLMs to work with different types of data?', [
-    ['They are trained on large and diverse datasets that enable them to learn relationships between different types of data', 1, 'Дослівно з 1.1.4.'],
+    ['Training on diverse datasets that link different data types', 1, 'Дослівно з 1.1.4.'],
     ['They use separate rule sets for each data type', 0, 'Rule sets — symbolic AI.'],
     ['They store every image in a vector database', 0, 'Vector databases — тема глави 4; здатність працювати з різними даними дає навчання на diverse datasets.'],
-    ['They use symbolic rules defined separately for each data type', 0, 'Rules — symbolic AI; multimodal LLMs вчаться на даних.']
+    ['They convert every input into plain text first', 0, 'Ні — tokenization adapted for each data type, зображення → embeddings (1.1.4).']
   ]),
   Q('q114-8', '1.1.4', 'vlm', 'Which inputs does the syllabus mention as visual elements that multimodal LLMs can analyze in software testing?', [
     ['Screenshots and GUI wireframes', 1, '«Visual elements of applications, such as screenshots and GUI wireframes».'],
@@ -246,14 +246,14 @@ C1.quizzes['1.2.1'] = [
     ['By prioritizing requirements according to business value', 0, 'Пріоритизація вимог за бізнес-цінністю не названа як capability у 1.2.1.']
   ]),
   Q('q121-2', '1.2.1', 'tcoracle', 'Based on which inputs can LLMs help generate test cases and suggest test objectives?', [
-    ['Only source code', 0, 'Занадто вузько.'],
-    ['System requirements, user stories or any other elements of the test basis', 1, 'Дослівно з 1.2.1.'],
-    ['Only defect reports from production', 0, 'Занадто вузько.'],
-    ['Only screenshots', 0, 'Занадто вузько.']
+    ['Hyperparameter settings of the language model', 0, 'Не названо в 1.2.1 як основа для тест-кейсів.'],
+    ['Requirements, user stories or other test basis elements', 1, 'Дослівно з 1.2.1.'],
+    ['Production deployment pipeline configurations', 0, 'Не названо в 1.2.1 як основа для тест-кейсів.'],
+    ['Release approval records signed by management', 0, 'Не названо в 1.2.1 як основа для тест-кейсів.']
   ]),
   Q('q121-3', '1.2.1', 'data', 'Which activity is an example of the "test data generation" capability?', [
     ['Summarizing a regression test run', 0, 'Test result analysis.'],
-    ['Creating boundary values and combinations for a booking form', 1, 'Datasets, boundary values, combinations.'],
+    ['Creating boundary values for a booking form', 1, 'Datasets, boundary values, combinations.'],
     ['Generating questions for stakeholders', 0, 'Requirements analysis.'],
     ['Updating the test plan', 0, 'Testware creation.']
   ]),
@@ -264,16 +264,16 @@ C1.quizzes['1.2.1'] = [
     ['LLMs can generate scripts only after being retrained on the project code base', 0, 'GenAI застосовується без additional training phase (1.1.1).']
   ]),
   Q('q121-5', '1.2.1', 'auto', 'How can LLMs help with test result analysis?', [
-    ['By creating summaries and classifying anomalies based on severity and priority', 1, 'Дослівно з 1.2.1.'],
+    ['By summarizing results and classifying anomalies', 1, 'Дослівно з 1.2.1.'],
     ['By deciding to release the product', 0, 'Рішення про реліз — за людьми.'],
     ['By rerunning failed tests automatically in production', 0, 'Перезапуск тестів не входить у test result analysis з 1.2.1 (summaries + класифікація аномалій).'],
     ['By generating boundary values', 0, 'Test data generation.']
   ]),
-  Q('q121-6', '1.2.1', 'testware', 'Which TWO are examples of testware creation that LLMs can help with?', [
+  Q('q121-6', '1.2.1', 'testware', 'Which TWO documents does the syllabus list as examples of the testware creation capability of LLMs?', [
     ['Test plans', 1, 'Названо в 1.2.1.'],
     ['Defect reports', 1, 'Названо в 1.2.1.'],
     ['Production deployment pipelines', 0, 'Не testware у контексті 1.2.1.'],
-    ['Test environments and test infrastructure', 0, 'Інфраструктура не є документом; testware creation у 1.2.1 — про documents (plans, reports).'],
+    ['Source code of the test object', 0, 'Код тестового об’єкта не є документом тестування; у 1.2.1 названо test plans, test reports, defect reports.'],
     ['Release approvals', 0, 'Затвердження релізу — рішення людей, не документ, який LLM «створює».']
   ], { multi: 2 }),
   Q('q121-7', '1.2.1', 'testware', 'Which of the following is NOT presented as a key LLM capability for test tasks?', [
@@ -283,10 +283,10 @@ C1.quizzes['1.2.1'] = [
     ['Keeping test reports updated as the project evolves', 0, 'Testware creation.']
   ]),
   Q('q121-8', '1.2.1', 'caps', 'Which items can LLMs interpret according to the syllabus, making them tools for understanding information throughout the test process?', [
-    ['Requirements, specifications, screenshots, code, test cases and defect reports', 1, 'Перелік з 1.2.1.'],
-    ['Only natural language requirements', 0, 'Занадто вузько.'],
-    ['Only executable code', 0, 'Занадто вузько.'],
-    ['Only test logs', 0, 'Занадто вузько.']
+    ['Requirements, specs, screenshots, code, test cases, defect reports', 1, 'Перелік з 1.2.1.'],
+    ['Hyperparameter settings, model weights and tokenizer files', 0, 'Не названо в 1.2.1 серед того, що LLM інтерпретують.'],
+    ['Network latency measurements of the test servers', 0, 'Не названо в 1.2.1 серед того, що LLM інтерпретують.'],
+    ['Server hardware specifications and invoices', 0, 'Не названо в 1.2.1 серед того, що LLM інтерпретують.']
   ]),
   Q('q121-9', '1.2.1', 'req', 'During backlog refinement, a tester asks an LLM to review a user story that says "the page should load fast". The LLM flags "fast" and suggests asking for a measurable target. Which capability is demonstrated?', [
     ['Test result analysis', 0, 'Тестів ще не запускали.'],
@@ -317,7 +317,7 @@ C1.quizzes['1.2.2'] = [
     ['Large-scale automated test data synthesis via APIs', 0, 'LLM-powered applications.']
   ], { multi: 2 }),
   Q('q122-4', '1.2.2', 'chatbot', 'Why can AI chatbots broaden the potential user base of GenAI in testing?', [
-    ['Because their intuitive interface makes them accessible even to non-technical stakeholders', 1, 'Дослівно з 1.2.2.'],
+    ['Because their intuitive UI suits non-technical stakeholders', 1, 'Дослівно з 1.2.2.'],
     ['Because they require API integration skills', 0, 'Навпаки: API-інтеграція — ознака LLM-powered applications; чатботи інтуїтивні без технічних навичок.'],
     ['Because they are integrated into existing test frameworks', 0, 'Інтеграція у фреймворки — характеристика LLM-powered applications.'],
     ['Because they do not need prompts', 0, 'Потрібні — prompt engineering важливий завжди.']
@@ -344,13 +344,13 @@ C1.quizzes['1.2.2'] = [
   Q('q122-8', '1.2.2', 'pe', 'Which statement about prompt engineering is CORRECT according to the syllabus?', [
     ['It is needed only for AI chatbots', 0, 'Regardless of interaction model.'],
     ['It is needed only for LLM-powered applications', 0, 'Regardless of interaction model.'],
-    ['Strong prompt engineering is required for both chatbots and LLM-powered applications', 1, 'Дослівно з 1.2.2.'],
+    ['It is required for both chatbots and LLM-powered apps', 1, 'Дослівно з 1.2.2.'],
     ['It becomes unnecessary with reasoning LLMs', 0, 'Не стверджується.']
   ]),
   Q('q122-9', '1.2.2', 'cmp', 'A tester wants to quickly explore possible test cases for a new feature by asking questions and refining the answers in several steps. Which interaction model fits BEST?', [
     ['LLM-powered testing application integrated via API into the CI pipeline', 0, 'Підходить для well-defined, automated задач.'],
     ['AI chatbot', 1, 'Dynamic exploration of requirements and potential test cases + iterative refinement.'],
-    ['Classical machine learning model', 0, 'Не модель взаємодії з GenAI.'],
-    ['Foundation LLM without any interface', 0, 'Не модель взаємодії.']
+    ['LLM-powered testing application, as it offers more customization for ad hoc questions', 0, 'Ad hoc + iterative refinement — це сильна сторона чатботів; applications — для well-defined задач.'],
+    ['AI chatbot, because it removes the need for prompt engineering', 0, 'Правильна модель, але причина хибна: prompt engineering потрібен regardless (1.2.2).']
   ])
 ];

@@ -10,7 +10,7 @@ C1.final = [
     ['Symbolic AI', 0, 'Ніхто не писав правил — модель навчилась на даних.'],
     ['Classical machine learning', 0, 'Features не визначались вручну.'],
     ['Deep learning', 1, 'Neural networks automatically learn features з complex data (images).'],
-    ['Small language model', 0, 'SLM — мовна модель.']
+    ['Generative AI', 0, 'Модель розпізнає (класифікує) зображення, а не створює новий контент.']
   ]),
   Q('f03', '1.1.2', 'token', 'Before an LLM can process a user story, what happens FIRST to the input text?', [
     ['It is converted into embeddings by a vision-language model', 0, 'VLM потрібні для зображень; текст спершу токенізується.'],
@@ -24,66 +24,66 @@ C1.final = [
     ['Because of symbolic synonym rules written by testers', 0, 'Symbolic AI.'],
     ['Because the context window is large enough to contain both phrases', 0, 'Розмір вікна не визначає схожість значень.']
   ]),
-  Q('f05', '1.1.2', 'plausible', 'A junior tester argues: "The LLM was trained on huge datasets, so its expected results can be used without review." Which statement from the syllabus BEST counters this?', [
-    ['LLMs have small context windows', 0, 'Не стосується правильності.'],
-    ['Generated text is statistically plausible, but plausible is not necessarily correct', 1, 'Пряме спростування з 1.1.2.'],
-    ['LLMs cannot generate expected results', 0, 'Можуть — test oracle generation (1.2.1).'],
-    ['LLMs are based on symbolic AI', 0, 'Хибно: LLM — deep learning (transformer), до того ж це не стосується перевірки результатів.']
+  Q('f05', '1.1.2', 'ctx', 'A tester removes repeated stack traces from a large test log before sending it to an LLM, and the analysis now covers the whole log. Which explanation BEST fits the syllabus?', [
+    ['The token count dropped, so the relevant content fits in the context window', 1, 'Context window вимірюється в токенах; менше токенів — більше релевантного тексту вміщується (1.1.2, HO-1.1.2).'],
+    ['The shorter text changed the hyperparameters, so the output became deterministic', 0, 'Довжина вводу не змінює hyperparameters; non-determinism лишається.'],
+    ['Shorter inputs are tokenized into whole words instead of sub-words', 0, 'Розмір токенів не залежить від довжини тексту.'],
+    ['The model retrained itself on the cleaned log before answering', 0, 'Під час inference модель не довчається — вона передбачає наступний токен.']
   ]),
   Q('f06', '1.1.2', 'nondet', 'Which TWO statements about LLM behavior are CORRECT?', [
-    ['The same input can lead to different outputs across runs', 1, 'Non-deterministic behavior.'],
-    ['Non-determinism is caused by the probabilistic nature of inference and hyperparameter settings', 1, 'Причини з 1.1.2.'],
-    ['Larger context windows reduce processing time', 0, 'Навпаки, збільшують.'],
-    ['Tokens are always whole words', 0, 'Від символу до слова.'],
+    ['The same input can lead to different outputs across runs', 1, 'Non-deterministic behavior (1.1.2).'],
+    ['A larger context window increases computational complexity and processing time', 1, 'Дослівно з 1.1.2.'],
+    ['Embeddings place tokens with similar meanings far apart', 0, 'Навпаки — схожі токени розташовані поруч.'],
+    ['Tokens are always whole words', 0, 'Від символу до слова чи частини слова.'],
     ['Inference means retraining the model on new data', 0, 'Inference — передбачення наступного токена.']
   ], { multi: 2 }),
-  Q('f07', '1.1.2', 'ctx', 'Which statement BEST describes the context window?', [
-    ['The number of parameters in the model', 0, 'Parameters — інше поняття.'],
-    ['The amount of preceding text, measured in tokens, that the model can consider when generating a response', 1, 'Визначення з 1.1.2.'],
-    ['The number of tokens the model can generate per second', 0, 'Це швидкість, а не context window.'],
-    ['The size of the training dataset', 0, 'Training data ≠ обсяг тексту, який модель враховує під час відповіді.']
+  Q('f07', '1.1.2', 'slm', 'A team needs a compact model for a narrow task: classifying defect report text on a resource-limited local server. Which option BEST fits the syllabus?', [
+    ['A small language model, as it has fewer parameters and is focused', 1, 'SLM — compact, fewer parameters, lightweight and focused (1.1.2).'],
+    ['A reasoning LLM, as narrow tasks require chain-of-thought reasoning', 0, 'Вузька класифікація — не high-cognitive-load задача.'],
+    ['A symbolic AI system, as local servers cannot run neural networks', 0, 'Твердження вигадане; symbolic AI — rule-based, не мовна модель.'],
+    ['A foundation LLM, as it needs no adaptation for specific tasks', 0, 'Foundation LLMs typically require further adaptation (1.1.3).']
   ]),
   Q('f08', '1.2.2', 'pe', 'A team integrates an LLM into its CI pipeline via API and assumes that, because the integration is automated, prompt design no longer matters. Which statement from the syllabus contradicts this assumption?', [
     ['LLM-powered applications are accessible to non-technical stakeholders', 0, 'Це про чатботи, і не стосується промптів.'],
-    ['Regardless of the interaction model, successful implementation requires strong prompt engineering', 1, '1.2.2: regardless of how the tester interacts with LLMs.'],
+    ['Strong prompt engineering is needed regardless of interaction model', 1, '1.2.2: regardless of how the tester interacts with LLMs.'],
     ['Chatbots allow prompt chaining', 0, 'Правда, але не спростовує хибне припущення.'],
     ['LLM-powered applications offer greater scalability', 0, 'Правда, але не про промпти.']
   ]),
-  Q('f09', '1.1.3', 'foundation', 'Which statement about foundation LLMs is CORRECT?', [
-    ['They are trained exclusively on test artifacts', 0, 'Vast and diverse datasets.'],
-    ['While powerful and flexible, they typically require further adaptation to meet specific task requirements', 1, 'Дослівно з 1.1.3.'],
-    ['They are derived from reasoning LLMs', 0, 'Навпаки, це перша сходинка.'],
-    ['They cannot support natural language processing', 0, 'Можуть: силабус прямо згадує NLP серед доменів foundation models.']
+  Q('f09', '1.1.3', 'foundation', 'A tester sends "List five test cases for the login page" to a foundation LLM that was not further adapted, and the model just continues the text instead of answering. Which explanation BEST fits?', [
+    ['It is general-purpose and typically needs further adaptation for tasks', 1, 'Foundation LLMs typically require further adaptation; instruction following з’являється після instruction tuning (1.1.3).'],
+    ['The prompt exceeded the context window, so the request was dropped', 0, 'Короткий промпт не перевищує вікно.'],
+    ['Foundation LLMs cannot process natural language input at all', 0, 'Можуть — силабус згадує NLP серед доменів foundation models.'],
+    ['The model needs reasoning training before it can produce any lists', 0, 'Reasoning — для high-cognitive-load задач, не для простого списку.']
   ]),
   Q('f10', '1.1.3', 'reasoning', 'Which task is MOST suited to a reasoning LLM rather than an instruction-tuned LLM?', [
-    ['Reformatting test cases into a fixed CSV template', 0, 'Instruction following.'],
-    ['Translating a test report into another language in the same structure', 0, 'Не вимагає багатокрокових міркувань.'],
-    ['Analyzing failures across several releases to infer likely root causes and propose a test strategy adjustment', 1, 'Multi-step problem-solving, synthesis — high-cognitive-load.'],
-    ['Producing test cases in Gherkin syntax', 0, 'Instruction-tuned (Sample Q4 v).']
+    ['Reformatting 200 test cases into a fixed CSV template', 0, 'Instruction following.'],
+    ['Translating a test report into Spanish, keeping its structure', 0, 'Не вимагає багатокрокових міркувань.'],
+    ['Inferring likely root causes from failures across several releases', 1, 'Multi-step problem-solving і синтез — high-cognitive-load.'],
+    ['Producing test cases for user stories in Gherkin syntax', 0, 'Instruction-tuned (див. Sample Q4 v).']
   ]),
-  Q('f11', '1.1.3', 'instruct', 'Instruction-tuned LLMs improve on foundation LLMs mainly by:', [
-    ['Processing images, sound and video', 0, 'Multimodal.'],
-    ['Better alignment with human instructions through fine-tuning on prompt–response pairs', 1, '1.1.3.'],
-    ['Using fewer parameters', 0, 'SLM.'],
-    ['Adding chain-of-thought reasoning to solve multi-step problems', 0, 'Це те, що додають reasoning LLMs поверх instruction-tuned.']
+  Q('f11', '1.1.3', 'instruct', 'A team replaces a foundation LLM with an instruction-tuned LLM because the foundation model kept ignoring the requested output format. Which property justifies this choice?', [
+    ['It processes images, sound and video', 0, 'Це multimodal LLMs (1.1.4).'],
+    ['It is tuned for task adherence and instruction following', 1, 'Instruction tuning optimizes for task adherence, instruction following, response coherence (1.1.3).'],
+    ['It uses fewer parameters than the foundation model', 0, 'Це характеристика SLM, не instruction tuning.'],
+    ['It adds chain-of-thought reasoning for multi-step problems', 0, 'Це reasoning LLMs.']
   ]),
-  Q('f12', '1.1.4', 'vlm', 'Which statement about vision-language models is CORRECT?', [
-    ['They are a superset that includes all multimodal LLMs', 0, 'Навпаки (Sample Q5).'],
-    ['They are a subset of multimodal LLMs that integrate visual and textual information', 1, '1.1.4.'],
-    ['They process only audio and video', 0, 'Visual + textual.'],
-    ['They are interchangeable with multimodal LLMs', 0, 'Різні обсяги понять (Sample Q5 d).']
+  Q('f12', '1.1.4', 'vlm', 'A tester uploads a screenshot of a booking page and asks the model: "Is the Pay button disabled?" Which vision-language model task does this illustrate?', [
+    ['Image captioning', 0, 'Captioning — опис зображення, а не відповідь на конкретне питання.'],
+    ['Visual question answering', 1, 'Питання до зображення — visual question answering (1.1.4).'],
+    ['Speech recognition', 0, 'Аудіо — не visual + textual.'],
+    ['Test oracle generation', 0, 'Expected results не генеруються; модель відповідає на питання про зображення.']
   ]),
   Q('f13', '1.1.4', 'mmtest', 'A tester uploads a GUI wireframe and the related user story to a multimodal LLM and asks for test cases. What is the expected benefit according to the syllabus?', [
-    ['Test cases that incorporate both textual data and visual cues, increasing overall coverage', 1, '1.1.4.'],
+    ['Test cases using text and visual cues, increasing coverage', 1, '1.1.4.'],
     ['Fully automated execution of the generated UI tests', 0, 'Виконання тестів не описано як перевага multimodal LLMs.'],
     ['Guaranteed absence of visual defects', 0, 'Абсолют «guaranteed» — LLM не дає гарантій, plausible ≠ correct.'],
     ['Elimination of the need to review the generated test cases', 0, 'Plausible ≠ correct.']
   ]),
-  Q('f14', '1.1.4', 'mmtok', 'In a multimodal LLM, what is the role of a vision-language model when an image is part of the prompt?', [
-    ['It converts the image into embeddings before processing in the transformer', 1, '1.1.4.'],
-    ['It replaces the transformer for image inputs', 0, 'Після VLM embeddings обробляються саме в transformer.'],
-    ['It tokenizes the image using the same tokenizer as text', 0, 'Tokenization adapted for each data type.'],
-    ['It generates captions that the tester must type into the prompt', 0, 'Модель обробляє зображення сама; ручний опис не потрібен.']
+  Q('f14', '1.1.4', 'mmtok', 'A tester attaches a GUI screenshot and a user story to one prompt. Which statement BEST describes how a multimodal LLM handles the two inputs?', [
+    ['Text is tokenized, the image becomes embeddings via a VLM, then the transformer processes both', 1, 'Tokenization adapted for each data type; images → embeddings via VLM before transformer (1.1.4).'],
+    ['The image is tokenized with the text tokenizer, and the text is rendered as an image', 0, 'Той самий токенізатор до зображень не застосовується.'],
+    ['The image goes to a separate rule-based engine; only the text reaches the transformer', 0, 'Rule-based — symbolic AI; зображення обробляє модель.'],
+    ['Both inputs are stored in a vector database, and the transformer reads only the index', 0, 'Vector DB не є кроком обробки multimodal LLM у 1.1.4.']
   ]),
   Q('f15', '1.2.1', 'req', 'Which TWO are examples of key LLM capabilities for test tasks?', [
     ['Suggesting test objectives based on user stories', 1, 'Test case creation support.'],
@@ -111,10 +111,10 @@ C1.final = [
     ['Test oracle generation', 0, 'Expected results не генеруються.']
   ]),
   Q('f19', '1.2.2', 'cmp', 'Which statement BEST compares AI chatbots and LLM-powered testing applications?', [
-    ['Chatbots integrate via APIs, while applications offer conversational interfaces', 0, 'Сторони переплутані.'],
-    ['Chatbots offer conversational interfaces for ad hoc tasks, while applications integrate LLMs via APIs for well-defined, often automated tasks', 1, '1.2.2 / Sample Q7.'],
-    ['Both are identical and require no prompt engineering', 0, 'Різняться; prompt engineering потрібен.'],
-    ['Applications are only for non-technical stakeholders', 0, 'Доступність для non-technical — перевага чатботів.']
+    ['Chatbots embed LLMs into test tools via APIs; applications offer a conversational interface', 0, 'Сторони переплутані.'],
+    ['Chatbots offer a conversational interface; applications embed LLMs into test tools via APIs', 1, '1.2.2: conversational interface vs integration via APIs.'],
+    ['Both offer the same functionality and integration and need no prompt engineering', 0, 'Різняться функціональністю й інтеграцією; prompt engineering потрібен.'],
+    ['Applications target non-technical stakeholders; chatbots target tool vendors', 0, 'Навпаки: доступність для non-technical — перевага чатботів.']
   ]),
   Q('f20', '1.2.2', 'apps', 'A company wants defect analysis and test data synthesis to run automatically for hundreds of projects and to be customized to its test framework. Which approach fits BEST?', [
     ['Each tester uses a public AI chatbot individually', 0, 'Немає інтеграції та масштабування.'],
