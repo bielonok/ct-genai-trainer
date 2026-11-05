@@ -30,6 +30,11 @@ header.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--b
 .stats{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:.85rem;font-weight:600;white-space:nowrap}
 .icon-btn{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:5px 9px;cursor:pointer}
+button.pill{cursor:pointer;color:var(--text)}
+#goalPill.done{border-color:var(--ok);background:var(--okbg)}
+#goalPill.done #goalRing{stroke:var(--ok)}
+#sync.attn{border-color:var(--warn);animation:pulse 2s ease-in-out 3}
+@keyframes pulse{50%{box-shadow:0 0 0 4px var(--warnbg)}}
 nav.tabs{max-width:1120px;margin:0 auto;padding:0 12px 8px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
 nav.tabs::-webkit-scrollbar{display:none}
 nav.tabs button{border:0;background:transparent;padding:7px 12px;border-radius:10px;cursor:pointer;color:var(--muted);font-weight:600;white-space:nowrap;font-size:.92rem}
@@ -218,10 +223,10 @@ footer.foot{max-width:1120px;margin:0 auto;padding:0 16px 30px;color:var(--muted
   <div class="top-in">
     <div class="logo"><span class="dot"></span><span>GenAI Training</span><span class="chip" id="chLabel">Глава 1</span></div>
     <div class="stats">
-      <span class="pill" title="Досвід">⚡ <span id="xp">0</span> XP</span>
-      <span class="pill" title="Днів поспіль">🔥 <span id="streak">0</span></span>
-      <span class="pill" title="Бейджі">🏅 <span id="bcount">0</span></span>
-      <button class="pill" id="sync" style="cursor:pointer">💾 Локально</button>
+      <button class="pill" id="goalPill" title="Денна норма (кроки)"><svg width="18" height="18" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="9" fill="none" stroke="var(--soft)" stroke-width="3.5"/><circle id="goalRing" cx="11" cy="11" r="9" fill="none" stroke="var(--accent)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="0 56.55" transform="rotate(-90 11 11)"/></svg><span id="goalTxt">0/20</span></button>
+      <button class="pill" id="streakPill" title="Днів поспіль з виконаною нормою">🔥 <span id="streak">0</span></button>
+      <button class="pill" id="badgePill" title="Бейджі та рівень">🏅 <span id="bcount">0</span></button>
+      <button class="icon-btn" id="sync" title="Синхронізація">💾</button>
       <button class="icon-btn" id="themeBtn" title="Змінити тему" aria-label="Змінити тему">🌓</button>
     </div>
   </div>
@@ -1422,7 +1427,7 @@ const LS = {
 };
 const GKEY = 'ctgenai:global';
 const CKEY = n => 'ctgenai:ch' + n;
-let G = Object.assign({ xp: 0, streak: 0, lastDay: null, badges: [], theme: null, cur: 1 }, LS.get(GKEY, {}));
+let G = Object.assign({ xp: 0, badges: [], theme: null, cur: 1, examDate: null, daily: {}, hit: {}, goalDay: null }, LS.get(GKEY, {}));
 const CS = {};
 function blankCh() { return { seen: {}, deckDone: {}, quizBest: {}, finalBest: null, finalPass: false, sampleBest: null, mistakes: {}, cards: {}, practice: {}, xpq: {} }; }
 function ch(n) { n = n || cur(); if (!CS[n]) CS[n] = Object.assign(blankCh(), LS.get(CKEY(n), {})); return CS[n]; }
@@ -1437,7 +1442,7 @@ function h(html) { const t = document.createElement('template'); t.innerHTML = h
 function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function pct(a, b) { return b ? Math.round(a / b * 100) : 0; }
 function hexA(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
-function today(off) { const d = new Date(); d.setDate(d.getDate() + (off || 0)); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+function today(off) { const d = new Date(); d.setDate(d.getDate() + (off || 0)); const z = n => String(n).padStart(2, '0'); return d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate()); }
 function toast(msg) { const t = h(`<div class="toast">${msg}</div>`); $('#toasts').appendChild(t); setTimeout(() => t.remove(), 2900); }
 function modal(html, buttons) {
   const bg = h(`<div class="modal-bg"><div class="card modal fade">${html}<div class="row" style="margin-top:16px;justify-content:flex-end"></div></div></div>`);
@@ -1458,7 +1463,7 @@ const BADGES = [
   { id: 'sample', e: '📝', t: 'Sample Exam', d: 'Офіційні питання глави ≥65%' },
   { id: 'final', e: '⏱️', t: 'Підсумковий PASS', d: 'Підсумковий тест глави ≥65%' },
   { id: 'cards', e: '🃏', t: 'Картковий маг', d: '20 карток у статусі «Знаю»' },
-  { id: 'streak3', e: '🔥', t: 'Streak 3', d: '3 дні поспіль' },
+  { id: 'streak3', e: '🔥', t: 'Streak 3', d: '3 дні поспіль з виконаною нормою' },
   { id: 'fixer', e: '🛠️', t: 'Над помилками', d: 'Виправити 10 помилок' },
   { id: 'chapter', e: '🏆', t: 'Главу пройдено', d: 'Усі слайди + усі квізи ≥65% + підсумковий PASS' }
 ];
@@ -1469,12 +1474,65 @@ function award(id) {
   G.badges.push(k); const b = BADGES.find(x => x.id === id);
   toast(`${b.e} Бейдж: ${b.t}`); addXP(25, true);
 }
-function addXP(n, silent) { G.xp += n; touchDay(); save(); updateTop(); if (!silent) toast(`+${n} XP`); }
-function touchDay() {
-  const t = today(); if (G.lastDay === t) return;
-  G.streak = G.lastDay === today(-1) ? G.streak + 1 : 1; G.lastDay = t;
-  if (G.streak >= 3 && !G.badges.includes('streak3')) { G.badges.push('streak3'); toast('🔥 Бейдж: Streak 3'); }
+function addXP(n, silent) { G.xp += n; save(); updateTop(); if (!silent) toast(`+${n} XP`); }
+function touchDay() {}
+// ---- daily steps («кроки»), goal, streak
+const STEP = { slide: 1, answer: 0.5, quizDone: 3.5, finalDone: 5, sampleDone: 1.5, card: 0.25, practice: 2 };
+const PLAN = { quizTarget: 80, quizUnits: 8, finalUnits: 15, sampleUnits: 5, buffer: 3, defaultGoal: 20, minGoal: 5 };
+function stepsOn(d) { return (G.daily || {})[d] || 0; }
+function pruneDays(o) { const ks = Object.keys(o); if (ks.length > 120) ks.sort((x, y) => new Date(x) - new Date(y)).slice(0, ks.length - 120).forEach(k => delete o[k]); }
+function step(n) {
+  G.daily = G.daily || {}; G.hit = G.hit || {};
+  const d = today(), before = stepsOn(d), goal = dailyGoal();
+  G.daily[d] = Math.round((before + n) * 100) / 100; pruneDays(G.daily);
+  if (before < goal && G.daily[d] >= goal && !G.hit[d]) {
+    G.hit[d] = 1; pruneDays(G.hit);
+    setTimeout(() => toast(`🎯 Денну норму виконано! 🔥 ${streakDays()} ${plural(streakDays(), 'день', 'дні', 'днів')} поспіль`), 300);
+    if (streakDays() >= 3 && !G.badges.includes('streak3')) { G.badges.push('streak3'); setTimeout(() => toast('🔥 Бейдж: Streak 3'), 900); }
+  }
 }
+function plural(n, a, b, c) { const m = n % 10, h = n % 100; return m === 1 && h !== 11 ? a : m >= 2 && m <= 4 && (h < 12 || h > 14) ? b : c; }
+function streakDays() { const hit = G.hit || {}; let off = hit[today()] ? 0 : -1, n = 0; while (hit[today(off)]) { n++; off--; } return n; }
+function dailyGoal() {
+  const key = today() + '|' + (G.examDate || '');
+  if (!G.goalDay || G.goalDay.k !== key) { const p = planCalc(); G.goalDay = { k: key, goal: p ? p.daily : PLAN.defaultGoal }; }
+  return G.goalDay.goal;
+}
+function chUnits(n) { // remaining & total units for an unlocked chapter
+  const d = chapters[n], s = ch(n); let total = 0, left = 0; const items = [];
+  d.sections.forEach(sec => {
+    const L = d.slides[sec.id].length, seen = (s.seen[sec.id] || []).length; total += L + PLAN.quizUnits;
+    if (L - seen > 0) { left += L - seen; items.push({ ic: '📖', label: `${sec.id} ${sec.short}: слайди`, units: L - seen, kind: 'slides', sec: sec.id, ch: n }); }
+    if ((s.quizBest[sec.id] || 0) < PLAN.quizTarget) { left += PLAN.quizUnits; items.push({ ic: '❓', label: `Квіз ${sec.id} на ${PLAN.quizTarget}%+`, units: PLAN.quizUnits, kind: 'quiz', sec: sec.id, ch: n }); }
+  });
+  total += PLAN.finalUnits + PLAN.sampleUnits;
+  if (!s.finalPass) { left += PLAN.finalUnits; items.push({ ic: '⏱️', label: `Підсумковий тест глави ${n}`, units: PLAN.finalUnits, kind: 'final', ch: n }); }
+  if ((s.sampleBest == null ? 0 : s.sampleBest) < 65) { left += PLAN.sampleUnits; items.push({ ic: '📝', label: `Sample Exam (глава ${n})`, units: PLAN.sampleUnits, kind: 'sample', ch: n }); }
+  return { total, left, items };
+}
+function planCalc() {
+  const ref = chUnits(1).total; let total = 0, left = 0, items = [], missing = 0;
+  COURSE.chapters.forEach(c => {
+    if (chapters[c.id]) { const u = chUnits(c.id); total += u.total; left += u.left; items = items.concat(u.items); }
+    else { const est = Math.round(ref * c.minutes / 100); total += est; left += est; missing += est; }
+  });
+  if (!G.examDate) return null;
+  const t0 = new Date(); t0.setHours(0, 0, 0, 0);
+  const daysLeft = Math.round((new Date(G.examDate + 'T00:00:00') - t0) / 864e5);
+  const workDays = Math.max(1, daysLeft - PLAN.buffer);
+  const daily = Math.max(PLAN.minGoal, Math.ceil(left / workDays));
+  const since = G.planSince ? Math.round((t0 - new Date(G.planSince + 'T00:00:00')) / 864e5) : 0, span = Math.min(7, Math.max(0, since));
+  let avg = 0; for (let i = 1; i <= span; i++) avg += stepsOn(today(-i)); avg = span ? Math.round(avg / span * 10) / 10 : null;
+  return { total, left, done: total - left, items, missing, daysLeft, workDays, daily, avg, span };
+}
+function goItem(it) {
+  if (G.cur !== it.ch) { G.cur = it.ch; applyChapter(); }
+  if (it.kind === 'slides') { const s = ch(it.ch), seen = s.seen[it.sec] || []; let i = 0; while (seen.includes(i)) i++; learn.sec = it.sec; learn.idx = i; go('learn'); }
+  else if (it.kind === 'quiz') { quiz = null; quizPick = it.sec; go('quiz'); }
+  else if (it.kind === 'final') { finalTab = 'final'; exam = null; go('final'); }
+  else if (it.kind === 'sample') { finalTab = 'sample'; exam = null; go('final'); }
+}
+function levelInfo() { const lvl = Math.floor(Math.sqrt(G.xp / 40)) + 1, from = 40 * (lvl - 1) ** 2, to = 40 * lvl ** 2; return { lvl, from, to, pct: pct(G.xp - from, to - from) }; }
 function checkChapterBadges() {
   const s = ch(), d = D();
   const allSeen = d.sections.every(sec => (s.seen[sec.id] || []).length >= d.slides[sec.id].length);
@@ -1483,7 +1541,11 @@ function checkChapterBadges() {
   if (allSeen && allQuiz && s.finalPass) award('chapter');
 }
 function updateTop() {
-  $('#xp').textContent = G.xp; $('#streak').textContent = G.lastDay === today() || G.lastDay === today(-1) ? G.streak : 0;
+  const goal = dailyGoal(), done = stepsOn(today()), p = Math.min(100, pct(done, goal));
+  $('#goalTxt').textContent = `${Math.floor(done)}/${goal}`;
+  $('#goalRing').setAttribute('stroke-dasharray', `${p * 0.5655} 56.55`);
+  $('#goalPill').classList.toggle('done', done >= goal);
+  $('#streak').textContent = streakDays();
   $('#bcount').textContent = G.badges.length;
 }
 function recordAnswer(q, correct, mode) {
@@ -1491,7 +1553,8 @@ function recordAnswer(q, correct, mode) {
   if (!correct) { const m = s.mistakes[q.id] || { n: 0 }; m.n++; m.mode = mode; m.ts = Date.now(); s.mistakes[q.id] = m; }
   else if (s.mistakes[q.id]) { delete s.mistakes[q.id]; s.fixed = (s.fixed || 0) + 1; if (s.fixed >= 10) award('fixer'); }
   if (correct && !s.xpq[q.id]) { s.xpq[q.id] = 1; G.xp += 10; }
-  touchDay(); save(); updateTop();
+  G.xp += 2; step(STEP.answer);
+  save(); updateTop();
 }
 
 // ===== question index =====
@@ -1608,7 +1671,8 @@ function vHome(app) {
     <h1>Підготовка до ISTQB® CT-GenAI v1.1</h1>
     <p class="muted">Іспит: <b>${e.questions} питань</b>, <b>${e.points} балів</b>, прохідний бал <b>${e.pass} (65%)</b>, <b>${e.minutes} хв</b> (+25% = ${e.extMinutes} хв для іспиту не рідною мовою). K3-питання коштують 2 бали.</p>
   </div>`));
-  const grid = h(`<div class="grid g5"></div>`);
+  app.appendChild(planCard());
+  const grid = h(`<div class="grid g5" style="margin-top:18px"></div>`);
   COURSE.chapters.forEach(cc => {
     const open = !!chapters[cc.id];
     const card = h(`<div class="card chcard ${open ? '' : 'locked'}" style="--c:${cc.color}">
@@ -1647,7 +1711,8 @@ function vHome(app) {
   });
   app.appendChild(map);
 
-  const bd = h(`<div class="card fade" style="margin-top:18px"><div class="row"><h2 style="margin:0">Досягнення</h2><span class="spacer"></span><span class="pill">⚡ ${G.xp} XP</span><span class="pill">🔥 streak ${$('#streak').textContent}</span></div>
+  const bd = h(`<div class="card fade" style="margin-top:18px"><div class="row"><h2 style="margin:0">Досягнення</h2><span class="spacer"></span><span class="pill">⭐ Рівень ${levelInfo().lvl}</span><span class="pill">🔥 ${streakDays()}</span></div>
+    <div style="margin-top:10px"><div class="row small"><span>⚡ ${G.xp} XP</span><span class="spacer"></span><span class="muted">до рівня ${levelInfo().lvl + 1}: ${levelInfo().to - G.xp} XP</span></div><div class="bar"><i style="width:${levelInfo().pct}%"></i></div></div>
     <div class="badge-grid" style="margin-top:12px"></div>
     <hr class="sep"><div class="row"><span class="small muted">${Cloud.be ? '☁️ Прогрес синхронізується між пристроями.' : Cloud.state === 'login' ? '🔑 Увійдіть (кнопка вгорі), щоб синхронізувати прогрес між пристроями.' : '💾 Прогрес зберігається в цьому браузері.'}</span><button class="btn small ghost" id="xferBtn">Експорт / імпорт</button><span></span><span class="spacer"></span><button class="btn danger small" id="resetBtn">Скинути прогрес</button></div></div>`);
   BADGES.forEach(b => $('.badge-grid', bd).appendChild(h(`<div class="bdg ${G.badges.includes(bkey(b.id)) ? 'got' : ''}" title="${esc(b.d)}"><div class="e">${b.e}</div><b>${b.t}</b><div>${b.d}</div></div>`)));
@@ -1655,9 +1720,57 @@ function vHome(app) {
   $('#resetBtn', bd).onclick = () => modal('<h3>Скинути прогрес?</h3><p class="muted">Що саме скинути? Дію не можна скасувати.</p>', [
     { t: 'Скасувати' },
     { t: 'Лише главу ' + cur(), cls: 'danger', fn: () => { LS.del(CKEY(cur())); delete CS[cur()]; G.badges = G.badges.filter(b => !b.endsWith(':ch' + cur())); save(); toast('Прогрес глави скинуто'); render(); updateTop(); } },
-    { t: 'Усе', cls: 'primary', fn: () => { COURSE.chapters.forEach(c => { LS.del(CKEY(c.id)); delete CS[c.id]; }); const th = G.theme; G = { xp: 0, streak: 0, lastDay: null, badges: [], theme: th, cur: 1 }; save(); toast('Увесь прогрес скинуто'); updateTop(); render(); } }
+    { t: 'Усе', cls: 'primary', fn: () => { COURSE.chapters.forEach(c => { LS.del(CKEY(c.id)); delete CS[c.id]; }); const th = G.theme; G = { xp: 0, badges: [], theme: th, cur: 1, examDate: G.examDate, daily: {}, hit: {}, goalDay: null }; save(); toast('Увесь прогрес скинуто'); updateTop(); render(); } }
   ]);
   app.appendChild(bd);
+}
+
+
+// ---- exam plan card
+function fmtDate(iso) { try { return new Date(iso + 'T00:00:00').toLocaleDateString('uk-UA', { day: 'numeric', month: 'long' }); } catch (e) { return iso; } }
+function planCard() {
+  const p = planCalc(), goal = dailyGoal(), done = stepsOn(today());
+  const c = h(`<div class="card fade" id="plan"></div>`);
+  const dateForm = (val) => `<div class="row" style="margin-top:8px"><input type="date" class="search" style="max-width:220px" value="${val || ''}" min="${new Date().toISOString().slice(0, 10)}"><button class="btn primary" data-a="save">Зберегти</button>${val ? '<button class="btn ghost" data-a="clear">Прибрати дату</button>' : ''}</div>`;
+  if (!p) {
+    c.innerHTML = `<h2 style="margin-top:0">📅 Коли іспит?</h2><p class="muted small" style="margin:0">Вкажіть дату — тренажер порахує денну норму й підкаже, що робити сьогодні. Без дати норма — ${PLAN.defaultGoal} кроків на день.</p>${dateForm('')}`;
+  } else {
+    const req = p.daily, ok = (p.avg != null && p.avg >= req) || done >= goal, past = p.daysLeft < 0;
+    const status = past ? '<span class="chip">Іспит минув</span>' : p.daysLeft === 0 ? '<span class="chip k3">Іспит сьогодні — успіхів! 🍀</span>' :
+      ok ? '<span class="chip" style="background:var(--okbg);color:var(--ok)">✅ У графіку</span>' : p.avg == null ? '<span class="chip acc">🚀 Перший день плану</span>' : `<span class="chip" style="background:var(--warnbg);color:var(--warn)" title="Середнє за ${p.span} дн.">⚠️ Темп ${p.avg}/день — треба ${req}</span>`;
+    const need = Math.max(0, goal - done);
+    let acc = 0; const todo = [];
+    for (const it of p.items) { if (acc >= need) break; const take = it.kind === 'slides' ? Math.min(it.units, Math.max(Math.ceil(need - acc), 5)) : it.units; todo.push(Object.assign({}, it, { take })); acc += take; }
+    c.innerHTML = `<div class="row"><h2 style="margin:0">📅 До іспиту: ${p.daysLeft >= 0 ? p.daysLeft + ' ' + plural(p.daysLeft, 'день', 'дні', 'днів') : '—'}</h2><span class="muted">${fmtDate(G.examDate)}</span><span class="spacer"></span>${status}<button class="btn ghost small" data-a="edit">Змінити дату</button></div>
+      <div class="editbox" hidden>${dateForm(G.examDate)}</div>
+      <div class="grid g2" style="margin-top:14px;align-items:start">
+        <div><div class="row"><div class="ring" style="--p:${Math.min(100, pct(done, goal))}"><span>${Math.floor(done)}/${goal}</span></div><div><b>Сьогоднішня норма</b><div class="small muted">${done >= goal ? '✅ Виконано — 🔥 серія зараховується' : 'ще ' + Math.ceil(need) + ' ' + plural(Math.ceil(need), 'крок', 'кроки', 'кроків')}</div></div></div>
+          <div class="small" style="margin-top:12px">Увесь курс: <b>${pct(p.done, p.total)}%</b></div><div class="bar" style="margin-top:4px"><i style="width:${pct(p.done, p.total)}%"></i></div>
+          <div class="small muted" style="margin-top:6px">Останні ${PLAN.buffer} дні перед іспитом залишено на повторення.${p.missing ? ' Глави, яких ще немає в тренажері, враховано за оцінкою.' : ''}</div></div>
+        <div class="todo"><b>${done >= goal ? 'Можна ще:' : 'Що зробити сьогодні:'}</b></div>
+      </div>
+      <details class="small muted" style="margin-top:10px"><summary style="cursor:pointer">Як рахуються кроки?</summary>1 новий слайд = 1 крок · відповідь на питання = ½ · завершений квіз = +3,5 (разом ≈ 8) · підсумковий тест ≈ 15 · Sample Exam ≈ 5 · флеш-картка = ¼ · практичне завдання = 2. Норма = залишок роботи ÷ дні до іспиту (без ${PLAN.buffer} днів повторення) і фіксується на початку дня. 🔥 — дні поспіль із виконаною нормою.</details>`;
+    const td = $('.todo', c);
+    const list = done >= goal || !todo.length ? [] : todo;
+    list.forEach(it => { const r = h(`<div class="row" style="margin:6px 0;flex-wrap:nowrap"><span>${it.ic}</span><span style="flex:1">${it.kind === 'slides' ? `${it.label.replace(': слайди', '')}: ${it.take} ${plural(it.take, 'слайд', 'слайди', 'слайдів')}` : it.label}</span><span class="chip">${it.take} кр.</span><button class="btn small">→</button></div>`); $('button', r).onclick = () => goItem(it); td.appendChild(r); });
+    if (!list.length) {
+      const extra = [['🛠️', 'Робота над помилками', 'review'], ['🃏', 'Флеш-картки', 'cards'], ['⏱️', 'Підсумковий тест ще раз', 'final']];
+      if (!p.items.length) td.appendChild(h(`<div class="small muted" style="margin:6px 0">Увесь доступний зміст пройдено${p.missing ? ' — нові глави ще не додано' : ''}. Повторюйте:</div>`));
+      extra.forEach(([ic, t, v]) => { const r = h(`<div class="row" style="margin:6px 0;flex-wrap:nowrap"><span>${ic}</span><span style="flex:1">${t}</span><button class="btn small">→</button></div>`); $('button', r).onclick = () => { if (v === 'final') { exam = null; finalTab = 'final'; } go(v); }; td.appendChild(r); });
+    }
+    $('[data-a=edit]', c).onclick = () => { $('.editbox', c).hidden = !$('.editbox', c).hidden; };
+  }
+  const inp = $('input[type=date]', c);
+  $$('[data-a=save]', c).forEach(b => b.onclick = () => { const v = $('input[type=date]', b.parentNode).value; if (!v) { toast('Оберіть дату'); return; } G.examDate = v; G.planSince = today(); G.goalDay = null; save(); updateTop(); render(); toast('📅 План оновлено'); });
+  $$('[data-a=clear]', c).forEach(b => b.onclick = () => { G.examDate = null; G.goalDay = null; save(); updateTop(); render(); });
+  return c;
+}
+function streakModal() {
+  const cells = []; for (let i = 13; i >= 0; i--) { const d = today(-i), hit = (G.hit || {})[d]; cells.push(`<div title="${d}: ${Math.floor(stepsOn(d))} кр." style="width:22px;height:22px;border-radius:6px;background:${hit ? 'var(--accent)' : stepsOn(d) > 0 ? 'var(--accent-mid)' : 'var(--soft)'}"></div>`); }
+  modal(`<h3>🔥 Серія: ${streakDays()} ${plural(streakDays(), 'день', 'дні', 'днів')}</h3><p class="small muted">День зараховується, коли виконано денну норму (${dailyGoal()} кроків сьогодні). Пропустили день — серія починається знову.</p><div class="row" style="gap:4px;flex-wrap:wrap">${cells.join('')}</div><p class="small muted">Останні 14 днів: насичений колір — норму виконано, блідий — були заняття.</p>`, [{ t: 'Зрозуміло', cls: 'primary' }]);
+}
+function badgesModal() {
+  modal(`<h3>🏅 Бейджі · ⭐ Рівень ${levelInfo().lvl}</h3><div class="small muted" style="margin-bottom:8px">⚡ ${G.xp} XP · до рівня ${levelInfo().lvl + 1}: ${levelInfo().to - G.xp} XP</div><div class="badge-grid">${BADGES.map(b => `<div class="bdg ${G.badges.includes(bkey(b.id)) ? 'got' : ''}"><div class="e">${b.e}</div><b>${b.t}</b><div>${b.d}</div></div>`).join('')}</div>`, [{ t: 'Закрити', cls: 'primary' }]);
 }
 
 // ---- learn
@@ -1692,7 +1805,7 @@ function drawSlide(holder) {
   const sl = arr[learn.idx];
   const seen = s.seen[sec.id] = s.seen[sec.id] || [];
   if (!seen.includes(learn.idx)) {
-    seen.push(learn.idx); G.xp += 2; award('first');
+    seen.push(learn.idx); G.xp += 2; step(STEP.slide); award('first');
     if (seen.length >= arr.length && !s.deckDone[sec.id]) { s.deckDone[sec.id] = 1; G.xp += 50; toast('📚 Колоду ' + sec.id + ' завершено! +50 XP'); award('deck'); checkChapterBadges(); }
     touchDay(); save(); updateTop();
   }
@@ -1725,7 +1838,7 @@ function drawSlide(holder) {
     const ta = $('textarea', card);
     ta.oninput = () => { const p = s.practice[sl.id] = s.practice[sl.id] || {}; p.text = ta.value; save(); };
     ta.addEventListener('keydown', e => e.stopPropagation());
-    $('[data-a=show]', card).onclick = () => { const p = s.practice[sl.id] = s.practice[sl.id] || {}; if (!p.shown) { p.shown = 1; addXP(20); } save(); $('.pans', card).hidden = false; };
+    $('[data-a=show]', card).onclick = () => { const p = s.practice[sl.id] = s.practice[sl.id] || {}; if (!p.shown) { p.shown = 1; step(STEP.practice); addXP(20); } save(); $('.pans', card).hidden = false; };
     $$('input[type=checkbox]', card).forEach(cb => cb.onchange = () => { const p = s.practice[sl.id] = s.practice[sl.id] || {}; p.checks = p.checks || []; p.checks[+cb.dataset.i] = cb.checked; save(); });
   } else if (sl.type === 's') {
     card.innerHTML = `<div class="row"><span class="chip acc">Шпаргалка розділу</span></div><h2>${sl.title || 'Шпаргалка ' + sec.id}</h2>
@@ -1803,11 +1916,11 @@ function quizSummary(app) {
     qz.saved = 1; const prev = s.quizBest[qz.sec];
     if (prev == null || p > prev) s.quizBest[qz.sec] = p;
     if (p === 100) award('quiz100');
-    addXP(20); checkChapterBadges(); save();
+    step(STEP.quizDone); addXP(20); checkChapterBadges(); save();
   }
   if (qz.mode === 'sample' && !qz.saved) {
     qz.saved = 1; if (s.sampleBest == null || p > s.sampleBest) s.sampleBest = p;
-    if (p >= 65) award('sample'); addXP(20); save();
+    if (p >= 65) award('sample'); step(STEP.sampleDone); addXP(20); save();
   }
   const wrong = qz.res.filter(r => !r.ok);
   const c = h(`<div class="card fade"><h1>Результат: ${qz.title}</h1><div class="result-big ${p >= 65 ? 'pass' : 'fail'}">${ok} / ${qz.res.length} · ${p}%</div>
@@ -1897,7 +2010,7 @@ function finishExam() {
   clearInterval(timerId); timerId = null; exam.done = true;
   const s = ch(); let ok = 0;
   exam.list.forEach(q => { const c = isCorrect(q, exam.ans[q.id]); if (c) ok++; recordAnswer(q, c, 'final'); });
-  const p = pct(ok, exam.list.length); exam.score = { ok, p };
+  const p = pct(ok, exam.list.length); exam.score = { ok, p }; step(STEP.finalDone);
   if (s.finalBest == null || p > s.finalBest) s.finalBest = p;
   if (p >= 65) { if (!s.finalPass) { s.finalPass = true; addXP(100); } award('final'); }
   save(); checkChapterBadges();
@@ -1950,7 +2063,8 @@ function vCards(app) {
   fc.onclick = () => fc.classList.toggle('flip');
   const grade = k => {
     const cs = s.cards[c.id] = s.cards[c.id] || { box: 0 };
-    if (k) { cs.box = Math.min(3, (cs.box || 0) + 1); if (!cs.xp) { cs.xp = 1; G.xp += 3; } } else cs.box = 0;
+    if (k) cs.box = Math.min(3, (cs.box || 0) + 1); else cs.box = 0;
+    G.xp += 1; step(STEP.card);
     if (list.filter(x => ((s.cards[x.id] || {}).box || 0) >= 2).length >= Math.min(20, list.length)) award('cards');
     touchDay(); save(); updateTop(); fcCur = pickCard(list, s); render();
   };
@@ -2082,7 +2196,8 @@ const SB = {
 const Cloud = {
   be: null, kind: 'local', ready: false, busy: false, dirty: false, t: null, state: 'local', msg: '', startTs: G.ts || 0,
   LABEL: { local: '💾 Локально', sync: '⏳ Синхронізація…', ok: '☁️ Синхронізовано', err: '⚠️ Немає зв’язку', login: '🔑 Увійти' },
-  setState(st, msg) { this.state = st; this.msg = msg || ''; const el = $('#sync'); if (el) { el.textContent = this.LABEL[st]; el.title = this.msg; } },
+  ICON: { local: '💾', sync: '⏳', ok: '☁️', err: '⚠️', login: '🔑' },
+  setState(st, msg) { this.state = st; this.msg = msg || ''; const el = $('#sync'); if (el) { el.textContent = this.ICON[st]; el.title = this.LABEL[st] + (this.msg ? ' — ' + this.msg : ''); el.setAttribute('aria-label', this.LABEL[st]); el.classList.toggle('attn', st === 'login' || st === 'err'); } },
   snapshot() {
     const chs = {};
     COURSE.chapters.forEach(c => { const v = CS[c.id] || LS.get(CKEY(c.id), null); if (v) chs[c.id] = v; });
@@ -2090,7 +2205,7 @@ const Cloud = {
   },
   apply(d) {
     const th = G.theme;
-    G = Object.assign({ xp: 0, streak: 0, lastDay: null, badges: [], theme: th, cur: 1 }, d.g || {});
+    G = Object.assign({ xp: 0, badges: [], theme: th, cur: 1, examDate: null, daily: {}, hit: {}, goalDay: null }, d.g || {});
     G.ts = d.ts; LS.set(GKEY, G);
     Object.keys(CS).forEach(k => delete CS[k]);
     COURSE.chapters.forEach(c => { if (d.ch && d.ch[c.id]) LS.set(CKEY(c.id), d.ch[c.id]); else LS.del(CKEY(c.id)); });
@@ -2236,6 +2351,9 @@ function init() {
   });
   window.addEventListener('hashchange', render);
   $('#sync').onclick = syncInfo;
+  $('#goalPill').onclick = () => { go('home'); setTimeout(() => { const pl = $('#plan'); pl && pl.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50); };
+  $('#streakPill').onclick = streakModal;
+  $('#badgePill').onclick = badgesModal;
   applyTheme(); applyChapter(); updateTop(); render();
   Cloud.setState('local', 'Перевіряю хмарне збереження…');
   setTimeout(() => Cloud.init(), 0);

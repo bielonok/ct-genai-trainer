@@ -21,6 +21,11 @@ header.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--b
 .stats{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:.85rem;font-weight:600;white-space:nowrap}
 .icon-btn{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:5px 9px;cursor:pointer}
+button.pill{cursor:pointer;color:var(--text)}
+#goalPill.done{border-color:var(--ok);background:var(--okbg)}
+#goalPill.done #goalRing{stroke:var(--ok)}
+#sync.attn{border-color:var(--warn);animation:pulse 2s ease-in-out 3}
+@keyframes pulse{50%{box-shadow:0 0 0 4px var(--warnbg)}}
 nav.tabs{max-width:1120px;margin:0 auto;padding:0 12px 8px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
 nav.tabs::-webkit-scrollbar{display:none}
 nav.tabs button{border:0;background:transparent;padding:7px 12px;border-radius:10px;cursor:pointer;color:var(--muted);font-weight:600;white-space:nowrap;font-size:.92rem}
@@ -209,10 +214,10 @@ footer.foot{max-width:1120px;margin:0 auto;padding:0 16px 30px;color:var(--muted
   <div class="top-in">
     <div class="logo"><span class="dot"></span><span>GenAI Training</span><span class="chip" id="chLabel">Глава 1</span></div>
     <div class="stats">
-      <span class="pill" title="Досвід">⚡ <span id="xp">0</span> XP</span>
-      <span class="pill" title="Днів поспіль">🔥 <span id="streak">0</span></span>
-      <span class="pill" title="Бейджі">🏅 <span id="bcount">0</span></span>
-      <button class="pill" id="sync" style="cursor:pointer">💾 Локально</button>
+      <button class="pill" id="goalPill" title="Денна норма (кроки)"><svg width="18" height="18" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="9" fill="none" stroke="var(--soft)" stroke-width="3.5"/><circle id="goalRing" cx="11" cy="11" r="9" fill="none" stroke="var(--accent)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="0 56.55" transform="rotate(-90 11 11)"/></svg><span id="goalTxt">0/20</span></button>
+      <button class="pill" id="streakPill" title="Днів поспіль з виконаною нормою">🔥 <span id="streak">0</span></button>
+      <button class="pill" id="badgePill" title="Бейджі та рівень">🏅 <span id="bcount">0</span></button>
+      <button class="icon-btn" id="sync" title="Синхронізація">💾</button>
       <button class="icon-btn" id="themeBtn" title="Змінити тему" aria-label="Змінити тему">🌓</button>
     </div>
   </div>
