@@ -1,4 +1,4 @@
-# CT-GenAI Тренажёр
+# GenAI Training
 
 Тренажёр для подготовки к экзамену ISTQB® Certified Tester – Testing with Generative AI (CT-GenAI v1.1).
 Открывается как отдельное приложение (PWA), работает офлайн, а прогресс синхронизируется между устройствами после входа по email.

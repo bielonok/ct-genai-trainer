@@ -1,6 +1,6 @@
 {
-  "name": "CT-GenAI Тренажер",
-  "short_name": "CT-GenAI",
+  "name": "GenAI Training",
+  "short_name": "GenAI Training",
   "description": "Підготовка до ISTQB CT-GenAI v1.1",
   "lang": "uk",
   "start_url": "./#home",
@@ -9,8 +9,23 @@
   "background_color": "#f5f6fb",
   "theme_color": "#7c5cff",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }
