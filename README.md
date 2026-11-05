@@ -58,3 +58,9 @@ Settings → Pages → Build and deployment → Source: **Deploy from a branch**
 | `supabase.sql` | Таблица и правила доступа |
 
 Материалы основаны на ISTQB® CT-GenAI Syllabus v1.1 и Sample Exam A v1.1 (© ISTQB®), используются для некоммерческой самоподготовки.
+
+## Для разработки
+
+Исходники лежат в `src/`: `engine.js` (схемы), `app.js` (логика), `shell.html` (разметка и стили), `ch1_*.js` (контент главы 1).
+Новая глава добавляется файлами `src/ch2_*.js` с блоком `chapters[2] = {…}`. После правок запустите `python3 build.py`: скрипт пересоберёт `index.html` (PWA) и `dist/ct-genai-trainer.html` (единый офлайн-файл).
+При каждом изменении поменяйте `CACHE` в `sw.js` (например, `ctgenai-v2`), чтобы установленное приложение точно обновилось.
