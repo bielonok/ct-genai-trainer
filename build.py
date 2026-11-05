@@ -13,8 +13,8 @@ head = '''<link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="GenAI Training">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon-v2.png">
+<link rel="icon" type="image/png" href="icon-192-v2.png">
 <style>header.top{padding-top:env(safe-area-inset-top)}main,footer.foot,.top-in,nav.tabs{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}.toast-box{bottom:calc(18px + env(safe-area-inset-bottom))}footer.foot{padding-bottom:calc(30px + env(safe-area-inset-bottom))}</style>
 <script src="config.js"></script>'''
 body = '''<script>if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostname==='localhost')){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>'''
