@@ -24,8 +24,7 @@ Settings → Pages → Build and deployment → Source: **Deploy from a branch**
 3. **Authentication → URL Configuration:**
    - Site URL: `https://bielonok.github.io/ct-genai-trainer/`
    - Redirect URLs: добавьте тот же адрес.
-4. **Authentication → Emails (шаблоны) → Magic Link:** добавьте в текст письма код `{{ .Token }}`, например строку `Ваш код: {{ .Token }}`.
-   Это важно для телефона: установленное приложение на iPhone не получает вход по ссылке из письма, поэтому нужен код, который вводится вручную.
+4. **Authentication → Sign In / Providers → Email:** провайдер Email должен быть включён. Чтобы не ждать письма, выключите **Confirm email**. Если оставить его включённым, после регистрации придёт письмо со ссылкой: нажмите её один раз, а дальше входите по паролю.
 5. **Project Settings → API** (или кнопка **Connect**): скопируйте **Project URL** и **anon / publishable key** и вставьте их в `config.js`:
    ```js
    window.SB_CONFIG = {
@@ -34,7 +33,7 @@ Settings → Pages → Build and deployment → Source: **Deploy from a branch**
    };
    ```
    Anon-ключ публичный, его безопасно хранить в репозитории: данные защищены правилами RLS из `supabase.sql`.
-6. В приложении нажмите **🔑 Увійти** → введите email → введите код из письма. Статус должен смениться на «☁️ Синхронізовано».
+6. В приложении нажмите **🔑 Увійти** → email + пароль → «Створити акаунт» (в первый раз) или «Увійти». Статус должен смениться на «☁️ Синхронізовано».
 7. *(По желанию)* После того как вы вошли, отключите регистрацию новых пользователей в Authentication → Sign In / Providers («Allow new users to sign up»), чтобы посторонние не создавали аккаунты в вашем проекте.
 
 > Названия пунктов меню Supabase время от времени меняются. Если чего-то не нашли, ищите по смыслу: URL Configuration, Email Templates, API keys.

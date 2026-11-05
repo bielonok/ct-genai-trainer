@@ -1640,7 +1640,7 @@ function vHome(app) {
 
   const bd = h(`<div class="card fade" style="margin-top:18px"><div class="row"><h2 style="margin:0">Досягнення</h2><span class="spacer"></span><span class="pill">⚡ ${G.xp} XP</span><span class="pill">🔥 streak ${$('#streak').textContent}</span></div>
     <div class="badge-grid" style="margin-top:12px"></div>
-    <hr class="sep"><div class="row"><span class="small muted">${Cloud.be ? '☁️ Прогрес синхронізується між пристроями.' : Cloud.state === 'login' ? '🔑 Увійдіть за email (кнопка вгорі), щоб синхронізувати прогрес між пристроями.' : '💾 Прогрес зберігається в цьому браузері.'}</span><button class="btn small ghost" id="xferBtn">Експорт / імпорт</button><span></span><span class="spacer"></span><button class="btn danger small" id="resetBtn">Скинути прогрес</button></div></div>`);
+    <hr class="sep"><div class="row"><span class="small muted">${Cloud.be ? '☁️ Прогрес синхронізується між пристроями.' : Cloud.state === 'login' ? '🔑 Увійдіть (кнопка вгорі), щоб синхронізувати прогрес між пристроями.' : '💾 Прогрес зберігається в цьому браузері.'}</span><button class="btn small ghost" id="xferBtn">Експорт / імпорт</button><span></span><span class="spacer"></span><button class="btn danger small" id="resetBtn">Скинути прогрес</button></div></div>`);
   BADGES.forEach(b => $('.badge-grid', bd).appendChild(h(`<div class="bdg ${G.badges.includes(bkey(b.id)) ? 'got' : ''}" title="${esc(b.d)}"><div class="e">${b.e}</div><b>${b.t}</b><div>${b.d}</div></div>`)));
   $('#xferBtn', bd).onclick = transferModal;
   $('#resetBtn', bd).onclick = () => modal('<h3>Скинути прогрес?</h3><p class="muted">Що саме скинути? Дію не можна скасувати.</p>', [
@@ -2025,6 +2025,15 @@ const SB = {
     LS.set(SBKEY, this.sess);
   },
   logout() { this.sess = null; LS.del(SBKEY); },
+  async signIn(email, password) {
+    const j = await this.api('/auth/v1/token?grant_type=password', { method: 'POST', headers: { apikey: this.cfg.anonKey, 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
+    this.store(j);
+  },
+  async signUp(email, password) {
+    const j = await this.api('/auth/v1/signup', { method: 'POST', headers: { apikey: this.cfg.anonKey, 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
+    if (j && j.access_token) { this.store(j); return 'in'; }
+    return 'confirm'; // email confirmation is on in Supabase
+  },
   async sendCode(email) {
     const redirect = encodeURIComponent(location.origin + location.pathname);
     await this.api('/auth/v1/otp?redirect_to=' + redirect, { method: 'POST', headers: this.hdr(), body: JSON.stringify({ email, create_user: true }) });
@@ -2083,7 +2092,7 @@ const Cloud = {
     if (SB.cfg) {
       this.kind = 'supabase';
       try { await SB.fromHash(); } catch (e) { toast('Не вдалося увійти за посиланням — спробуйте код з листа'); }
-      if (!SB.sess) return this.setState('login', 'Увійдіть за email, щоб синхронізувати прогрес між пристроями.');
+      if (!SB.sess) return this.setState('login', 'Увійдіть (email + пароль), щоб синхронізувати прогрес між пристроями.');
       this.be = SB.backend(); return this.pull(true);
     }
     const c = window.claude;
@@ -2139,35 +2148,34 @@ document.addEventListener('visibilitychange', () => {
 window.addEventListener('online', () => { if (Cloud.be && Cloud.dirty) { Cloud.busy = false; Cloud.flush(); } });
 
 function loginModal() {
-  const bg = h(`<div class="modal-bg"><div class="card modal fade"><h3>🔑 Вхід за email</h3>
-    <p class="small muted">Надішлемо лист із кодом (і посиланням). Пароль не потрібен. Прогрес буде однаковим на всіх пристроях, де ви увійдете.</p>
-    <div class="st1"><input class="search" type="email" placeholder="you@example.com" autocomplete="email" value="${esc((SB.sess && SB.sess.user.email) || LS.get('ctgenai:lastEmail', ''))}">
-      <div class="row" style="margin-top:12px;justify-content:flex-end"><button class="btn" data-a="x">Скасувати</button><button class="btn primary" data-a="send">Надіслати код</button></div></div>
-    <div class="st2" hidden><p class="small">Лист надіслано на <b class="em"></b>. Введіть код з листа <span class="muted">(або відкрийте посилання з листа на цьому ж пристрої)</span>.</p>
-      <input class="search" inputmode="numeric" autocomplete="one-time-code" placeholder="Код з листа">
-      <div class="row" style="margin-top:12px;justify-content:flex-end"><button class="btn ghost" data-a="back">Інший email</button><button class="btn primary" data-a="ok">Увійти</button></div></div>
-    <div class="small err" style="color:var(--bad);margin-top:8px"></div></div></div>`);
-  const err = $('.err', bg), em = $('.st1 input', bg), code = $('.st2 input', bg);
-  const busy = (b, on) => { b.disabled = on; };
-  $$('input', bg).forEach(i => i.addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Enter') { e.preventDefault(); ($('.st2', bg).hidden ? $('[data-a=send]', bg) : $('[data-a=ok]', bg)).click(); } }));
+  const bg = h(`<div class="modal-bg"><div class="card modal fade"><h3>🔑 Вхід</h3>
+    <p class="small muted">Увійдіть, щоб прогрес був однаковим на телефоні й комп’ютері. Перший раз натисніть «Створити акаунт».</p>
+    <input class="search em" type="email" placeholder="Email" autocomplete="email" value="${esc(LS.get('ctgenai:lastEmail', ''))}">
+    <input class="search pw" type="password" placeholder="Пароль (мін. 6 символів)" autocomplete="current-password" style="margin-top:8px">
+    <div class="row" style="margin-top:12px;justify-content:flex-end"><button class="btn ghost" data-a="x">Скасувати</button><button class="btn" data-a="up">Створити акаунт</button><button class="btn primary" data-a="in">Увійти</button></div>
+    <div class="small err" style="margin-top:8px"></div></div></div>`);
+  const err = $('.err', bg), em = $('.em', bg), pw = $('.pw', bg);
+  const msg = (t, ok) => { err.textContent = t; err.style.color = ok ? 'var(--ok)' : 'var(--bad)'; };
+  $$('input', bg).forEach(i => i.addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Enter') { e.preventDefault(); $('[data-a=in]', bg).click(); } }));
   $('[data-a=x]', bg).onclick = () => bg.remove();
-  $('[data-a=back]', bg).onclick = () => { $('.st2', bg).hidden = true; $('.st1', bg).hidden = false; };
-  $('[data-a=send]', bg).onclick = async e => {
-    const v = em.value.trim(); err.textContent = '';
-    if (!/^\S+@\S+\.\S+$/.test(v)) { err.textContent = 'Перевірте email'; return; }
-    busy(e.target, true);
-    try { await SB.sendCode(v); LS.set('ctgenai:lastEmail', v); $('.em', bg).textContent = v; $('.st1', bg).hidden = true; $('.st2', bg).hidden = false; code.focus(); }
-    catch (x) { err.textContent = 'Не вдалося надіслати: ' + (x.message || x.code || 'помилка') + (x.status === 429 ? ' (забагато спроб — зачекайте хвилину)' : ''); }
-    busy(e.target, false);
+  const done = async () => { bg.remove(); toast('✅ Ви увійшли'); Cloud.be = SB.backend(); Cloud.startTs = G.ts || 0; await Cloud.pull(true); render(); };
+  const check = () => {
+    const v = em.value.trim(), p = pw.value;
+    if (!/^\S+@\S+\.\S+$/.test(v)) { msg('Перевірте email'); return null; }
+    if (p.length < 6) { msg('Пароль — щонайменше 6 символів'); return null; }
+    LS.set('ctgenai:lastEmail', v); return [v, p];
   };
-  $('[data-a=ok]', bg).onclick = async e => {
-    err.textContent = ''; busy(e.target, true);
-    try { await SB.verify(em.value.trim(), code.value.trim()); bg.remove(); toast('✅ Ви увійшли'); Cloud.be = SB.backend(); Cloud.startTs = G.ts || 0; await Cloud.pull(true); render(); }
-    catch (x) { err.textContent = 'Код не підійшов: ' + (x.message || x.code || 'помилка'); }
-    busy(e.target, false);
-  };
+  const run = async (btn, fn) => { const c = check(); if (!c) return; msg(''); $$('button', bg).forEach(b => b.disabled = true); try { await fn(c[0], c[1]); } catch (x) {
+      const m = (x.message || x.code || 'помилка') + '';
+      msg(/invalid login/i.test(m) ? 'Невірний email або пароль' : /already registered|already exists/i.test(m) ? 'Такий акаунт уже є — натисніть «Увійти»' : /not confirmed/i.test(m) ? 'Підтвердіть email за посиланням із листа, потім увійдіть' : /signups not allowed|disabled/i.test(m) ? 'Реєстрацію вимкнено в налаштуваннях Supabase' : 'Помилка: ' + m);
+    } $$('button', bg).forEach(b => b.disabled = false); };
+  $('[data-a=in]', bg).onclick = e => run(e.target, async (v, p) => { await SB.signIn(v, p); await done(); });
+  $('[data-a=up]', bg).onclick = e => run(e.target, async (v, p) => {
+    const r = await SB.signUp(v, p);
+    if (r === 'in') await done(); else msg('Акаунт створено. Відкрийте лист від Supabase і підтвердіть email, потім натисніть «Увійти».', true);
+  });
   bg.addEventListener('click', e => { if (e.target === bg) bg.remove(); });
-  document.body.appendChild(bg); setTimeout(() => em.focus(), 0);
+  document.body.appendChild(bg); setTimeout(() => (em.value ? pw : em).focus(), 0);
 }
 function transferModal() {
   const data = JSON.stringify(Cloud.snapshot());
@@ -2193,7 +2201,7 @@ function syncInfo() {
   const btns = [{ t: 'Закрити' }, { t: 'Експорт / імпорт', fn: transferModal }];
   if (Cloud.kind === 'supabase' && SB.sess) btns.splice(1, 0, { t: 'Вийти', cls: 'danger', fn: () => { SB.logout(); Cloud.be = null; Cloud.ready = false; Cloud.setState('login', 'Ви вийшли. Прогрес на цьому пристрої залишився локально.'); render(); } });
   if (Cloud.be) btns.push({ t: 'Синхронізувати зараз', cls: 'primary', fn: () => { if (Cloud.dirty) { Cloud.busy = false; Cloud.flush(); } else Cloud.pull(false); } });
-  const note = Cloud.kind === 'supabase' ? 'Прогрес синхронізується через ваш акаунт (вхід за email) на всіх пристроях.' : 'За посиланням у claude.ai прогрес зберігається у вашому акаунті claude.ai. Скачаний файл зберігає прогрес лише локально.';
+  const note = Cloud.kind === 'supabase' ? 'Прогрес синхронізується через ваш акаунт на всіх пристроях.' : 'За посиланням у claude.ai прогрес зберігається у вашому акаунті claude.ai. Скачаний файл зберігає прогрес лише локально.';
   modal(`<h3>${Cloud.LABEL[Cloud.state]}</h3><p>${esc(Cloud.msg || '')}</p><p class="small muted">${note}</p>`, btns);
 }
 
